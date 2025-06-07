@@ -35,3 +35,5 @@ abstract class ConeClassLikeLookupTag : ConeClassifierLookupTag() {
     override val name: Name
         get() = classId.shortClassName
 }
+
+abstract class ConeAnonymousFunctionLookupTag

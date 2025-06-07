@@ -36,4 +36,8 @@ abstract class FirRefinementTypeRef : FirUnresolvedTypeRef() {
     abstract override fun replaceAnnotations(newAnnotations: List<FirAnnotation>)
 
     abstract override fun <D> transformAnnotations(transformer: FirTransformer<D>, data: D): FirRefinementTypeRef
+
+    abstract fun <D> transformUnderlyingType(transformer: FirTransformer<D>, data: D): FirRefinementTypeRef
+
+    abstract fun <D> transformPredicate(transformer: FirTransformer<D>, data: D): FirRefinementTypeRef
 }

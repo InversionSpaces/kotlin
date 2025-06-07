@@ -39,13 +39,23 @@ internal class FirRefinementTypeRefImpl(
 
     override fun <D> transformChildren(transformer: FirTransformer<D>, data: D): FirRefinementTypeRefImpl {
         transformAnnotations(transformer, data)
-        underlyingType = underlyingType.transform(transformer, data)
-        predicate = predicate.transform(transformer, data)
+        transformUnderlyingType(transformer, data)
+        transformPredicate(transformer, data)
         return this
     }
 
     override fun <D> transformAnnotations(transformer: FirTransformer<D>, data: D): FirRefinementTypeRefImpl {
         annotations.transformInplace(transformer, data)
+        return this
+    }
+
+    override fun <D> transformUnderlyingType(transformer: FirTransformer<D>, data: D): FirRefinementTypeRefImpl {
+        underlyingType = underlyingType.transform(transformer, data)
+        return this
+    }
+
+    override fun <D> transformPredicate(transformer: FirTransformer<D>, data: D): FirRefinementTypeRefImpl {
+        predicate = predicate.transform(transformer, data)
         return this
     }
 

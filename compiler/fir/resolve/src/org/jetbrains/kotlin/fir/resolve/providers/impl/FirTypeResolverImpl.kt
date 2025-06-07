@@ -430,8 +430,8 @@ class FirTypeResolverImpl(private val session: FirSession) : FirTypeResolver() {
             is FirRefinementTypeRef -> {
                 val underlyingType = typeRef.underlyingType.coneType
                 // TODO: How to save it?
-                val predicateSymbol = typeRef.predicate.anonymousFunction.symbol
-                val refinementType = ConeRefinementType(underlyingType)
+                val predicateTag = typeRef.predicate.anonymousFunction.symbol.toLookupTag()
+                val refinementType = ConeRefinementType(underlyingType, predicateTag)
                 FirTypeResolutionResult(refinementType, diagnostic = null)
             }
             else -> error(typeRef.render())

@@ -328,6 +328,7 @@ class ConeIntersectionType(
 
 class ConeRefinementType(
     val underlyingType: ConeKotlinType,
+    val predicateTag: ConeAnonymousFunctionLookupTag
 ) : ConeSimpleKotlinType(), ConeTypeConstructorMarker {
     override val typeArguments: Array<out ConeTypeProjection>
         get() = EMPTY_ARRAY

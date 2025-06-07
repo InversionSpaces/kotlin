@@ -202,7 +202,7 @@ fun <T : ConeKotlinType> T.withAttributes(attributes: ConeAttributes): T {
         // TODO: Consider correct application of attributes to ConeIntersectionType
         // Currently, ConeAttributes.union works a bit strange, because it lefts only `other` parts
         is ConeIntersectionType -> this
-        is ConeRefinementType -> ConeRefinementType(underlyingType.withAttributes(attributes))
+        is ConeRefinementType -> ConeRefinementType(underlyingType.withAttributes(attributes), predicateTag)
         // Attributes for stub types are not supported, and it's not obvious if it should
         is ConeStubType -> this
         is ConeIntegerLiteralType -> this
@@ -286,7 +286,8 @@ fun <T : ConeKotlinType> T.withNullability(
                 nullable,
                 typeContext,
                 preserveAttributes = preserveAttributes
-            )
+            ),
+            predicateTag
         )
 
         is ConeStubTypeForTypeVariableInSubtyping -> ConeStubTypeForTypeVariableInSubtyping(constructor, nullable)
@@ -659,7 +660,7 @@ internal fun ConeTypeContext.captureFromExpressionInternal(type: ConeKotlinType)
         }
         is ConeRefinementType -> {
             val underlyingType = captureFromExpressionInternal(type.underlyingType) ?: return null
-            ConeRefinementType(underlyingType)
+            ConeRefinementType(underlyingType, type.predicateTag)
         }
         is ConeSimpleKotlinType -> {
             captureFromArgumentsInternal(type, CaptureStatus.FROM_EXPRESSION)

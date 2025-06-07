@@ -94,7 +94,7 @@ abstract class AbstractConeSubstitutor(protected val typeContext: ConeTypeContex
 
     private fun ConeRefinementType.substituteUnderlyingType(): ConeRefinementType? {
         val substitutedUnderlyingType = substituteOrNull(underlyingType) ?: return null
-        return ConeRefinementType(substitutedUnderlyingType)
+        return ConeRefinementType(substitutedUnderlyingType, predicateTag)
     }
 
     private fun ConeDefinitelyNotNullType.substituteOriginal(): ConeKotlinType? {
