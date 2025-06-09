@@ -558,16 +558,8 @@ open class FirSupertypeResolverVisitor(
         expandedTypeRef: FirTypeRef,
         resolveRecursively: Boolean,
     ): List<FirResolvedTypeRef> {
-        fun supertypesForResolved(resolved: FirResolvedTypeRef): List<FirResolvedTypeRef> = listOf(
-            when (val delegated = resolved.delegatedTypeRef) {
-                is FirRefinementTypeRef ->
-                    delegated.underlyingType as FirResolvedTypeRef // TODO: It has to be resolved at this point?
-                else -> resolved
-            }
-        )
-
         if (expandedTypeRef is FirResolvedTypeRef) {
-            return supertypesForResolved(expandedTypeRef)
+            return listOf(expandedTypeRef)
         }
 
         return resolveSpecificClassLikeSupertypes(typeAlias) { transformer, scope ->
@@ -592,7 +584,7 @@ open class FirSupertypeResolverVisitor(
                 }
             }
 
-            supertypesForResolved(resolvedTypeRef)
+            listOf(resolvedTypeRef)
         }
     }
 
