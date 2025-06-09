@@ -2426,11 +2426,17 @@ class LightTreeRawFirDeclarationBuilder(
             }
         }
 
+        val symbol = context.containerSymbol as? FirTypeAliasSymbol ?: return buildErrorTypeRef {
+            source = typeRefSource
+            diagnostic = ConeSyntaxDiagnostic("Refinement type is allowed only in typealias")
+        }
+
         return buildRefinementTypeRef {
             source = typeRefSource
             isMarkedNullable = false
             underlyingType = underlyingTypeRef
             predicate = predicateExpr
+            definingSymbol = symbol
         }
     }
 

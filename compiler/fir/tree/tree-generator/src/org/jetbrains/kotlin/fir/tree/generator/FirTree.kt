@@ -1213,6 +1213,8 @@ object FirTree : AbstractFirTreeBuilder() {
 
         +field("underlyingType", typeRef, withTransform = true)
         +field("predicate", anonymousFunctionExpression, withTransform = true)
+
+        +referencedSymbol("definingSymbol", typeAliasSymbolType)
     }
 
     val thisReceiverExpression: Element by element(Expression) {

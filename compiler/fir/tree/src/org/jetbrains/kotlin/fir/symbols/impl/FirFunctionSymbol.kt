@@ -19,7 +19,6 @@ import org.jetbrains.kotlin.fir.references.FirControlFlowGraphReference
 import org.jetbrains.kotlin.fir.references.toResolvedConstructorSymbol
 import org.jetbrains.kotlin.fir.symbols.SymbolInternals
 import org.jetbrains.kotlin.fir.symbols.lazyResolveToPhase
-import org.jetbrains.kotlin.fir.types.ConeAnonymousFunctionLookupTag
 import org.jetbrains.kotlin.fir.types.FirResolvedTypeRef
 import org.jetbrains.kotlin.fir.utils.exceptions.withFirSymbolEntry
 import org.jetbrains.kotlin.mpp.ConstructorSymbolMarker
@@ -140,8 +139,6 @@ class FirAnonymousFunctionSymbol : FirFunctionWithoutNameSymbol<FirAnonymousFunc
             }
             return typeRef
         }
-
-    fun toLookupTag(): ConeAnonymousFunctionLookupTag = ConeAnonymousFunctionLookupTagImpl(this)
 }
 
 open class FirPropertyAccessorSymbol : FirFunctionWithoutNameSymbol<FirPropertyAccessor>(Name.identifier("accessor")) {

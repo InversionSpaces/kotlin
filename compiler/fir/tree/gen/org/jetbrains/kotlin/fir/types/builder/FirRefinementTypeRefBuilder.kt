@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
 import org.jetbrains.kotlin.fir.builder.toMutableOrEmpty
 import org.jetbrains.kotlin.fir.expressions.FirAnnotation
 import org.jetbrains.kotlin.fir.expressions.FirAnonymousFunctionExpression
+import org.jetbrains.kotlin.fir.symbols.impl.FirTypeAliasSymbol
 import org.jetbrains.kotlin.fir.types.FirRefinementTypeRef
 import org.jetbrains.kotlin.fir.types.FirTypeRef
 import org.jetbrains.kotlin.fir.types.impl.FirRefinementTypeRefImpl
@@ -28,6 +29,7 @@ class FirRefinementTypeRefBuilder : FirAnnotationContainerBuilder {
     var isMarkedNullable: Boolean by kotlin.properties.Delegates.notNull<Boolean>()
     lateinit var underlyingType: FirTypeRef
     lateinit var predicate: FirAnonymousFunctionExpression
+    lateinit var definingSymbol: FirTypeAliasSymbol
 
     override fun build(): FirRefinementTypeRef {
         return FirRefinementTypeRefImpl(
@@ -36,6 +38,7 @@ class FirRefinementTypeRefBuilder : FirAnnotationContainerBuilder {
             isMarkedNullable,
             underlyingType,
             predicate,
+            definingSymbol,
         )
     }
 }

@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.fir.MutableOrEmptyList
 import org.jetbrains.kotlin.fir.builder.toMutableOrEmpty
 import org.jetbrains.kotlin.fir.expressions.FirAnnotation
 import org.jetbrains.kotlin.fir.expressions.FirAnonymousFunctionExpression
+import org.jetbrains.kotlin.fir.symbols.impl.FirTypeAliasSymbol
 import org.jetbrains.kotlin.fir.types.FirRefinementTypeRef
 import org.jetbrains.kotlin.fir.types.FirTypeRef
 import org.jetbrains.kotlin.fir.visitors.FirTransformer
@@ -27,6 +28,7 @@ internal class FirRefinementTypeRefImpl(
     override val isMarkedNullable: Boolean,
     override var underlyingType: FirTypeRef,
     override var predicate: FirAnonymousFunctionExpression,
+    override val definingSymbol: FirTypeAliasSymbol,
 ) : FirRefinementTypeRef() {
     override val customRenderer: Boolean
         get() = false
