@@ -125,6 +125,11 @@ fun ConeClassLikeType.directExpansionType(
         ?.applyAttributesFrom(this)
         ?: return null
 
+    // TODO: Is it okay to special case refinement type here?
+    if (resultType is ConeRefinementType) {
+        val symbol = resultType.lookupTag.toSymbol(useSiteSession)
+        if (symbol == typeAliasSymbol) return null
+    }
     if (resultType.typeArguments.isEmpty()) return resultType
     return mapTypeAliasArguments(typeAlias, this, resultType, useSiteSession) as? ConeClassLikeType
 }
