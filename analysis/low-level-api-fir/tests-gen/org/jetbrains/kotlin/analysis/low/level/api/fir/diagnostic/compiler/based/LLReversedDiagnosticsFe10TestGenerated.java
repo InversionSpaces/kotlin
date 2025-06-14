@@ -35673,6 +35673,24 @@ public class LLReversedDiagnosticsFe10TestGenerated extends AbstractLLReversedDi
       public void testAsCast() {
         runTest("compiler/testData/diagnostics/tests/refinementTypes/asCast.kt");
       }
+
+      @Test
+      @TestMetadata("asSafeCast.kt")
+      public void testAsSafeCast() {
+        runTest("compiler/testData/diagnostics/tests/refinementTypes/asSafeCast.kt");
+      }
+
+      @Test
+      @TestMetadata("smartcast.kt")
+      public void testSmartcast() {
+        runTest("compiler/testData/diagnostics/tests/refinementTypes/smartcast.kt");
+      }
+
+      @Test
+      @TestMetadata("smartcastNot.kt")
+      public void testSmartcastNot() {
+        runTest("compiler/testData/diagnostics/tests/refinementTypes/smartcastNot.kt");
+      }
     }
 
     @Nested
