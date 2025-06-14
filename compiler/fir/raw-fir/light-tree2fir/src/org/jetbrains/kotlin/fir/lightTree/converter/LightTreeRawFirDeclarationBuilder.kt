@@ -2373,6 +2373,7 @@ class LightTreeRawFirDeclarationBuilder(
                     isMarkedNullable = false
                 }
                 INTERSECTION_TYPE -> firType = convertIntersectionType(typeRefSource, it, false)
+                REFINEMENT_TYPE -> firType = convertRefinementType(typeRefSource, it)
                 CONTEXT_RECEIVER_LIST, TokenType.ERROR_ELEMENT -> firType =
                     buildErrorTypeRef {
                         source = typeRefSource
@@ -2412,6 +2413,30 @@ class LightTreeRawFirDeclarationBuilder(
             isMarkedNullable = isNullable
             leftType = children[0]
             rightType = children[1]
+        }
+    }
+
+    private fun convertRefinementType(typeRefSource: KtSourceElement, refinementType: LighterASTNode): FirTypeRef {
+        lateinit var underlyingTypeRef: FirTypeRef
+        lateinit var predicateExpr: FirAnonymousFunctionExpression
+        refinementType.forEachChildren {
+            when (it.tokenType) {
+                TYPE_REFERENCE -> underlyingTypeRef = convertType(it)
+                LAMBDA_EXPRESSION -> predicateExpr = expressionConverter.getAsFirExpression(it, "Lambda expected")
+            }
+        }
+
+        val symbol = context.containerSymbol as? FirTypeAliasSymbol ?: return buildErrorTypeRef {
+            source = typeRefSource
+            diagnostic = ConeSyntaxDiagnostic("Refinement type is allowed only in typealias")
+        }
+
+        return buildRefinementTypeRef {
+            source = typeRefSource
+            isMarkedNullable = false
+            underlyingType = underlyingTypeRef
+            predicate = predicateExpr
+            definingSymbol = symbol
         }
     }
 

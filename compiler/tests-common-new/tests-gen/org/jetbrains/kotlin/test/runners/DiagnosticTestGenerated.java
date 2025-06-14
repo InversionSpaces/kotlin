@@ -35660,6 +35660,40 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
     }
 
     @Nested
+    @TestMetadata("compiler/testData/diagnostics/tests/refinementTypes")
+    @TestDataPath("$PROJECT_ROOT")
+    public class RefinementTypes {
+      @Test
+      public void testAllFilesPresentInRefinementTypes() {
+        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/diagnostics/tests/refinementTypes"), Pattern.compile("^(.*)\\.kts?$"), Pattern.compile("^(.+)\\.(reversed|fir|ll|latestLV)\\.kts?$"), true);
+      }
+
+      @Test
+      @TestMetadata("asCast.kt")
+      public void testAsCast() {
+        runTest("compiler/testData/diagnostics/tests/refinementTypes/asCast.kt");
+      }
+
+      @Test
+      @TestMetadata("asSafeCast.kt")
+      public void testAsSafeCast() {
+        runTest("compiler/testData/diagnostics/tests/refinementTypes/asSafeCast.kt");
+      }
+
+      @Test
+      @TestMetadata("smartcast.kt")
+      public void testSmartcast() {
+        runTest("compiler/testData/diagnostics/tests/refinementTypes/smartcast.kt");
+      }
+
+      @Test
+      @TestMetadata("smartcastNot.kt")
+      public void testSmartcastNot() {
+        runTest("compiler/testData/diagnostics/tests/refinementTypes/smartcastNot.kt");
+      }
+    }
+
+    @Nested
     @TestMetadata("compiler/testData/diagnostics/tests/regressions")
     @TestDataPath("$PROJECT_ROOT")
     public class Regressions {

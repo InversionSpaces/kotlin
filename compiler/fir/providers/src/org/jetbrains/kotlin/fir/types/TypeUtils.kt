@@ -167,6 +167,7 @@ fun <T : ConeKotlinType> T.withArguments(arguments: Array<out ConeTypeProjection
         is ConeFlexibleType -> ConeFlexibleType(lowerBound.withArguments(arguments), upperBound.withArguments(arguments), isTrivial)
         is ConeErrorType -> ConeErrorType(diagnostic, isUninferredParameter, typeArguments = arguments, attributes = attributes, lookupTag = lookupTag)
         is ConeIntersectionType,
+        is ConeRefinementType,
         is ConeTypeVariableType,
         is ConeStubType,
         is ConeIntegerLiteralType,
@@ -176,10 +177,11 @@ fun <T : ConeKotlinType> T.withArguments(arguments: Array<out ConeTypeProjection
     } as T
 }
 
-inline fun <T : ConeKotlinType> T.withArguments(replacement: (ConeTypeProjection) -> ConeTypeProjection): T {
-    val typeArguments = typeArguments
-    return withArguments(Array(typeArguments.size) { replacement(typeArguments[it]) })
-}
+inline fun <T : ConeKotlinType> T.withArguments(replacement: (ConeTypeProjection) -> ConeTypeProjection): T =
+    if (typeArguments.isEmpty()) this else {
+        val typeArguments = typeArguments
+        withArguments(Array(typeArguments.size) { replacement(typeArguments[it]) })
+    }
 
 @OptIn(DynamicTypeConstructor::class)
 fun <T : ConeKotlinType> T.withAttributes(attributes: ConeAttributes): T {
@@ -201,6 +203,7 @@ fun <T : ConeKotlinType> T.withAttributes(attributes: ConeAttributes): T {
         // TODO: Consider correct application of attributes to ConeIntersectionType
         // Currently, ConeAttributes.union works a bit strange, because it lefts only `other` parts
         is ConeIntersectionType -> this
+        is ConeRefinementType -> ConeRefinementType(underlyingType.withAttributes(attributes), isMarkedNullable, lookupTag)
         // Attributes for stub types are not supported, and it's not obvious if it should
         is ConeStubType -> this
         is ConeIntegerLiteralType -> this
@@ -278,6 +281,16 @@ fun <T : ConeKotlinType> T.withNullability(
                 it.withNullability(false, typeContext, preserveAttributes = preserveAttributes)
             }
         }
+
+        is ConeRefinementType -> ConeRefinementType(
+            underlyingType.withNullability(
+                nullable,
+                typeContext,
+                preserveAttributes = preserveAttributes
+            ),
+            isMarkedNullable,
+            lookupTag
+        )
 
         is ConeStubTypeForTypeVariableInSubtyping -> ConeStubTypeForTypeVariableInSubtyping(constructor, nullable)
         is ConeDefinitelyNotNullType -> when (nullable) {
@@ -616,6 +629,9 @@ internal fun ConeTypeContext.captureFromExpressionInternal(type: ConeKotlinType)
                 is ConeCapturedType -> {
                     type.mapTypesOrNull(this) { captureFromExpressionInternal(it) }
                 }
+                is ConeRefinementType -> {
+                    error("Unhandled refinement type") // TODO: What to do here?
+                }
                 is ConeLookupTagBasedType, is ConeIntersectionType -> {
                     @Suppress("AssignedValueIsNeverRead")
                     capturedArgumentsByComponents = captureArgumentsForIntersectionType(type) ?: return null
@@ -643,6 +659,10 @@ internal fun ConeTypeContext.captureFromExpressionInternal(type: ConeKotlinType)
             intersectTypes(
                 replaceArgumentsWithCapturedArgumentsByIntersectionComponents(type) ?: return null
             ).withNullability(type.canBeNull(session)) as ConeKotlinType
+        }
+        is ConeRefinementType -> {
+            val underlyingType = captureFromExpressionInternal(type.underlyingType) ?: return null
+            ConeRefinementType(underlyingType, type.isMarkedNullable, type.lookupTag)
         }
         is ConeSimpleKotlinType -> {
             captureFromArgumentsInternal(type, CaptureStatus.FROM_EXPRESSION)
@@ -995,6 +1015,7 @@ fun ConeKotlinType.canBeNull(session: FirSession): Boolean {
                     }
         }
         is ConeIntersectionType -> intersectedTypes.all { it.canBeNull(session) }
+        is ConeRefinementType -> underlyingType.canBeNull(session) // TODO: How to account for predicate here?
         is ConeCapturedType -> isMarkedNullable || constructor.supertypes?.all { it.canBeNull(session) } == true
         is ConeErrorType -> nullable != false
         is ConeLookupTagBasedType -> isMarkedNullable || fullyExpandedType(session).isMarkedNullable
