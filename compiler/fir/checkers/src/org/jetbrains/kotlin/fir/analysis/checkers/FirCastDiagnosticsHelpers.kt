@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.fir.analysis.checkers.context.CheckerContext
 import org.jetbrains.kotlin.fir.declarations.utils.isLocal
 import org.jetbrains.kotlin.fir.expressions.*
 import org.jetbrains.kotlin.fir.resolve.defaultType
+import org.jetbrains.kotlin.fir.resolve.fullyExpandedType
 import org.jetbrains.kotlin.fir.resolve.getClassAndItsOuterClassesWhenLocal
 import org.jetbrains.kotlin.fir.resolve.substitution.substitutorByMap
 import org.jetbrains.kotlin.fir.resolve.toRegularClassSymbol
@@ -51,6 +52,9 @@ fun isCastErased(supertype: ConeKotlinType, subtype: ConeKotlinType, context: Ch
     if (isNonReifiedTypeParameter) return true
     // downcasting to a reified type parameter is never erased
     else if (subtype is ConeTypeParameterType) return false
+
+    // TODO: Is it ok to always return false here?
+    if (subtype is ConeRefinementType) return false
 
     val regularClassSymbol = subtype.toRegularClassSymbol(context.session) ?: return true
 

@@ -198,11 +198,11 @@ fun ConeKotlinType.hasCapture(): Boolean = contains { it is ConeCapturedType }
 
 fun ConeRigidType.getConstructor(): TypeConstructorMarker {
     return when (this) {
+        is ConeRefinementType -> this
         is ConeLookupTagBasedType -> this.lookupTag
         is ConeCapturedType -> this.constructor
         is ConeTypeVariableType -> this.typeConstructor
         is ConeIntersectionType -> this
-        is ConeRefinementType -> this
         is ConeStubType -> this.constructor
         is ConeDefinitelyNotNullType -> original.getConstructor()
         is ConeIntegerLiteralType -> this

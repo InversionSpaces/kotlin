@@ -284,6 +284,10 @@ interface ConeTypeContext : TypeSystemContext, TypeSystemOptimizationContext, Ty
         return this is ConeIntersectionType
     }
 
+    override fun TypeConstructorMarker.isRefinement(): Boolean {
+        return this is ConeRefinementType
+    }
+
     override fun TypeConstructorMarker.isClassTypeConstructor(): Boolean {
         // See KT-55383
         return this is ConeClassLikeLookupTag || this is ConeStubTypeConstructor
@@ -401,7 +405,6 @@ interface ConeTypeContext : TypeSystemContext, TypeSystemOptimizationContext, Ty
             is ConeCapturedType -> true
             is ConeTypeVariableType -> false
             is ConeIntersectionType -> false
-            is ConeRefinementType -> false // TODO: is this right?
             is ConeIntegerLiteralType -> true
             is ConeStubType -> true
             is ConeDefinitelyNotNullType -> true

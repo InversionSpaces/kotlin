@@ -34301,6 +34301,17 @@ public class PhasedJvmDiagnosticPsiTestGenerated extends AbstractPhasedJvmDiagno
     }
 
     @Nested
+    @TestMetadata("compiler/testData/diagnostics/tests/refinementTypes")
+    @TestDataPath("$PROJECT_ROOT")
+    public class RefinementTypes {
+      @Test
+      @TestMetadata("asCast.kt")
+      public void testAsCast() {
+        runTest("compiler/testData/diagnostics/tests/refinementTypes/asCast.kt");
+      }
+    }
+
+    @Nested
     @TestMetadata("compiler/testData/diagnostics/tests/regressions")
     @TestDataPath("$PROJECT_ROOT")
     public class Regressions {

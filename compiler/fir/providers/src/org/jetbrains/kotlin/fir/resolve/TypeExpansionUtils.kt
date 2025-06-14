@@ -117,6 +117,12 @@ fun ConeClassLikeType.directExpansionType(
     },
 ): ConeClassLikeType? {
     if (this is ConeErrorType) return null
+    // Do not expand a refinement type - it will be expanded to its defining typealias,
+    // and this would create recursion
+    if (this is ConeRefinementType) {
+        // TODO: But we need to expand underlying type?
+        return null
+    }
     val typeAliasSymbol = lookupTag.toTypeAliasSymbol(useSiteSession) ?: return null
     val typeAlias = typeAliasSymbol.fir
 
@@ -125,11 +131,6 @@ fun ConeClassLikeType.directExpansionType(
         ?.applyAttributesFrom(this)
         ?: return null
 
-    // TODO: Is it okay to special case refinement type here?
-    if (resultType is ConeRefinementType) {
-        val symbol = resultType.lookupTag.toSymbol(useSiteSession)
-        if (symbol == typeAliasSymbol) return null
-    }
     if (resultType.typeArguments.isEmpty()) return resultType
     return mapTypeAliasArguments(typeAlias, this, resultType, useSiteSession) as? ConeClassLikeType
 }
