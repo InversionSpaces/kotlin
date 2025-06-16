@@ -1191,6 +1191,18 @@ public class FirLightTreeOldFrontendDiagnosticsWithoutAliasExpansionTestGenerate
       public void testSmartcastNot() {
         runTest("compiler/testData/diagnostics/tests/refinementTypes/smartcastNot.kt");
       }
+
+      @Test
+      @TestMetadata("smartcastWhen.kt")
+      public void testSmartcastWhen() {
+        runTest("compiler/testData/diagnostics/tests/refinementTypes/smartcastWhen.kt");
+      }
+
+      @Test
+      @TestMetadata("smartcastWhenNot.kt")
+      public void testSmartcastWhenNot() {
+        runTest("compiler/testData/diagnostics/tests/refinementTypes/smartcastWhenNot.kt");
+      }
     }
 
     @Nested
