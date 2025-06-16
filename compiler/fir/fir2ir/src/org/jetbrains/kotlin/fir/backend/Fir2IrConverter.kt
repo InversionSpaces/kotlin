@@ -541,6 +541,7 @@ class Fir2IrConverter(
                 classifierStorage.getCachedTypeAlias(declaration)?.let { irTypeAlias ->
                     // type alias may be local with error suppression, so it might be missing from classifier storage
                     addDeclarationToParentIfNeeded(irTypeAlias)
+                    declaration.expandedConeType
                 }
             }
             is FirCodeFragment -> {
