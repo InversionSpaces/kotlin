@@ -34321,6 +34321,18 @@ public class PhasedJvmDiagnosticLightTreeTestGenerated extends AbstractPhasedJvm
       public void testSmartcastWhenNot() {
         runTest("compiler/testData/diagnostics/tests/refinementTypes/smartcastWhenNot.kt");
       }
+
+      @Test
+      @TestMetadata("subtyping.kt")
+      public void testSubtyping() {
+        runTest("compiler/testData/diagnostics/tests/refinementTypes/subtyping.kt");
+      }
+
+      @Test
+      @TestMetadata("subtypingNegative.kt")
+      public void testSubtypingNegative() {
+        runTest("compiler/testData/diagnostics/tests/refinementTypes/subtypingNegative.kt");
+      }
     }
 
     @Nested
