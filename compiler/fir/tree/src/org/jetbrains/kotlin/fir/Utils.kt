@@ -355,6 +355,12 @@ val FirExpression.isArraySet: Boolean
         return origin == FirFunctionCallOrigin.Operator && name == OperatorNameConventions.SET
     }
 
+val FirTypeAlias.refinementPredicateExpr: FirAnonymousFunctionExpression?
+    get() {
+        val typeRef = (expandedTypeRef as FirResolvedTypeRef).delegatedTypeRef ?: expandedTypeRef
+        return (typeRef as? FirRefinementTypeRef)?.predicate
+    }
+
 val FirExpression.isStatementLikeExpression: Boolean
     get() = when (this) {
         is FirFunctionCall -> origin == FirFunctionCallOrigin.Operator && calleeReference.name in STATEMENT_LIKE_OPERATORS

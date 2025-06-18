@@ -135,6 +135,16 @@ class Fir2IrVisitor(
     override fun visitTypeAlias(typeAlias: FirTypeAlias, data: Any?): IrElement = whileAnalysing(session, typeAlias) {
         val irTypeAlias = classifierStorage.getCachedTypeAlias(typeAlias)!!
         annotationGenerator.generate(irTypeAlias, typeAlias)
+        typeAlias.refinementPredicateExpr?.let {
+            @OptIn(UnsafeDuringIrConstructionAPI::class)
+            val irFunction = declarationStorage.getCachedIrFunctionSymbol(it.anonymousFunction)!!.owner
+
+            conversionScope.withFunction(irFunction) {
+                memberGenerator.convertFunctionContent(
+                    irFunction, it.anonymousFunction, containingClass = conversionScope.containerFirClass()
+                )
+            }
+        }
         return irTypeAlias
     }
 

@@ -546,11 +546,12 @@ class Fir2IrConverter(
                     // type alias may be local with error suppression, so it might be missing from classifier storage
                     addDeclarationToParentIfNeeded(irTypeAlias)
 
-                    val typeRef = (declaration.expandedTypeRef as FirResolvedTypeRef).delegatedTypeRef
-                    (typeRef as? FirRefinementTypeRef)?.let {
-                        val function = it.predicate.anonymousFunction
-                        val irFunction = declarationStorage.createAndCacheIrFunction(function, parent, isLocal = isInLocalClass)
-                        addDeclarationToParentIfNeeded(irFunction)
+                    declaration.refinementPredicateExpr?.let {
+                        val irFunction = declarationStorage.createAndCacheIrFunction(
+                            it.anonymousFunction,
+                            parent,
+                            isLocal = isInLocalClass
+                        )
                         irTypeAlias.refinementPredicate = irFunction.symbol
                     }
                 }
