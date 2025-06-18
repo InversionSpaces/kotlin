@@ -18,6 +18,7 @@ import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.declarations.synthetic.FirSyntheticProperty
 import org.jetbrains.kotlin.fir.declarations.utils.contextParametersForFunctionOrContainingProperty
 import org.jetbrains.kotlin.fir.declarations.utils.isExpect
+import org.jetbrains.kotlin.fir.declarations.utils.isRefinementPredicate
 import org.jetbrains.kotlin.fir.declarations.utils.isStatic
 import org.jetbrains.kotlin.fir.declarations.utils.nameOrSpecialName
 import org.jetbrains.kotlin.fir.declarations.utils.visibility
@@ -306,9 +307,14 @@ class Fir2IrDeclarationStorage(
     fun getCachedIrFunctionSymbol(
         function: FirFunction,
         fakeOverrideOwnerLookupTag: ConeClassLikeLookupTag? = null,
-    ): IrSimpleFunctionSymbol? {
-        return if (function is FirSimpleFunction) getCachedIrFunctionSymbol(function, fakeOverrideOwnerLookupTag)
-        else localStorage.getLocalFunctionSymbol(function)
+    ): IrSimpleFunctionSymbol? = when {
+        function.isRefinementPredicate -> getCachedIrCallableSymbol(
+            function,
+            fakeOverrideOwnerLookupTag,
+            functionCache::get
+        )
+        function is FirSimpleFunction -> getCachedIrFunctionSymbol(function, fakeOverrideOwnerLookupTag)
+        else -> localStorage.getLocalFunctionSymbol(function)
     }
 
     fun getCachedIrFunctionSymbol(
@@ -404,7 +410,8 @@ class Fir2IrDeclarationStorage(
         fakeOverrideOwnerLookupTag: ConeClassLikeLookupTag?,
     ) {
         when {
-            function.visibility == Visibilities.Local || function is FirAnonymousFunction -> {
+            function.visibility == Visibilities.Local ||
+                    (function is FirAnonymousFunction && !function.isRefinementPredicate) -> {
                 localStorage.putLocalFunction(function, irFunctionSymbol)
             }
 

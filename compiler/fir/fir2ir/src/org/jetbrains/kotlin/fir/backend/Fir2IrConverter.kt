@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.KtFakeSourceElementKind
 import org.jetbrains.kotlin.KtPsiSourceFileLinesMapping
 import org.jetbrains.kotlin.KtSourceFileLinesMappingFromLineStartOffsets
 import org.jetbrains.kotlin.backend.common.CommonBackendErrors
+import org.jetbrains.kotlin.backend.common.lower.refinementPredicate
 import org.jetbrains.kotlin.builtins.jvm.JavaToKotlinClassMap
 import org.jetbrains.kotlin.config.JvmAnalysisFlags
 import org.jetbrains.kotlin.config.LanguageFeature
@@ -40,6 +41,9 @@ import org.jetbrains.kotlin.fir.java.javaElementFinder
 import org.jetbrains.kotlin.fir.references.toResolvedValueParameterSymbol
 import org.jetbrains.kotlin.fir.scopes.processAllFunctions
 import org.jetbrains.kotlin.fir.symbols.lazyDeclarationResolver
+import org.jetbrains.kotlin.fir.types.FirRefinementTypeRef
+import org.jetbrains.kotlin.fir.types.FirResolvedTypeRef
+import org.jetbrains.kotlin.fir.types.isUnit
 import org.jetbrains.kotlin.fir.types.resolvedType
 import org.jetbrains.kotlin.ir.IrBuiltIns
 import org.jetbrains.kotlin.ir.KtDiagnosticReporterWithImplicitIrBasedContext
@@ -541,7 +545,14 @@ class Fir2IrConverter(
                 classifierStorage.getCachedTypeAlias(declaration)?.let { irTypeAlias ->
                     // type alias may be local with error suppression, so it might be missing from classifier storage
                     addDeclarationToParentIfNeeded(irTypeAlias)
-                    declaration.expandedConeType
+
+                    val typeRef = (declaration.expandedTypeRef as FirResolvedTypeRef).delegatedTypeRef
+                    (typeRef as? FirRefinementTypeRef)?.let {
+                        val function = it.predicate.anonymousFunction
+                        val irFunction = declarationStorage.createAndCacheIrFunction(function, parent, isLocal = isInLocalClass)
+                        addDeclarationToParentIfNeeded(irFunction)
+                        irTypeAlias.refinementPredicate = irFunction.symbol
+                    }
                 }
             }
             is FirCodeFragment -> {

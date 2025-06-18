@@ -36,6 +36,7 @@ private object ReplSnippetTopLevelDeclaration : FirDeclarationDataKey()
 private object HasBackingFieldKey : FirDeclarationDataKey()
 private object IsDeserializedPropertyFromAnnotation : FirDeclarationDataKey()
 private object IsDelegatedProperty : FirDeclarationDataKey()
+private object IsRefinementPredicate : FirDeclarationDataKey()
 
 var FirProperty.isFromVararg: Boolean? by FirDeclarationDataRegistry.data(IsFromVarargKey)
 var FirProperty.isReferredViaField: Boolean? by FirDeclarationDataRegistry.data(IsReferredViaField)
@@ -79,6 +80,8 @@ var FirProperty.hasBackingFieldAttr: Boolean? by FirDeclarationDataRegistry.data
  */
 @FirImplementationDetail
 var FirProperty.isDelegatedPropertyAttr: Boolean? by FirDeclarationDataRegistry.data(IsDelegatedProperty)
+
+var FirAnonymousFunction.isRefinementPredicateAttr: Boolean? by FirDeclarationDataRegistry.data(IsRefinementPredicate)
 
 /**
  * Whether this property was deserialized from metadata and the containing class is annotation class.
@@ -201,3 +204,6 @@ val FirProperty.correspondingValueParameterFromPrimaryConstructor: FirValueParam
         val reference = initializer.calleeReference as? FirPropertyFromParameterResolvedNamedReference ?: return null
         return reference.resolvedSymbol as? FirValueParameterSymbol
     }
+
+val FirFunction.isRefinementPredicate: Boolean
+    get() = (this as? FirAnonymousFunction)?.isRefinementPredicateAttr == true
