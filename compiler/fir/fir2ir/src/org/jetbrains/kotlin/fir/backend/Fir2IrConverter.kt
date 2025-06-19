@@ -10,7 +10,6 @@ import org.jetbrains.kotlin.KtFakeSourceElementKind
 import org.jetbrains.kotlin.KtPsiSourceFileLinesMapping
 import org.jetbrains.kotlin.KtSourceFileLinesMappingFromLineStartOffsets
 import org.jetbrains.kotlin.backend.common.CommonBackendErrors
-import org.jetbrains.kotlin.backend.common.lower.refinementPredicate
 import org.jetbrains.kotlin.builtins.jvm.JavaToKotlinClassMap
 import org.jetbrains.kotlin.config.JvmAnalysisFlags
 import org.jetbrains.kotlin.config.LanguageFeature
@@ -552,7 +551,6 @@ class Fir2IrConverter(
                             parent,
                             isLocal = isInLocalClass
                         )
-                        irTypeAlias.refinementPredicate = irFunction.symbol
                     }
                 }
             }

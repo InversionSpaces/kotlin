@@ -48,6 +48,7 @@ import org.jetbrains.kotlin.ir.expressions.IrStatementOrigin
 import org.jetbrains.kotlin.ir.expressions.impl.*
 import org.jetbrains.kotlin.ir.expressions.impl.IrBlockImpl
 import org.jetbrains.kotlin.ir.expressions.impl.IrCompositeImpl
+import org.jetbrains.kotlin.ir.expressions.impl.IrConstImpl.Companion.constNull
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrLocalDelegatedPropertySymbol
 import org.jetbrains.kotlin.ir.symbols.IrPropertySymbol
@@ -1705,21 +1706,138 @@ class Fir2IrVisitor(
 
     override fun visitTypeOperatorCall(typeOperatorCall: FirTypeOperatorCall, data: Any?): IrElement {
         return typeOperatorCall.convertWithOffsets { startOffset, endOffset ->
-            val irTypeOperand = typeOperatorCall.conversionTypeRef.toIrType()
-            val (irType, irTypeOperator) = when (typeOperatorCall.operation) {
-                FirOperation.IS -> builtins.booleanType to IrTypeOperator.INSTANCEOF
-                FirOperation.NOT_IS -> builtins.booleanType to IrTypeOperator.NOT_INSTANCEOF
-                FirOperation.AS -> irTypeOperand to IrTypeOperator.CAST
-                FirOperation.SAFE_AS -> irTypeOperand.makeNullable() to IrTypeOperator.SAFE_CAST
-                else -> TODO("Should not be here: ${typeOperatorCall.operation} in type operator call")
+            val irOperatorCallBuilder: (IrExpression) -> IrTypeOperatorCall = run {
+                val irTypeOperand = typeOperatorCall.conversionTypeRef.toIrType()
+                val (irType, irTypeOperator) = when (typeOperatorCall.operation) {
+                    FirOperation.IS -> builtins.booleanType to IrTypeOperator.INSTANCEOF
+                    FirOperation.NOT_IS -> builtins.booleanType to IrTypeOperator.NOT_INSTANCEOF
+                    FirOperation.AS -> irTypeOperand to IrTypeOperator.CAST
+                    FirOperation.SAFE_AS -> irTypeOperand.makeNullable() to IrTypeOperator.SAFE_CAST
+                    else -> TODO("Should not be here: ${typeOperatorCall.operation} in type operator call")
+                }
+
+                { IrTypeOperatorCallImpl(startOffset, endOffset, irType, irTypeOperator, irTypeOperand, it) }
             }
 
-            IrTypeOperatorCallImpl(
-                startOffset, endOffset, irType, irTypeOperator, irTypeOperand,
-                convertToIrExpression(typeOperatorCall.argument)
-            )
+            (typeOperatorCall.conversionTypeRef.coneType as? ConeRefinementType)?.let {
+                generateRefinementCheck(
+                    startOffset,
+                    endOffset,
+                    irOperatorCallBuilder,
+                    typeOperatorCall,
+                    it
+                )
+            } ?: irOperatorCallBuilder(convertToIrExpression(typeOperatorCall.argument))
         }
     }
+
+    private fun generateRefinementCheck(
+        startOffset: Int,
+        endOffset: Int,
+        irOperatorCallBuilder: (IrExpression) -> IrTypeOperatorCall,
+        operatorCall: FirTypeOperatorCall,
+        refinementType: ConeRefinementType,
+    ): IrExpression {
+        val predicate = refinementType.lookupTag
+            .toTypeAliasSymbol(c.session)
+            ?.fir?.refinementPredicateExpr?.anonymousFunction
+            ?: error("refinement type definition not found")
+        val irPredicateSymbol = c.declarationStorage.getCachedIrFunctionSymbol(predicate)!!
+        val irPredicateCall = IrCallImpl(
+            startOffset,
+            endOffset,
+            type = builtins.booleanType,
+            irPredicateSymbol,
+        )
+
+        return when (operatorCall.operation) {
+            FirOperation.IS, FirOperation.NOT_IS -> {
+                val target = convertToIrExpression(operatorCall.argument)
+                val variable = conversionScope.scope().createTemporaryVariable(
+                    target, "refinement_target"
+                )
+
+                fun irGetTarget(): IrGetValue =
+                    IrGetValueImpl(startOffset, endOffset, variable.type, variable.symbol)
+
+                val irOperatorCall = irOperatorCallBuilder(irGetTarget())
+                val irRefinementCheck = irPredicateCall.apply { arguments[0] = irGetTarget() }
+
+                val (irResultExpr, irElseExpr) = when (operatorCall.operation) {
+                    FirOperation.IS -> irRefinementCheck to constFalse(startOffset, endOffset)
+                    FirOperation.NOT_IS -> constTrue(startOffset, endOffset) to irRefinementCheck.boolNegation()
+                    else -> error("Unexpected operation: ${operatorCall.operation}")
+                }
+
+                generateWhen(
+                    startOffset, endOffset,
+                    origin = null,
+                    variable,
+                    listOf(
+                        IrBranchImpl(startOffset, endOffset, irOperatorCall, irResultExpr),
+                        elseBranch(irElseExpr)
+                    ),
+                    builtins.booleanType
+                )
+            }
+            FirOperation.AS, FirOperation.SAFE_AS -> {
+                val target = convertToIrExpression(operatorCall.argument)
+                val irOperatorCall = irOperatorCallBuilder(target)
+                val variable = conversionScope.scope().createTemporaryVariable(
+                    irOperatorCall, "refinement_target"
+                )
+
+                fun irGetTarget(): IrGetValue =
+                    IrGetValueImpl(startOffset, endOffset, variable.type, variable.symbol)
+
+                val irRefinementCheck = irPredicateCall.apply { arguments[0] = irGetTarget() }
+
+                when (operatorCall.operation) {
+                    FirOperation.AS -> {
+                        // TODO: Don't know how to properly throw here, have no access to CCE
+                        val irElseExpr = IrTypeOperatorCallImpl(
+                            startOffset,
+                            endOffset,
+                            type = variable.type,
+                            IrTypeOperator.INSTANCEOF,
+                            builtins.nothingType,
+                            irGetTarget()
+                        )
+                        generateWhen(
+                            startOffset, endOffset,
+                            origin = null,
+                            variable,
+                            listOf(
+                                IrBranchImpl(startOffset, endOffset, irRefinementCheck, irGetTarget()),
+                                elseBranch(irElseExpr)
+                            ),
+                            variable.type
+                        )
+                    }
+                    FirOperation.SAFE_AS -> createSafeCallConstruction(
+                        variable, variable.symbol,
+                        IrWhenImpl(startOffset, endOffset, variable.type).apply {
+                            branches += IrBranchImpl(startOffset, endOffset, irOperatorCall, irGetTarget())
+                            branches += elseBranch(constNull(startOffset, endOffset, variable.type))
+                        }
+                    )
+                    else -> error("Unexpected operation: ${operatorCall.operation}")
+                }
+            }
+            else -> error("Unexpected operation: ${operatorCall.operation}")
+        }
+    }
+
+    fun IrExpression.boolNegation(): IrExpression =
+        IrCallImpl(
+            startOffset,
+            endOffset,
+            builtins.booleanType,
+            builtins.booleanNotSymbol,
+            typeArgumentsCount = 0,
+        ).also {
+            it.arguments[0] = this
+        }
 
     override fun visitEqualityOperatorCall(equalityOperatorCall: FirEqualityOperatorCall, data: Any?): IrElement {
         return whileAnalysing(session, equalityOperatorCall) {

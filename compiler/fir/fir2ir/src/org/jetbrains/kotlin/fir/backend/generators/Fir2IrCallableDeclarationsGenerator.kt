@@ -110,6 +110,9 @@ class Fir2IrCallableDeclarationsGenerator(private val c: Fir2IrComponents) : Fir
             return lazyDeclarationsGenerator.createIrLazyFunction(function, symbol, irParent, updatedOrigin, isSynthetic)
         }
         val name = simpleFunction?.name
+            ?: function.refinementPredicateFor
+                ?.definingSymbol?.name?.identifier
+                ?.let { Name.identifier("$it-predicate") }  // TODO: VERY HACKY
             ?: if (isLambda) SpecialNames.ANONYMOUS else SpecialNames.NO_NAME_PROVIDED
         val visibility = simpleFunction?.visibility ?: Visibilities.Local
         val isSuspend =
