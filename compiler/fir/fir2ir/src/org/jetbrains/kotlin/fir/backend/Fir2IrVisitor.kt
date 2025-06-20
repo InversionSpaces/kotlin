@@ -61,6 +61,7 @@ import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.defaultConstructor
 import org.jetbrains.kotlin.ir.util.defaultValueForType
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.SpecialNames
 import org.jetbrains.kotlin.psi.KtBinaryExpression
@@ -1795,21 +1796,24 @@ class Fir2IrVisitor(
                 when (operatorCall.operation) {
                     FirOperation.AS -> {
                         // TODO: Don't know how to properly throw here, have no access to CCE
-                        val irElseExpr = IrTypeOperatorCallImpl(
-                            startOffset,
-                            endOffset,
-                            type = variable.type,
-                            IrTypeOperator.INSTANCEOF,
-                            builtins.nothingType,
-                            irGetTarget()
-                        )
+                        @OptIn(UnsafeDuringIrConstructionAPI::class)
+                        val ctor = builtins.throwableClass.constructors.first {
+                            it.owner.parameters.singleOrNull()?.type == builtins.stringType.makeNullable()
+                        }
+                        val irCtorCall = IrConstructorCallImpl.fromSymbolOwner(
+                            startOffset, endOffset, builtins.throwableType, ctor
+                        ).apply {
+                            arguments[0] = IrConstImpl.string(
+                                startOffset, endOffset, builtins.stringType, "refinement check failure"
+                            )
+                        }
                         generateWhen(
                             startOffset, endOffset,
                             origin = null,
                             variable,
                             listOf(
                                 IrBranchImpl(startOffset, endOffset, irRefinementCheck, irGetTarget()),
-                                elseBranch(irElseExpr)
+                                elseBranch(IrThrowImpl(startOffset, endOffset, builtins.nothingType, irCtorCall))
                             ),
                             variable.type
                         )
@@ -1817,7 +1821,7 @@ class Fir2IrVisitor(
                     FirOperation.SAFE_AS -> createSafeCallConstruction(
                         variable, variable.symbol,
                         IrWhenImpl(startOffset, endOffset, variable.type).apply {
-                            branches += IrBranchImpl(startOffset, endOffset, irOperatorCall, irGetTarget())
+                            branches += IrBranchImpl(startOffset, endOffset, irRefinementCheck, irGetTarget())
                             branches += elseBranch(constNull(startOffset, endOffset, variable.type))
                         }
                     )
