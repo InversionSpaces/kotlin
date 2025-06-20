@@ -1,5 +1,5 @@
 // FIR_IDENTICAL
-// RUN_PIPELINE_TILL: FRONTEND
+// RUN_PIPELINE_TILL: BACKEND
 // WITH_EXTRA_CHECKERS
 
 typealias Pos = Int satisfies { it > 0 }
