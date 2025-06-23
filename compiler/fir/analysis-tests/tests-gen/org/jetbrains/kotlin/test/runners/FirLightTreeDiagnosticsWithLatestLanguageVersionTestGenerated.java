@@ -6057,6 +6057,64 @@ public class FirLightTreeDiagnosticsWithLatestLanguageVersionTestGenerated exten
     }
 
     @Nested
+    @TestMetadata("compiler/fir/analysis-tests/testData/resolve/refinementTypes")
+    @TestDataPath("$PROJECT_ROOT")
+    public class RefinementTypes {
+      @Test
+      public void testAllFilesPresentInRefinementTypes() {
+        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/fir/analysis-tests/testData/resolve/refinementTypes"), Pattern.compile("^([^.]+)\\.kt(\\.can-freeze-ide)?$"), null, true);
+      }
+
+      @Test
+      @TestMetadata("asCast.kt")
+      public void testAsCast() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/asCast.kt");
+      }
+
+      @Test
+      @TestMetadata("asSafeCast.kt")
+      public void testAsSafeCast() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/asSafeCast.kt");
+      }
+
+      @Test
+      @TestMetadata("smartcast.kt")
+      public void testSmartcast() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/smartcast.kt");
+      }
+
+      @Test
+      @TestMetadata("smartcastNot.kt")
+      public void testSmartcastNot() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/smartcastNot.kt");
+      }
+
+      @Test
+      @TestMetadata("smartcastWhen.kt")
+      public void testSmartcastWhen() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/smartcastWhen.kt");
+      }
+
+      @Test
+      @TestMetadata("smartcastWhenNot.kt")
+      public void testSmartcastWhenNot() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/smartcastWhenNot.kt");
+      }
+
+      @Test
+      @TestMetadata("subtyping.kt")
+      public void testSubtyping() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/subtyping.kt");
+      }
+
+      @Test
+      @TestMetadata("subtypingNegative.kt")
+      public void testSubtypingNegative() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/subtypingNegative.kt");
+      }
+    }
+
+    @Nested
     @TestMetadata("compiler/fir/analysis-tests/testData/resolve/samConstructors")
     @TestDataPath("$PROJECT_ROOT")
     public class SamConstructors {

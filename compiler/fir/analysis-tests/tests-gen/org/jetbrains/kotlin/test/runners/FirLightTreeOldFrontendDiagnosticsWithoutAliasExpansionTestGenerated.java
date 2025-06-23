@@ -1165,59 +1165,6 @@ public class FirLightTreeOldFrontendDiagnosticsWithoutAliasExpansionTestGenerate
     }
 
     @Nested
-    @TestMetadata("compiler/testData/diagnostics/tests/refinementTypes")
-    @TestDataPath("$PROJECT_ROOT")
-    public class RefinementTypes {
-      @Test
-      @TestMetadata("asCast.kt")
-      public void testAsCast() {
-        runTest("compiler/testData/diagnostics/tests/refinementTypes/asCast.kt");
-      }
-
-      @Test
-      @TestMetadata("asSafeCast.kt")
-      public void testAsSafeCast() {
-        runTest("compiler/testData/diagnostics/tests/refinementTypes/asSafeCast.kt");
-      }
-
-      @Test
-      @TestMetadata("smartcast.kt")
-      public void testSmartcast() {
-        runTest("compiler/testData/diagnostics/tests/refinementTypes/smartcast.kt");
-      }
-
-      @Test
-      @TestMetadata("smartcastNot.kt")
-      public void testSmartcastNot() {
-        runTest("compiler/testData/diagnostics/tests/refinementTypes/smartcastNot.kt");
-      }
-
-      @Test
-      @TestMetadata("smartcastWhen.kt")
-      public void testSmartcastWhen() {
-        runTest("compiler/testData/diagnostics/tests/refinementTypes/smartcastWhen.kt");
-      }
-
-      @Test
-      @TestMetadata("smartcastWhenNot.kt")
-      public void testSmartcastWhenNot() {
-        runTest("compiler/testData/diagnostics/tests/refinementTypes/smartcastWhenNot.kt");
-      }
-
-      @Test
-      @TestMetadata("subtyping.kt")
-      public void testSubtyping() {
-        runTest("compiler/testData/diagnostics/tests/refinementTypes/subtyping.kt");
-      }
-
-      @Test
-      @TestMetadata("subtypingNegative.kt")
-      public void testSubtypingNegative() {
-        runTest("compiler/testData/diagnostics/tests/refinementTypes/subtypingNegative.kt");
-      }
-    }
-
-    @Nested
     @TestMetadata("compiler/testData/diagnostics/tests/regressions")
     @TestDataPath("$PROJECT_ROOT")
     public class Regressions {
