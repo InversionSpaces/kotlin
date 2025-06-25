@@ -12,7 +12,6 @@ import org.jetbrains.kotlin.builtins.functions.isSuspendOrKSuspendFunction
 import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.descriptors.EffectiveVisibility
 import org.jetbrains.kotlin.descriptors.Visibilities
-import org.jetbrains.kotlin.descriptors.Visibility
 import org.jetbrains.kotlin.diagnostics.DiagnosticReporter
 import org.jetbrains.kotlin.diagnostics.KtDiagnosticFactory2
 import org.jetbrains.kotlin.diagnostics.reportOn
@@ -49,7 +48,7 @@ object FirInlineDeclarationChecker : FirFunctionChecker(MppCheckerKind.Common) {
             checkParametersInNotInline(declaration)
             return
         }
-        if (context.session.inlineCheckerExtension?.isGenerallyOk(declaration, context, reporter) == false) return
+        if (context.session.inlineCheckerExtension?.isGenerallyOk(declaration) == false) return
         if (declaration !is FirPropertyAccessor && declaration !is FirSimpleFunction) return
 
         checkCallableDeclaration(declaration)
@@ -79,15 +78,10 @@ object FirInlineDeclarationChecker : FirFunctionChecker(MppCheckerKind.Common) {
             }
         }
 
-        private fun shouldReportNonPublicCallFromPublicInline(
-            accessedDeclarationEffectiveVisibility: EffectiveVisibility,
-            declarationVisibility: Visibility,
-        ): Boolean {
-            val isCalledFunPublicOrPublishedApi = accessedDeclarationEffectiveVisibility.publicApi
-            val isInlineFunPublicOrPublishedApi = inlineFunEffectiveVisibility.publicApi
-            return isInlineFunPublicOrPublishedApi &&
-                    !isCalledFunPublicOrPublishedApi &&
-                    declarationVisibility !== Visibilities.Local
+        private fun shouldReportNonPublicCallFromPublicInline(accessedDeclarationEffectiveVisibility: EffectiveVisibility): Boolean {
+            return inlineFunEffectiveVisibility.publicApi &&
+                    !accessedDeclarationEffectiveVisibility.publicApi &&
+                    accessedDeclarationEffectiveVisibility !== EffectiveVisibility.Local
         }
 
         context(context: CheckerContext, reporter: DiagnosticReporter)
@@ -95,13 +89,12 @@ object FirInlineDeclarationChecker : FirFunctionChecker(MppCheckerKind.Common) {
             source: KtSourceElement,
             accessExpression: FirStatement,
             accessedSymbol: FirBasedSymbol<*>,
-            declarationVisibility: Visibility,
         ): AccessedDeclarationVisibilityData {
             val accessedVisibility = accessedDeclarationEffectiveVisibility(accessExpression, accessedSymbol)
             val accessedDataCopyVisibility = accessedSymbol.unwrapDataClassCopyWithPrimaryConstructorOrNull(session)
                 ?.effectiveVisibility
             when {
-                shouldReportNonPublicCallFromPublicInline(accessedVisibility, declarationVisibility) ->
+                shouldReportNonPublicCallFromPublicInline(accessedVisibility) ->
                     reporter.reportOn(
                         source,
                         getNonPublicCallFromPublicInlineFactory(accessExpression, accessedSymbol, source),
@@ -109,9 +102,32 @@ object FirInlineDeclarationChecker : FirFunctionChecker(MppCheckerKind.Common) {
                         inlineFunction.symbol,
                     )
                 accessedDataCopyVisibility != null &&
-                        shouldReportNonPublicCallFromPublicInline(accessedDataCopyVisibility, declarationVisibility) ->
-                    reporter.reportOn(source, FirErrors.NON_PUBLIC_DATA_COPY_CALL_FROM_PUBLIC_INLINE, inlineFunction.symbol)
-                else -> checkPrivateClassMemberAccess(accessedSymbol, source)
+                        shouldReportNonPublicCallFromPublicInline(accessedDataCopyVisibility) ->
+                    reporter.reportOn(
+                        source,
+                        FirErrors.NON_PUBLIC_DATA_COPY_CALL_FROM_PUBLIC_INLINE,
+                        inlineFunction.symbol
+                    )
+                !isEffectivelyPrivateApiFunction && accessedSymbol.isInsidePrivateClass() ->
+                    reporter.reportOn(
+                        source,
+                        FirErrors.PRIVATE_CLASS_MEMBER_FROM_INLINE,
+                        accessedSymbol,
+                        inlineFunction.symbol,
+                    )
+                // We don't need to check inside public inline functions because we already report
+                // NON_PUBLIC_INLINE_CALL_FROM_PUBLIC_INLINE, PROTECTED_CALL_FROM_PUBLIC_INLINE_ERROR and other diagnostics there.
+                // In other cases, accessing less visible declarations in callable references is deprecated by KTLC-283.
+                inlineFunEffectiveVisibility != EffectiveVisibility.Public &&
+                        accessExpression is FirCallableReferenceAccess &&
+                        isLessVisibleThanInlineFunction(accessedVisibility) ->
+                    reporter.reportOn(
+                        source,
+                        FirErrors.CALLABLE_REFERENCE_TO_LESS_VISIBLE_DECLARATION_IN_INLINE,
+                        accessedSymbol,
+                        accessedVisibility,
+                        inlineFunEffectiveVisibility
+                    )
             }
             return AccessedDeclarationVisibilityData(
                 inlineFunEffectiveVisibility.publicApi,
@@ -293,7 +309,6 @@ object FirInlineDeclarationChecker : FirFunctionChecker(MppCheckerKind.Common) {
                 source,
                 accessExpression,
                 calledDeclaration,
-                calledDeclaration.visibility,
             )
 
             if (isInlineFunPublicOrPublishedApi && isCalledFunPublicOrPublishedApi) {
@@ -312,23 +327,6 @@ object FirInlineDeclarationChecker : FirFunctionChecker(MppCheckerKind.Common) {
                     else -> FirErrors.PROTECTED_CALL_FROM_PUBLIC_INLINE_ERROR
                 }
                 reporter.reportOn(source, factory, inlineFunction.symbol, calledDeclaration)
-            }
-        }
-
-        context(context: CheckerContext, reporter: DiagnosticReporter)
-        private fun checkPrivateClassMemberAccess(
-            calledDeclaration: FirBasedSymbol<*>,
-            source: KtSourceElement,
-        ) {
-            if (!isEffectivelyPrivateApiFunction) {
-                if (calledDeclaration.isInsidePrivateClass()) {
-                    reporter.reportOn(
-                        source,
-                        FirErrors.PRIVATE_CLASS_MEMBER_FROM_INLINE,
-                        calledDeclaration,
-                        inlineFunction.symbol,
-                    )
-                }
             }
         }
 
@@ -405,7 +403,7 @@ object FirInlineDeclarationChecker : FirFunctionChecker(MppCheckerKind.Common) {
         overriddenSymbols: List<FirCallableSymbol<FirCallableDeclaration>>,
     ) {
         for (param in function.valueParameters) {
-            val coneType = param.returnTypeRef.coneType.fullyExpandedType(context.session)
+            val coneType = param.returnTypeRef.coneType.fullyExpandedType()
             val functionKind = coneType.functionTypeKind(context.session)
             val isFunctionalType = functionKind != null
             val isSuspendFunctionType = functionKind?.isSuspendOrKSuspendFunction == true
@@ -418,7 +416,7 @@ object FirInlineDeclarationChecker : FirFunctionChecker(MppCheckerKind.Common) {
             if (param.isNoinline) continue
 
             if (function.isSuspend && defaultValue != null && isSuspendFunctionType) {
-                context.session.inlineCheckerExtension?.checkSuspendFunctionalParameterWithDefaultValue(param, context, reporter)
+                context.session.inlineCheckerExtension?.checkSuspendFunctionalParameterWithDefaultValue(param)
             }
 
             if (isSuspendFunctionType && !param.isCrossinline && !function.isSuspend) {
@@ -453,7 +451,7 @@ object FirInlineDeclarationChecker : FirFunctionChecker(MppCheckerKind.Common) {
 
         //check for inherited default values
         context.session.inlineCheckerExtension?.checkFunctionalParametersWithInheritedDefaultValues(
-            function, context, reporter, overriddenSymbols
+            function, overriddenSymbols
         )
     }
 
@@ -506,7 +504,7 @@ object FirInlineDeclarationChecker : FirFunctionChecker(MppCheckerKind.Common) {
     context(context: CheckerContext, reporter: DiagnosticReporter)
     fun checkCallableDeclaration(declaration: FirCallableDeclaration) {
         if (declaration is FirPropertyAccessor) return
-        val directOverriddenSymbols = declaration.symbol.directOverriddenSymbolsSafe(context)
+        val directOverriddenSymbols = declaration.symbol.directOverriddenSymbolsSafe()
         if (declaration is FirSimpleFunction) {
             checkParameters(declaration, directOverriddenSymbols)
             checkNothingToInline(declaration)

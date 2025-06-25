@@ -32,7 +32,6 @@ class BuiltinIdSignatures(
 
 class SpecialITableTypes(
     val wasmAnyArrayType: WasmSymbol<WasmArrayDeclaration> = WasmSymbol<WasmArrayDeclaration>(),
-    val wasmFuncArrayType: WasmSymbol<WasmArrayDeclaration> = WasmSymbol<WasmArrayDeclaration>(),
     val specialSlotITableType: WasmSymbol<WasmStructDeclaration> = WasmSymbol<WasmStructDeclaration>(),
 )
 
@@ -238,6 +237,7 @@ class WasmCompiledModuleFragment(
                 WasmStructFieldDeclaration("simpleNameLength", WasmI32, false),
                 WasmStructFieldDeclaration("simpleNamePoolId", WasmI32, false),
                 WasmStructFieldDeclaration("klassId", WasmI64, false),
+                WasmStructFieldDeclaration("typeInfoFlag", WasmI32, false),
             ),
             superType = null,
             isFinal = true
@@ -274,16 +274,6 @@ class WasmCompiledModuleFragment(
         )
         syntheticTypes.add(wasmAnyArrayType)
 
-        val wasmFuncArrayType = WasmArrayDeclaration(
-            name = "FuncArray",
-            field = WasmStructFieldDeclaration(
-                name = "",
-                type = WasmRefNullType(WasmHeapType.Simple.Func),
-                isMutable = false
-            )
-        )
-        syntheticTypes.add(wasmFuncArrayType)
-
         val specialSlotITableTypeSlots = mutableListOf<WasmStructFieldDeclaration>()
         val wasmAnyRefStructField = WasmStructFieldDeclaration("", WasmAnyRef, false)
         repeat(WasmBackendContext.SPECIAL_INTERFACE_TABLE_SIZE) {
@@ -292,7 +282,7 @@ class WasmCompiledModuleFragment(
         specialSlotITableTypeSlots.add(
             WasmStructFieldDeclaration(
                 name = "",
-                type = WasmRefNullType(WasmHeapType.Type(WasmSymbol(wasmFuncArrayType))),
+                type = WasmRefNullType(WasmHeapType.Type(WasmSymbol(wasmAnyArrayType))),
                 isMutable = false
             )
         )
@@ -307,7 +297,6 @@ class WasmCompiledModuleFragment(
         wasmCompiledFileFragments.forEach { fragment ->
             fragment.specialITableTypes?.let { specialITableTypes ->
                 specialITableTypes.wasmAnyArrayType.bind(wasmAnyArrayType)
-                specialITableTypes.wasmFuncArrayType.bind(wasmFuncArrayType)
                 specialITableTypes.specialSlotITableType.bind(specialSlotITableType)
             }
         }

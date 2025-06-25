@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.konan.test.blackbox.*
 import org.jetbrains.kotlin.konan.test.blackbox.support.ClassLevelProperty
 import org.jetbrains.kotlin.konan.test.blackbox.support.EnforcedHostTarget
 import org.jetbrains.kotlin.konan.test.blackbox.support.EnforcedProperty
+import org.jetbrains.kotlin.konan.test.blackbox.support.KLIB_IR_INLINER
 import org.jetbrains.kotlin.konan.test.blackbox.support.group.*
 import org.jetbrains.kotlin.test.TargetBackend
 import org.junit.jupiter.api.Tag
@@ -128,14 +129,6 @@ fun main() {
         testGroup("native/native.tests/tests-gen", "compiler/testData/klib/partial-linkage") {
             testClass<AbstractNativePartialLinkageTest>(
                 suiteTestClassName = "NativePartialLinkageTestGenerated",
-                annotations = listOf(
-                    *frontendClassic(),
-                )
-            ) {
-                model(pattern = "^([^_](.+))$", recursive = false)
-            }
-            testClass<AbstractNativePartialLinkageTest>(
-                suiteTestClassName = "FirNativePartialLinkageTestGenerated",
             ) {
                 model(pattern = "^([^_](.+))$", recursive = false)
             }
@@ -145,14 +138,6 @@ fun main() {
         testGroup("native/native.tests/klib-compatibility/tests-gen", "compiler/testData/klib/versionCompatibility") {
             testClass<AbstractNativeKlibCompatibilityTest>(
                 suiteTestClassName = "NativeKlibCompatibilityTestGenerated",
-                annotations = listOf(
-                    *frontendClassic(),
-                )
-            ) {
-                model(pattern = "^([^_](.+))$", recursive = false)
-            }
-            testClass<AbstractNativeKlibCompatibilityTest>(
-                suiteTestClassName = "FirNativeKlibCompatibilityTestGenerated",
             ) {
                 model(pattern = "^([^_](.+))$", recursive = false)
             }
@@ -261,6 +246,12 @@ fun main() {
             testClass<AbstractNativeCodegenBoxTest>(
                 suiteTestClassName = "AtomicfuNativeFirTestGenerated",
                 annotations = listOf(*atomicfuNative(), provider<UseExtTestCaseGroupProvider>())
+            ) {
+                model(targetBackend = TargetBackend.NATIVE)
+            }
+            testClass<AbstractNativeCodegenBoxTest>(
+                suiteTestClassName = "AtomicfuNativeFirTestWithInlinedFunInKlibGenerated",
+                annotations = listOf(klibIrInliner(), *atomicfuNative(), provider<UseExtTestCaseGroupProvider>())
             ) {
                 model(targetBackend = TargetBackend.NATIVE)
             }
@@ -574,3 +565,4 @@ private fun stress() = arrayOf(
     )
 )
 private fun codegenBox() = annotation(Tag::class.java, "codegen-box")
+private fun klibIrInliner() = annotation(Tag::class.java, KLIB_IR_INLINER)

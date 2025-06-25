@@ -10,8 +10,8 @@ pluginManagement {
             }
         }
         maven { url "https://redirector.kotlinlang.org/maven/kotlin-dependencies" }
-        google()
-        mavenCentral()
+        google { url "https://cache-redirector.jetbrains.com/dl.google.com/dl/android/maven2" }
+        mavenCentral { url "https://cache-redirector.jetbrains.com/maven-central" }
         gradlePluginPortal()
     }
 
@@ -106,7 +106,11 @@ include ":benchmarks",
         ":compiler:resolution.common.jvm",
         ":compiler:resolution",
         ":compiler:serialization",
-        ":compiler:psi",
+        ":compiler:psi:psi-api",
+        ":compiler:psi:psi-impl",
+        ":compiler:psi:psi-utils",
+        ":compiler:psi:psi-frontend-utils",
+        ":compiler:psi:parser",
         ":compiler:multiplatform-parsing",
         ":compiler:frontend",
         ":compiler:frontend.common",
@@ -204,7 +208,14 @@ include ":benchmarks",
         ":compiler:compiler.version",
         ":dependencies:android-sdk",
         ":dependencies:tools-jar-api",
-        ":dependencies:intellij-core"
+        ":dependencies:intellij-core",
+        ":dependencies:bootstrap:kotlin-stdlib-bootstrap",
+        ":dependencies:bootstrap:kotlin-build-tools-api-bootstrap",
+        ":dependencies:bootstrap:kotlin-build-tools-impl-bootstrap",
+        ":dependencies:bootstrap:kotlin-script-runtime-bootstrap",
+        ":dependencies:bootstrap:kotlin-daemon-client-bootstrap",
+        ":dependencies:bootstrap:kotlin-reflect-bootstrap",
+        ":dependencies:bootstrap:kotlin-compiler-embeddable-bootstrap"
 
 include ":kotlin-allopen-compiler-plugin",
         ":kotlin-allopen-compiler-plugin.embeddable",
@@ -267,6 +278,7 @@ include ":kotlin-script-runtime",
         ":tools:kotlinp",
         ":tools:kotlinp-jvm",
         ":tools:kotlinp-klib",
+        ":tools:stats-analyser",
         ":kotlin-build-tools-enum-compat",
         ":kotlin-gradle-compiler-types",
         ":kotlin-gradle-plugin-api",
@@ -282,6 +294,7 @@ include ":kotlin-script-runtime",
         ":kotlin-gradle-statistics",
         ":kotlin-gradle-build-metrics",
         ":kotlin-gradle-plugin",
+        ":gradle:kotlin-gradle-ecosystem-plugin",
         ":kotlin-gradle-plugin-tcs-android",
         ":kotlin-gradle-plugin-model",
         ":kotlin-gradle-plugin-test-utils-embeddable",
@@ -736,6 +749,7 @@ if (!buildProperties.inJpsBuildIdeaSync) {
             ":native:native.tests",
             ':native:native.tests:codegen-box',
             ":native:native.tests:driver",
+            ":native:native.tests:gc-fuzzing-tests",
             ":native:native.tests:stress",
             ":native:native.tests:klib-ir-inliner",
             ":native:native.tests:klib-compatibility",
@@ -865,6 +879,7 @@ project(':kotlin-assignment-compiler-plugin.embeddable').projectDir = "$rootDir/
 project(':tools:kotlinp').projectDir = "$rootDir/libraries/tools/kotlinp" as File
 project(':tools:kotlinp-jvm').projectDir = "$rootDir/libraries/tools/kotlinp/jvm" as File
 project(':tools:kotlinp-klib').projectDir = "$rootDir/libraries/tools/kotlinp/klib" as File
+project(':tools:stats-analyser').projectDir = "$rootDir/libraries/tools/stats-analyser" as File
 project(":kotlin-build-tools-enum-compat").projectDir = "$rootDir/libraries/tools/kotlin-build-tools-enum-compat" as File
 project(':kotlin-gradle-compiler-types').projectDir = "$rootDir/libraries/tools/kotlin-gradle-compiler-types" as File
 project(':kotlin-gradle-plugin-api').projectDir = "$rootDir/libraries/tools/kotlin-gradle-plugin-api" as File
@@ -877,6 +892,7 @@ project(':kotlin-gradle-plugin-npm-versions-codegen').projectDir = "$rootDir/lib
 project(':kotlin-gradle-statistics').projectDir = "$rootDir/libraries/tools/kotlin-gradle-statistics" as File
 project(':kotlin-gradle-build-metrics').projectDir = "$rootDir/libraries/tools/kotlin-gradle-build-metrics" as File
 project(':kotlin-gradle-plugin').projectDir = "$rootDir/libraries/tools/kotlin-gradle-plugin" as File
+project(":gradle:kotlin-gradle-ecosystem-plugin").projectDir = "$rootDir/libraries/tools/gradle/kotlin-gradle-ecosystem-plugin" as File
 project(':kotlin-gradle-plugin-tcs-android').projectDir = "$rootDir/libraries/tools/kotlin-gradle-plugin-tcs-android" as File
 project(':kotlin-gradle-plugin-model').projectDir = "$rootDir/libraries/tools/kotlin-gradle-plugin-model" as File
 project(':kotlin-gradle-plugin-test-utils-embeddable').projectDir = "$rootDir/libraries/tools/kotlin-gradle-plugin-test-utils-embeddable" as File

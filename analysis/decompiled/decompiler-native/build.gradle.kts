@@ -17,7 +17,7 @@ projectTest {
 
 dependencies {
     api(project(":core:deserialization"))
-    api(project(":compiler:psi"))
+    api(project(":compiler:psi:psi-api"))
     api(project(":compiler:frontend.java"))
     api(project(":analysis:decompiled:decompiler-to-file-stubs"))
     api(project(":analysis:decompiled:decompiler-to-psi"))
@@ -35,5 +35,7 @@ dependencies {
     testImplementation(projectTests(":compiler:tests-common-new"))
     testImplementation(projectTests(":analysis:decompiled:decompiler-to-file-stubs"))
 }
+
+optInToK1Deprecation()
 
 testsJar()

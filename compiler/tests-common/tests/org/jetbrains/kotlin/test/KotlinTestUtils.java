@@ -87,6 +87,7 @@ public class KotlinTestUtils {
     }
 
     @NotNull
+    @SuppressWarnings("deprecation")
     public static AnalysisResult analyzeFile(@NotNull KtFile file, @NotNull KotlinCoreEnvironment environment) {
         return JvmResolveUtil.analyze(file, environment);
     }
@@ -211,6 +212,7 @@ public class KotlinTestUtils {
         return configuration;
     }
 
+    @SuppressWarnings("deprecation")
     public static void resolveAllKotlinFiles(KotlinCoreEnvironment environment) throws IOException {
         List<KotlinSourceRoot> roots = ContentRootsKt.getKotlinSourceRoots(environment.getConfiguration());
         if (roots.isEmpty()) return;
@@ -246,6 +248,26 @@ public class KotlinTestUtils {
 
     public static void assertEqualsToFile(@NotNull File expectedFile, @NotNull String actual, @NotNull Function1<String, String> sanitizer) {
         assertEqualsToFile(ACTUAL_DATA_DIFFERS_FROM_FILE_CONTENT, expectedFile, actual, sanitizer);
+    }
+
+    public static void assertValueAgnosticEqualsToFile(File expectedFile, @NotNull String actual) {
+        ValueAgnosticSanitizer sanitizer = new ValueAgnosticSanitizer(actual);
+
+        String expectedText = tryLoadExpectedFile(expectedFile, sanitizer::generateExpectedText);
+        String expectedSanitizedText = applyDefaultAndCustomSanitizer(expectedText, s -> s);
+
+        String sanitizedActualBasedOnExpectPlaceholders =
+                applyDefaultAndCustomSanitizer(
+                        sanitizer.generateSanitizedActualTextBasedOnExpectPlaceholders(expectedSanitizedText), s -> s);
+
+        KotlinTestUtils.FileComparisonResult comparisonResult = new KotlinTestUtils.FileComparisonResult(
+                expectedFile,
+                expectedText,
+                expectedSanitizedText,
+                sanitizedActualBasedOnExpectPlaceholders
+        );
+
+        failIfNotEqual(ACTUAL_DATA_DIFFERS_FROM_FILE_CONTENT, comparisonResult);
     }
 
     public static FileComparisonResult compareExpectFileWithActualText(@NotNull File expectedFile, @NotNull String actual, @NotNull Function1<String, String> sanitizer) {

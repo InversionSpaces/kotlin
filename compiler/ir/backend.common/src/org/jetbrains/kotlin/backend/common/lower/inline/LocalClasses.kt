@@ -57,7 +57,6 @@ class LocalClassesInInlineLambdasLowering(val context: LoweringContext) : BodyLo
                 for (index in expression.arguments.indices) {
                     val argument = expression.arguments[index]
                     val inlineLambda = when (argument) {
-                       is IrFunctionExpression -> argument.function
                        is IrRichPropertyReference -> argument.getterFunction
                        is IrRichFunctionReference -> argument.invokeFunction
                        else -> null
@@ -82,10 +81,6 @@ class LocalClassesInInlineLambdasLowering(val context: LoweringContext) : BodyLo
                             declaration.transformChildren(transformer, declaration)
 
                             localClasses.add(declaration)
-                        }
-
-                        override fun visitFunctionExpression(expression: IrFunctionExpression) {
-                            expression.function.acceptChildrenVoid(this)
                         }
 
                         override fun visitRichFunctionReference(expression: IrRichFunctionReference) {
@@ -154,9 +149,8 @@ class LocalClassesInInlineLambdasLowering(val context: LoweringContext) : BodyLo
                     // Lambdas cannot introduce new type parameters to the scope, which means that all the captured type parameters
                     // are also present in the inline lambda's parent declaration,
                     // which we will extract the local class to.
-                    remapTypesInExtractedLocalDeclarations = false,
-                )
-                    .lower(irBlock, container, data, localClasses, adaptedFunctions)
+                    remapCapturedTypesInExtractedLocalDeclarations = false,
+                ).lower(irBlock, container, data, localClasses, adaptedFunctions)
                 irBlock.statements.addAll(0, localClasses)
 
                 for (lambda in inlineLambdas) {

@@ -17,9 +17,10 @@ fun Test(enabled: Boolean, content: @Composable () -> Unit = {
 // ------------------------------------------
 
 @Composable
+@FunctionKeyMeta(key = -816382559, startOffset = 93, endOffset = 273)
 fun Test(enabled: Boolean, content: Function2<Composer, Int, Unit>?, %composer: Composer?, %changed: Int, %default: Int) {
   %composer = %composer.startRestartGroup(<>)
-  sourceInformation(%composer, "C(Test)P(1)<{>,<Wrap(c...>:Test.kt")
+  sourceInformation(%composer, "C(Test)N(enabled,content)<{>,<Wrap(c...>:Test.kt")
   val %dirty = %changed
   if (%changed and 0b0110 == 0) {
     %dirty = %dirty or if (%composer.changed(enabled)) 0b0100 else 0b0010

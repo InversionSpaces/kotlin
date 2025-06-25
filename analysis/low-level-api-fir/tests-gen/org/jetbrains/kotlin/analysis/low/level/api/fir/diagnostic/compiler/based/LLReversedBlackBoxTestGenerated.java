@@ -6403,6 +6403,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
     }
 
     @Test
+    @TestMetadata("asToNothing.kt")
+    public void testAsToNothing() {
+      runTest("compiler/testData/codegen/box/casts/asToNothing.kt");
+    }
+
+    @Test
     @TestMetadata("asUnit.kt")
     public void testAsUnit() {
       runTest("compiler/testData/codegen/box/casts/asUnit.kt");
@@ -6622,6 +6628,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
     @TestMetadata("unitNullableCast.kt")
     public void testUnitNullableCast() {
       runTest("compiler/testData/codegen/box/casts/unitNullableCast.kt");
+    }
+
+    @Test
+    @TestMetadata("wasmCastMessages.kt")
+    public void testWasmCastMessages() {
+      runTest("compiler/testData/codegen/box/casts/wasmCastMessages.kt");
     }
 
     @Nested
@@ -8695,6 +8707,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
       @TestMetadata("capturedVarsOfSize2.kt")
       public void testCapturedVarsOfSize2() {
         runTest("compiler/testData/codegen/box/closures/capturedVarsOptimization/capturedVarsOfSize2.kt");
+      }
+
+      @Test
+      @TestMetadata("closureBoxedVarOptimizations.kt")
+      public void testClosureBoxedVarOptimizations() {
+        runTest("compiler/testData/codegen/box/closures/capturedVarsOptimization/closureBoxedVarOptimizations.kt", TransformersFunctions.getReplaceOptionalJvmInlineAnnotationWithUniversal());
       }
 
       @Test
@@ -13822,6 +13840,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
       }
 
       @Test
+      @TestMetadata("nextLineNumber.kt")
+      public void testNextLineNumber() {
+        runTest("compiler/testData/codegen/box/coroutines/debug/nextLineNumber.kt");
+      }
+
+      @Test
       @TestMetadata("runtimeDebugMetadata.kt")
       public void testRuntimeDebugMetadata() {
         runTest("compiler/testData/codegen/box/coroutines/debug/runtimeDebugMetadata.kt");
@@ -17149,6 +17173,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
     }
 
     @Test
+    @TestMetadata("kt59326.kt")
+    public void testKt59326() {
+      runTest("compiler/testData/codegen/box/defaultArguments/kt59326.kt");
+    }
+
+    @Test
     @TestMetadata("kt6382.kt")
     public void testKt6382() {
       runTest("compiler/testData/codegen/box/defaultArguments/kt6382.kt");
@@ -18469,6 +18499,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
       @TestMetadata("kt23117.kt")
       public void testKt23117() {
         runTest("compiler/testData/codegen/box/delegatedProperty/local/kt23117.kt");
+      }
+
+      @Test
+      @TestMetadata("kt78073.kt")
+      public void testKt78073() {
+        runTest("compiler/testData/codegen/box/delegatedProperty/local/kt78073.kt");
       }
 
       @Test
@@ -23327,6 +23363,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
     }
 
     @Test
+    @TestMetadata("kt77685.kt")
+    public void testKt77685() {
+      runTest("compiler/testData/codegen/box/funInterface/kt77685.kt");
+    }
+
+    @Test
     @TestMetadata("multimodule.kt")
     public void testMultimodule() {
       runTest("compiler/testData/codegen/box/funInterface/multimodule.kt");
@@ -24978,6 +25020,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
     @TestMetadata("capturedStarProjection.kt")
     public void testCapturedStarProjection() {
       runTest("compiler/testData/codegen/box/inference/capturedStarProjection.kt");
+    }
+
+    @Test
+    @TestMetadata("capturedTypeAsLambdaInputType.kt")
+    public void testCapturedTypeAsLambdaInputType() {
+      runTest("compiler/testData/codegen/box/inference/capturedTypeAsLambdaInputType.kt");
     }
 
     @Test
@@ -37414,12 +37462,6 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
       }
 
       @Test
-      @TestMetadata("nonLocalReturn.kt")
-      public void testNonLocalReturn() {
-        runTest("compiler/testData/codegen/box/js/inlinedReturnBreakContinue/nonLocalReturn.kt");
-      }
-
-      @Test
       @TestMetadata("simple.kt")
       public void testSimple() {
         runTest("compiler/testData/codegen/box/js/inlinedReturnBreakContinue/simple.kt");
@@ -39178,6 +39220,18 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
     @TestMetadata("inline.kt")
     public void testInline() {
       runTest("compiler/testData/codegen/box/jvmStatic/inline.kt");
+    }
+
+    @Test
+    @TestMetadata("inlinePrivateStatic1.kt")
+    public void testInlinePrivateStatic1() {
+      runTest("compiler/testData/codegen/box/jvmStatic/inlinePrivateStatic1.kt");
+    }
+
+    @Test
+    @TestMetadata("inlinePrivateStatic2.kt")
+    public void testInlinePrivateStatic2() {
+      runTest("compiler/testData/codegen/box/jvmStatic/inlinePrivateStatic2.kt");
     }
 
     @Test
@@ -53650,6 +53704,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
       }
 
       @Test
+      @TestMetadata("deprecatedDefaultType.kt")
+      public void testDeprecatedDefaultType() {
+        runTest("compiler/testData/codegen/box/reflection/classes/deprecatedDefaultType.kt");
+      }
+
+      @Test
       @TestMetadata("javaVoid.kt")
       public void testJavaVoid() {
         runTest("compiler/testData/codegen/box/reflection/classes/javaVoid.kt");
@@ -53761,6 +53821,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
       @TestMetadata("starProjectedType.kt")
       public void testStarProjectedType() {
         runTest("compiler/testData/codegen/box/reflection/classes/starProjectedType.kt");
+      }
+
+      @Test
+      @TestMetadata("toStringWasm.kt")
+      public void testToStringWasm() {
+        runTest("compiler/testData/codegen/box/reflection/classes/toStringWasm.kt");
       }
     }
 
@@ -55862,6 +55928,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
       }
 
       @Test
+      @TestMetadata("flexibleTypesSubstitution.kt")
+      public void testFlexibleTypesSubstitution() {
+        runTest("compiler/testData/codegen/box/reflection/supertypes/flexibleTypesSubstitution.kt");
+      }
+
+      @Test
       @TestMetadata("genericSubstitution.kt")
       public void testGenericSubstitution() {
         runTest("compiler/testData/codegen/box/reflection/supertypes/genericSubstitution.kt");
@@ -55871,6 +55943,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
       @TestMetadata("isSubclassOfIsSuperclassOf.kt")
       public void testIsSubclassOfIsSuperclassOf() {
         runTest("compiler/testData/codegen/box/reflection/supertypes/isSubclassOfIsSuperclassOf.kt");
+      }
+
+      @Test
+      @TestMetadata("nullablilitySubstitution.kt")
+      public void testNullablilitySubstitution() {
+        runTest("compiler/testData/codegen/box/reflection/supertypes/nullablilitySubstitution.kt");
       }
 
       @Test
@@ -55933,6 +56011,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
       @TestMetadata("classes.kt")
       public void testClasses() {
         runTest("compiler/testData/codegen/box/reflection/typeOf/classes.kt");
+      }
+
+      @Test
+      @TestMetadata("definitelyNotNullType.kt")
+      public void testDefinitelyNotNullType() {
+        runTest("compiler/testData/codegen/box/reflection/typeOf/definitelyNotNullType.kt");
       }
 
       @Test
@@ -56017,6 +56101,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
       @TestMetadata("reifiedAsNestedArgument.kt")
       public void testReifiedAsNestedArgument() {
         runTest("compiler/testData/codegen/box/reflection/typeOf/reifiedAsNestedArgument.kt");
+      }
+
+      @Test
+      @TestMetadata("typeAliasedType.kt")
+      public void testTypeAliasedType() {
+        runTest("compiler/testData/codegen/box/reflection/typeOf/typeAliasedType.kt");
       }
 
       @Test
@@ -56449,6 +56539,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
       @TestMetadata("platformTypeToString.kt")
       public void testPlatformTypeToString() {
         runTest("compiler/testData/codegen/box/reflection/types/platformTypeToString.kt");
+      }
+
+      @Test
+      @TestMetadata("typeAliasedType.kt")
+      public void testTypeAliasedType() {
+        runTest("compiler/testData/codegen/box/reflection/types/typeAliasedType.kt");
       }
 
       @Test
@@ -57513,6 +57609,46 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
       @TestMetadata("jaggedDeep.kt")
       public void testJaggedDeep() {
         runTest("compiler/testData/codegen/box/reified/arraysReification/jaggedDeep.kt");
+      }
+    }
+
+    @Nested
+    @TestMetadata("compiler/testData/codegen/box/reified/catchParameter")
+    @TestDataPath("$PROJECT_ROOT")
+    public class CatchParameter {
+      @Test
+      public void testAllFilesPresentInCatchParameter() {
+        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/box/reified/catchParameter"), Pattern.compile("^(.+)\\.kt$"), null, true);
+      }
+
+      @Test
+      @TestMetadata("nestedReifiedCatch.kt")
+      public void testNestedReifiedCatch() {
+        runTest("compiler/testData/codegen/box/reified/catchParameter/nestedReifiedCatch.kt");
+      }
+
+      @Test
+      @TestMetadata("nullableExceptionType.kt")
+      public void testNullableExceptionType() {
+        runTest("compiler/testData/codegen/box/reified/catchParameter/nullableExceptionType.kt");
+      }
+
+      @Test
+      @TestMetadata("nullableNothing.kt")
+      public void testNullableNothing() {
+        runTest("compiler/testData/codegen/box/reified/catchParameter/nullableNothing.kt");
+      }
+
+      @Test
+      @TestMetadata("reificationClash.kt")
+      public void testReificationClash() {
+        runTest("compiler/testData/codegen/box/reified/catchParameter/reificationClash.kt");
+      }
+
+      @Test
+      @TestMetadata("tryCatchReifiedType.kt")
+      public void testTryCatchReifiedType() {
+        runTest("compiler/testData/codegen/box/reified/catchParameter/tryCatchReifiedType.kt");
       }
     }
   }
@@ -60573,6 +60709,112 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
     }
 
     @Nested
+    @TestMetadata("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues")
+    @TestDataPath("$PROJECT_ROOT")
+    public class FunctionsWithDefaultValues {
+      @Test
+      public void testAllFilesPresentInFunctionsWithDefaultValues() {
+        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues"), Pattern.compile("^(.+)\\.kt$"), null, true);
+      }
+
+      @Test
+      @TestMetadata("extensionFunction.kt")
+      public void testExtensionFunction() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/extensionFunction.kt");
+      }
+
+      @Test
+      @TestMetadata("extensionFunctionCrossModuleCase.kt")
+      public void testExtensionFunctionCrossModuleCase() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/extensionFunctionCrossModuleCase.kt");
+      }
+
+      @Test
+      @TestMetadata("extensionFunctionCrossModuleTransitiveCase.kt")
+      public void testExtensionFunctionCrossModuleTransitiveCase() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/extensionFunctionCrossModuleTransitiveCase.kt");
+      }
+
+      @Test
+      @TestMetadata("extensionFunctionTransitiveCase.kt")
+      public void testExtensionFunctionTransitiveCase() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/extensionFunctionTransitiveCase.kt");
+      }
+
+      @Test
+      @TestMetadata("memberFunction.kt")
+      public void testMemberFunction() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/memberFunction.kt");
+      }
+
+      @Test
+      @TestMetadata("memberFunctionCrossModuleCase.kt")
+      public void testMemberFunctionCrossModuleCase() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/memberFunctionCrossModuleCase.kt");
+      }
+
+      @Test
+      @TestMetadata("memberFunctionCrossModuleTransitiveCase.kt")
+      public void testMemberFunctionCrossModuleTransitiveCase() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/memberFunctionCrossModuleTransitiveCase.kt");
+      }
+
+      @Test
+      @TestMetadata("memberFunctionTransitiveCase.kt")
+      public void testMemberFunctionTransitiveCase() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/memberFunctionTransitiveCase.kt");
+      }
+
+      @Test
+      @TestMetadata("severalDefaultValues.kt")
+      public void testSeveralDefaultValues() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/severalDefaultValues.kt");
+      }
+
+      @Test
+      @TestMetadata("severalDefaultValuesCrossModuleCase.kt")
+      public void testSeveralDefaultValuesCrossModuleCase() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/severalDefaultValuesCrossModuleCase.kt");
+      }
+
+      @Test
+      @TestMetadata("severalDefaultValuesCrossModuleTransitiveCase.kt")
+      public void testSeveralDefaultValuesCrossModuleTransitiveCase() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/severalDefaultValuesCrossModuleTransitiveCase.kt");
+      }
+
+      @Test
+      @TestMetadata("severalDefaultValuesTransitiveCase.kt")
+      public void testSeveralDefaultValuesTransitiveCase() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/severalDefaultValuesTransitiveCase.kt");
+      }
+
+      @Test
+      @TestMetadata("topLevelFunction.kt")
+      public void testTopLevelFunction() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/topLevelFunction.kt");
+      }
+
+      @Test
+      @TestMetadata("topLevelFunctionCrossModuleCase.kt")
+      public void testTopLevelFunctionCrossModuleCase() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/topLevelFunctionCrossModuleCase.kt");
+      }
+
+      @Test
+      @TestMetadata("topLevelFunctionCrossModuleTransitiveCase.kt")
+      public void testTopLevelFunctionCrossModuleTransitiveCase() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/topLevelFunctionCrossModuleTransitiveCase.kt");
+      }
+
+      @Test
+      @TestMetadata("topLevelFunctionTransitiveCase.kt")
+      public void testTopLevelFunctionTransitiveCase() {
+        runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/topLevelFunctionTransitiveCase.kt");
+      }
+    }
+
+    @Nested
     @TestMetadata("compiler/testData/codegen/box/syntheticAccessors/protectedJavaFieldAccessor")
     @TestDataPath("$PROJECT_ROOT")
     public class ProtectedJavaFieldAccessor {
@@ -62634,6 +62876,12 @@ public class LLReversedBlackBoxTestGenerated extends AbstractLLReversedBlackBoxT
     @TestMetadata("doNotCopyImmediatelyCreatedArrays.kt")
     public void testDoNotCopyImmediatelyCreatedArrays() {
       runTest("compiler/testData/codegen/box/vararg/doNotCopyImmediatelyCreatedArrays.kt");
+    }
+
+    @Test
+    @TestMetadata("emptyVarArg.kt")
+    public void testEmptyVarArg() {
+      runTest("compiler/testData/codegen/box/vararg/emptyVarArg.kt");
     }
 
     @Test

@@ -12,6 +12,7 @@ dependencies {
     testApi(project(":compiler:fir:fir2ir:jvm-backend"))
     testApi(project(":compiler:cli"))
     testImplementation(project(":compiler:ir.tree"))
+    testImplementation(project(":compiler:ir.serialization.native"))
     testImplementation(project(":compiler:backend.jvm.entrypoint"))
     testImplementation(project(":compiler:backend.jvm.lower"))
     testImplementation(project(":kotlin-util-klib-abi"))
@@ -52,6 +53,7 @@ dependencies {
 
 optInToExperimentalCompilerApi()
 optInToUnsafeDuringIrConstructionAPI()
+optInToK1Deprecation()
 
 tasks.processTestResources.configure {
     from(project(":compiler").layout.projectDirectory.dir("testData")) {

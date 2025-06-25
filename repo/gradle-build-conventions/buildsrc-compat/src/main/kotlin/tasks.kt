@@ -96,6 +96,7 @@ val kotlinGradlePluginAndItsRequired = arrayOf(
     ":libraries:tools:abi-validation:abi-tools-api",
     ":libraries:tools:abi-validation:abi-tools",
     ":kotlin-metadata-jvm",
+    ":gradle:kotlin-gradle-ecosystem-plugin",
 )
 
 fun Task.dependsOnKotlinGradlePluginInstall() {
@@ -318,7 +319,7 @@ fun Project.projectTest(
             systemProperty("junit.jupiter.execution.parallel.config.fixed.parallelism", n)
         }
         val excludesFile = project.providers.gradleProperty("teamcity.build.parallelTests.excludesFile").orNull
-        if (excludesFile != null) {
+        if (excludesFile != null && File(excludesFile).exists()) {
             systemProperty("teamcity.build.parallelTests.excludesFile", excludesFile)
         }
 
@@ -328,7 +329,7 @@ fun Project.projectTest(
         val projectName = project.name
         val teamcity = project.rootProject.findProperty("teamcity") as? Map<*, *>
         doFirst {
-            if (excludesFile != null) {
+            if (excludesFile != null && File(excludesFile).exists()) {
                 cleanupInvalidExcludePatternsForTCParallelTests(excludesFile) // Workaround for TW-92736
             }
 
@@ -436,4 +437,8 @@ fun Project.optInToUnsafeDuringIrConstructionAPI() {
 
 fun Project.optInToObsoleteDescriptorBasedAPI() {
     optInTo("org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI")
+}
+
+fun Project.optInToK1Deprecation() {
+    optInTo("org.jetbrains.kotlin.K1Deprecation")
 }

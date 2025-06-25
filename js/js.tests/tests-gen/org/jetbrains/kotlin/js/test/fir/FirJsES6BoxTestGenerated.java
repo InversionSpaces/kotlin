@@ -958,6 +958,12 @@ public class FirJsES6BoxTestGenerated extends AbstractFirJsES6BoxTest {
     }
 
     @Test
+    @TestMetadata("kt61183.kt")
+    public void testKt61183() {
+      runTest("js/js.translator/testData/box/coroutines/kt61183.kt");
+    }
+
+    @Test
     @TestMetadata("lambdaWithValueClass.kt")
     public void testLambdaWithValueClass() {
       runTest("js/js.translator/testData/box/coroutines/lambdaWithValueClass.kt");
@@ -1901,6 +1907,12 @@ public class FirJsES6BoxTestGenerated extends AbstractFirJsES6BoxTest {
     @TestMetadata("setByBrackets.kt")
     public void testSetByBrackets() {
       runTest("js/js.translator/testData/box/dynamic/setByBrackets.kt");
+    }
+
+    @Test
+    @TestMetadata("specialCallableMember.kt")
+    public void testSpecialCallableMember() {
+      runTest("js/js.translator/testData/box/dynamic/specialCallableMember.kt");
     }
 
     @Test
@@ -5901,12 +5913,6 @@ public class FirJsES6BoxTestGenerated extends AbstractFirJsES6BoxTest {
     @TestMetadata("callableReferenceOfLocalFun.kt")
     public void testCallableReferenceOfLocalFun() {
       runTest("js/js.translator/testData/box/inline/callableReferenceOfLocalFun.kt");
-    }
-
-    @Test
-    @TestMetadata("callableReferenceOfLocalFunWithInlinedFunInKlib.kt")
-    public void testCallableReferenceOfLocalFunWithInlinedFunInKlib() {
-      runTest("js/js.translator/testData/box/inline/callableReferenceOfLocalFunWithInlinedFunInKlib.kt");
     }
 
     @Test

@@ -27,9 +27,10 @@ fun BasicText(
 // ------------------------------------------
 
 @Composable
+@FunctionKeyMeta(key = 373000955, startOffset = 308, endOffset = 527)
 fun BasicText(style: TextStyle?, onTextLayout: Function1<TextLayoutResult, Unit>?, overflow: TextOverflow, %composer: Composer?, %changed: Int, %default: Int) {
   %composer = %composer.startRestartGroup(<>)
-  sourceInformation(%composer, "C(BasicText)P(2!,1:c#ui.text.style.TextOverflow)<{}>:Test.kt")
+  sourceInformation(%composer, "C(BasicText)N(style,onTextLayout,overflow:c#ui.text.style.TextOverflow)<{}>:Test.kt")
   val %dirty = %changed
   if (%default and 0b0001 != 0) {
     %dirty = %dirty or 0b0110

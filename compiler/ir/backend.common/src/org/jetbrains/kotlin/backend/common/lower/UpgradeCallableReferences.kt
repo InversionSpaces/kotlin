@@ -98,9 +98,7 @@ open class UpgradeCallableReferences(
                 invokeFunction = expression.function,
                 origin = expression.origin,
                 isRestrictedSuspension = isRestrictedSuspension,
-            ).apply {
-                copyAttributes(expression)
-            }
+            )
         }
 
         override fun visitElement(element: IrElement, data: IrDeclarationParent): IrElement {
@@ -110,7 +108,9 @@ open class UpgradeCallableReferences(
 
         // IrTransformer defines this to not calling visitElement, which leads to incorrect parent creation
         override fun visitDeclaration(declaration: IrDeclarationBase, data: IrDeclarationParent): IrStatement {
-            return visitElement(declaration, data) as IrStatement
+            return context.irFactory.stageController.restrictTo(declaration) {
+                visitElement(declaration, data) as IrStatement
+            }
         }
 
         override fun visitFile(declaration: IrFile, data: IrDeclarationParent): IrFile {
@@ -183,7 +183,6 @@ open class UpgradeCallableReferences(
                 hasVarargConversion = reflectionTarget is IrSimpleFunctionSymbol && hasVarargConversion(function, reflectionTarget.owner),
                 isRestrictedSuspension = isRestrictedSuspension,
             ).apply {
-                copyAttributes(reference)
                 boundValues.addAll(reference.arguments.filterNotNull())
             }.let {
                 if (samType != null) {
@@ -229,7 +228,6 @@ open class UpgradeCallableReferences(
                 origin = expression.origin,
                 isRestrictedSuspension = expression.symbol.owner.isRestrictedSuspensionFunction(),
             ).apply {
-                copyAttributes(expression)
                 boundValues += arguments.map { it.second }
             }
         }
@@ -265,7 +263,6 @@ open class UpgradeCallableReferences(
                 setterFunction = setterFun,
                 origin = expression.origin,
             ).apply {
-                copyAttributes(expression)
                 boundValues += arguments.map { it.second }
             }
         }

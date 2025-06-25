@@ -91,7 +91,7 @@ sealed class FirValueClassDeclarationChecker(mppKind: MppCheckerKind) : FirRegul
 
         var primaryConstructor: FirConstructorSymbol? = null
         var primaryConstructorParametersByName = mapOf<Name, FirValueParameterSymbol>()
-        val primaryConstructorPropertiesByName = mutableMapOf<Name, FirPropertySymbol>()
+        val primaryConstructorPropertiesByName = hashMapOf<Name, FirPropertySymbol>()
         var primaryConstructorParametersSymbolsSet = setOf<FirValueParameterSymbol>()
         val isCustomEqualsSupported = context.languageVersionSettings.supportsFeature(LanguageFeature.CustomEqualsInValueClasses)
 
@@ -160,7 +160,7 @@ sealed class FirValueClassDeclarationChecker(mppKind: MppCheckerKind) : FirRegul
         }
 
         val reservedNames = boxAndUnboxNames + if (isCustomEqualsSupported) emptySet() else equalsAndHashCodeNames
-        val classScope = declaration.unsubstitutedScope(context)
+        val classScope = declaration.unsubstitutedScope()
         for (reservedName in reservedNames) {
             classScope.processFunctionsByName(Name.identifier(reservedName)) {
                 val functionSymbol = it.unwrapFakeOverrides()

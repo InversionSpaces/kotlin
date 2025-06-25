@@ -133,6 +133,12 @@ public class JvmAbiConsistencyTestRestGenerated extends AbstractJvmAbiConsistenc
       }
 
       @Test
+      @TestMetadata("capturedLocalFunReflection.kt")
+      public void testCapturedLocalFunReflection() {
+        runTest("compiler/testData/codegen/boxInline/anonymousObject/capturedLocalFunReflection.kt");
+      }
+
+      @Test
       @TestMetadata("capturedLocalFunTwice.kt")
       public void testCapturedLocalFunTwice() {
         runTest("compiler/testData/codegen/boxInline/anonymousObject/capturedLocalFunTwice.kt");
@@ -7091,6 +7097,106 @@ public class JvmAbiConsistencyTestRestGenerated extends AbstractJvmAbiConsistenc
       public void testEnumsWithNonNullaryConstructors() {
         runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/EnumsWithNonNullaryConstructors.kt");
       }
+
+      @Nested
+      @TestMetadata("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch")
+      @TestDataPath("$PROJECT_ROOT")
+      public class TypeSwitch {
+        @Test
+        public void testAllFilesPresentInTypeSwitch() {
+          KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_IR, true);
+        }
+
+        @Test
+        @TestMetadata("ifChainByTypeSwitch1.kt")
+        public void testIfChainByTypeSwitch1() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/ifChainByTypeSwitch1.kt");
+        }
+
+        @Test
+        @TestMetadata("whenByTypeSwitch1.kt")
+        public void testWhenByTypeSwitch1() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/whenByTypeSwitch1.kt");
+        }
+
+        @Test
+        @TestMetadata("whenByTypeSwitch2.kt")
+        public void testWhenByTypeSwitch2() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/whenByTypeSwitch2.kt");
+        }
+
+        @Test
+        @TestMetadata("whenByTypeSwitch3.kt")
+        public void testWhenByTypeSwitch3() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/whenByTypeSwitch3.kt");
+        }
+
+        @Test
+        @TestMetadata("whenByTypeSwitch4.kt")
+        public void testWhenByTypeSwitch4() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/whenByTypeSwitch4.kt");
+        }
+
+        @Test
+        @TestMetadata("whenByTypeSwitch5.kt")
+        public void testWhenByTypeSwitch5() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/whenByTypeSwitch5.kt");
+        }
+
+        @Test
+        @TestMetadata("whenByTypeSwitch6.kt")
+        public void testWhenByTypeSwitch6() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/whenByTypeSwitch6.kt");
+        }
+
+        @Test
+        @TestMetadata("whenByTypeSwitch7.kt")
+        public void testWhenByTypeSwitch7() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/whenByTypeSwitch7.kt");
+        }
+
+        @Test
+        @TestMetadata("whenByTypeSwitch8.kt")
+        public void testWhenByTypeSwitch8() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/whenByTypeSwitch8.kt");
+        }
+
+        @Test
+        @TestMetadata("whenByTypeSwitch9.kt")
+        public void testWhenByTypeSwitch9() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/whenByTypeSwitch9.kt");
+        }
+
+        @Test
+        @TestMetadata("whenByTypeSwitchNeg1.kt")
+        public void testWhenByTypeSwitchNeg1() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/whenByTypeSwitchNeg1.kt");
+        }
+
+        @Test
+        @TestMetadata("whenByTypeSwitchNeg2.kt")
+        public void testWhenByTypeSwitchNeg2() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/whenByTypeSwitchNeg2.kt");
+        }
+
+        @Test
+        @TestMetadata("whenByTypeSwitchNeg3.kt")
+        public void testWhenByTypeSwitchNeg3() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/whenByTypeSwitchNeg3.kt");
+        }
+
+        @Test
+        @TestMetadata("whenByTypeSwitchNeg4.kt")
+        public void testWhenByTypeSwitchNeg4() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/whenByTypeSwitchNeg4.kt");
+        }
+
+        @Test
+        @TestMetadata("whenByTypeSwitchNeg5.kt")
+        public void testWhenByTypeSwitchNeg5() {
+          runTest("compiler/testData/codegen/boxModernJdk/testsWithJava21/typeSwitch/whenByTypeSwitchNeg5.kt");
+        }
+      }
     }
   }
 
@@ -12160,6 +12266,22 @@ public class JvmAbiConsistencyTestRestGenerated extends AbstractJvmAbiConsistenc
     }
 
     @Nested
+    @TestMetadata("compiler/testData/codegen/bytecodeText/objects")
+    @TestDataPath("$PROJECT_ROOT")
+    public class Objects {
+      @Test
+      public void testAllFilesPresentInObjects() {
+        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/bytecodeText/objects"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_IR, true);
+      }
+
+      @Test
+      @TestMetadata("kt77438.kt")
+      public void testKt77438() {
+        runTest("compiler/testData/codegen/bytecodeText/objects/kt77438.kt");
+      }
+    }
+
+    @Nested
     @TestMetadata("compiler/testData/codegen/bytecodeText/optimizedDelegatedProperties")
     @TestDataPath("$PROJECT_ROOT")
     public class OptimizedDelegatedProperties {
@@ -16210,7 +16332,7 @@ public class JvmAbiConsistencyTestRestGenerated extends AbstractJvmAbiConsistenc
 
     @Test
     public void testAllFilesPresentInScript() {
-      KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/script"), Pattern.compile("^(.*)\\.kts?$"), Pattern.compile("^(.+)\\.(reversed|fir|ll|latestLV)\\.kts?$"), TargetBackend.JVM_IR, true);
+      KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/script"), Pattern.compile("^(.*)\\.kts?$"), Pattern.compile("^(.+)\\.(reversed|partialBody|fir|ll|latestLV)\\.kts?$"), TargetBackend.JVM_IR, true);
     }
 
     @Test
@@ -16417,7 +16539,7 @@ public class JvmAbiConsistencyTestRestGenerated extends AbstractJvmAbiConsistenc
     public class ScriptInstanceCapturing {
       @Test
       public void testAllFilesPresentInScriptInstanceCapturing() {
-        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/script/scriptInstanceCapturing"), Pattern.compile("^(.*)\\.kts?$"), Pattern.compile("^(.+)\\.(reversed|fir|ll|latestLV)\\.kts?$"), TargetBackend.JVM_IR, true);
+        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/script/scriptInstanceCapturing"), Pattern.compile("^(.*)\\.kts?$"), Pattern.compile("^(.+)\\.(reversed|partialBody|fir|ll|latestLV)\\.kts?$"), TargetBackend.JVM_IR, true);
       }
 
       @Test

@@ -5,7 +5,10 @@
 
 package org.jetbrains.kotlin.gradle
 
+import org.gradle.kotlin.dsl.kotlin
+import org.gradle.kotlin.dsl.withType
 import org.gradle.util.GradleVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import org.jetbrains.kotlin.gradle.testbase.*
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
@@ -237,6 +240,15 @@ class CustomK2Tests : KGPBaseTest() {
     @DisplayName("Native metadata compilation against other klib (KT-65840)")
     fun nativeMetadataCompilationWithAgainstOtherKlib(gradleVersion: GradleVersion) {
         project("k2-common-native-against-other-klib", gradleVersion) {
+            subprojects("app", "lib").buildScriptInjection {
+                kotlinMultiplatform.apply {
+                    applyDefaultHierarchyTemplate()
+                    linuxX64()
+                    macosX64()
+
+                    compilerOptions.freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
+                }
+            }
             build(":app:compileNativeMainKotlinMetadata") {
                 assertTasksExecuted(":app:compileNativeMainKotlinMetadata")
             }
@@ -253,7 +265,12 @@ class CustomK2MacOSTests : KGPBaseTest() {
     @GradleTest
     @DisplayName("Universal metadata compilation with constant expressions (KT-63835)")
     fun universalMetadataCompilationWithConstantExpressions(gradleVersion: GradleVersion) {
-        project("k2-universal-metadata-compilation-with-constant-expressions", gradleVersion) {
+        project(
+            "k2-universal-metadata-compilation-with-constant-expressions",
+            gradleVersion,
+            // KT-75899 Support Gradle Project Isolation in KGP JS & Wasm
+            buildOptions = defaultBuildOptions.disableIsolatedProjects(),
+        ) {
             build("assemble") {
                 assertTasksExecuted(":assemble")
                 assertTasksExecuted(":compileIosMainKotlinMetadata")

@@ -469,6 +469,8 @@ object DIAGNOSTICS_LIST : DiagnosticList("FirErrors") {
         val ANNOTATIONS_ON_BLOCK_LEVEL_EXPRESSION_ON_THE_SAME_LINE by warning<PsiElement>()
 
         val IGNORABILITY_ANNOTATIONS_WITH_CHECKER_DISABLED by error<KtAnnotationEntry>()
+
+        val DSL_MARKER_PROPAGATES_TO_MANY by warning<KtAnnotationEntry>()
     }
 
     val OPT_IN by object : DiagnosticGroup("OptIn") {
@@ -788,6 +790,9 @@ object DIAGNOSTICS_LIST : DiagnosticList("FirErrors") {
         }
         val MULTIPLE_CONTEXT_LISTS by error<KtElement>()
         val NAMED_CONTEXT_PARAMETER_IN_FUNCTION_TYPE by error<KtElement>()
+        val CONTEXTUAL_OVERLOAD_SHADOWED by warning<KtElement>(PositioningStrategy.CALLABLE_DECLARATION_SIGNATURE_NO_MODIFIERS) {
+            parameter<Collection<FirBasedSymbol<*>>>("symbols")
+        }
     }
 
     val TYPES_AND_TYPE_PARAMETERS by object : DiagnosticGroup("Types & type parameters") {
@@ -799,7 +804,16 @@ object DIAGNOSTICS_LIST : DiagnosticList("FirErrors") {
             parameter<ConeKotlinType>("actualUpperBound")
             parameter<String>("extraMessage")
         }
+        val UPPER_BOUND_VIOLATED_DEPRECATION_WARNING by warning<PsiElement> {
+            parameter<ConeKotlinType>("expectedUpperBound")
+            parameter<ConeKotlinType>("actualUpperBound")
+            parameter<String>("extraMessage")
+        }
         val UPPER_BOUND_VIOLATED_IN_TYPEALIAS_EXPANSION by error<PsiElement> {
+            parameter<ConeKotlinType>("expectedUpperBound")
+            parameter<ConeKotlinType>("actualUpperBound")
+        }
+        val UPPER_BOUND_VIOLATED_IN_TYPEALIAS_EXPANSION_DEPRECATION_WARNING by warning<PsiElement> {
             parameter<ConeKotlinType>("expectedUpperBound")
             parameter<ConeKotlinType>("actualUpperBound")
         }
@@ -834,7 +848,6 @@ object DIAGNOSTICS_LIST : DiagnosticList("FirErrors") {
         val VARIANCE_ON_TYPE_PARAMETER_NOT_ALLOWED by error<KtTypeParameter>(PositioningStrategy.VARIANCE_MODIFIER)
 
         val CATCH_PARAMETER_WITH_DEFAULT_VALUE by error<PsiElement>()
-        val REIFIED_TYPE_IN_CATCH_CLAUSE by error<PsiElement>()
         val TYPE_PARAMETER_IN_CATCH_CLAUSE by error<PsiElement>()
         val GENERIC_THROWABLE_SUBCLASS by error<KtTypeParameter>()
         val INNER_CLASS_OF_GENERIC_THROWABLE_SUBCLASS by error<KtClassOrObject>(PositioningStrategy.DECLARATION_NAME)
@@ -1658,10 +1671,12 @@ object DIAGNOSTICS_LIST : DiagnosticList("FirErrors") {
         val LEAKED_IN_PLACE_LAMBDA by warning<PsiElement> {
             parameter<Symbol>("lambda")
         }
-        val WRONG_IMPLIES_CONDITION by warning<PsiElement>()
         val VARIABLE_WITH_NO_TYPE_NO_INITIALIZER by error<KtVariableDeclaration>(PositioningStrategy.DECLARATION_NAME)
 
-        val INITIALIZATION_BEFORE_DECLARATION by error<KtExpression>() {
+        val INITIALIZATION_BEFORE_DECLARATION by error<KtExpression> {
+            parameter<Symbol>("property")
+        }
+        val INITIALIZATION_BEFORE_DECLARATION_WARNING by warning<KtExpression> {
             parameter<Symbol>("property")
         }
         val UNREACHABLE_CODE by warning<KtElement>(PositioningStrategy.UNREACHABLE_CODE) {
@@ -1883,14 +1898,12 @@ object DIAGNOSTICS_LIST : DiagnosticList("FirErrors") {
         val REDUNDANT_VISIBILITY_MODIFIER by warning<KtModifierListOwner>(PositioningStrategy.VISIBILITY_MODIFIER)
         val REDUNDANT_MODALITY_MODIFIER by warning<KtModifierListOwner>(PositioningStrategy.MODALITY_MODIFIER)
         val REDUNDANT_RETURN_UNIT_TYPE by warning<KtElement>()
-        val REDUNDANT_EXPLICIT_TYPE by warning<PsiElement>()
         val REDUNDANT_SINGLE_EXPRESSION_STRING_TEMPLATE by warning<PsiElement>()
         val CAN_BE_VAL by warning<KtDeclaration>(PositioningStrategy.VAL_OR_VAR_NODE)
         val CAN_BE_VAL_LATEINIT by warning<KtDeclaration>(PositioningStrategy.VAL_OR_VAR_NODE)
         val CAN_BE_VAL_DELAYED_INITIALIZATION by warning<KtDeclaration>(PositioningStrategy.VAL_OR_VAR_NODE)
-        val CAN_BE_REPLACED_WITH_OPERATOR_ASSIGNMENT by warning<KtExpression>(PositioningStrategy.OPERATOR)
         val REDUNDANT_CALL_OF_CONVERSION_METHOD by warning<PsiElement>(PositioningStrategy.SELECTOR_BY_QUALIFIED)
-        val ARRAY_EQUALITY_OPERATOR_CAN_BE_REPLACED_WITH_EQUALS by warning<KtExpression>(PositioningStrategy.OPERATOR)
+        val ARRAY_EQUALITY_OPERATOR_CAN_BE_REPLACED_WITH_CONTENT_EQUALS by warning<KtExpression>(PositioningStrategy.OPERATOR)
         val EMPTY_RANGE by warning<PsiElement>()
         val REDUNDANT_SETTER_PARAMETER_TYPE by warning<PsiElement>()
         val UNUSED_VARIABLE by warning<KtNamedDeclaration>(PositioningStrategy.DECLARATION_NAME)
@@ -2041,6 +2054,15 @@ object DIAGNOSTICS_LIST : DiagnosticList("FirErrors") {
             parameter<FirBasedSymbol<*>>("symbol")
             parameter<EffectiveVisibility>("visibility")
             parameter<FirRegularClassSymbol>("containingClass")
+            parameter<EffectiveVisibility>("inlineVisibility")
+        }
+
+        val CALLABLE_REFERENCE_TO_LESS_VISIBLE_DECLARATION_IN_INLINE by deprecationError<KtElement>(
+            LanguageFeature.ForbidExposingLessVisibleTypesInInline,
+            PositioningStrategy.REFERENCE_BY_QUALIFIED
+        ) {
+            parameter<FirBasedSymbol<*>>("symbol")
+            parameter<EffectiveVisibility>("visibility")
             parameter<EffectiveVisibility>("inlineVisibility")
         }
     }

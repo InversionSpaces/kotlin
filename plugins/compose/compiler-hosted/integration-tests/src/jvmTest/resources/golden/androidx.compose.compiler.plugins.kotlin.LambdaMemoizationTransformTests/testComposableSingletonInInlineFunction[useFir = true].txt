@@ -47,8 +47,9 @@ internal inline fun Test4(block: @Composable (@Composable () -> Unit) -> Unit) {
 
 @Composable
 @ComposableInferredTarget(scheme = "[0[0[0]]]")
+@FunctionKeyMeta(key = -952440693, startOffset = 100, endOffset = 417)
 fun Test1(block: Function3<Function2<Composer, Int, Unit>, Composer, Int, Unit>, %composer: Composer?, %changed: Int) {
-  sourceInformationMarkerStart(%composer, <>, "CC(Test1)<{>,<block(...>,<{>,<block>:Test.kt")
+  sourceInformationMarkerStart(%composer, <>, "CC(Test1)N(block)<{>,<block(...>,<{>,<block>:Test.kt")
   val x = rememberComposableLambda(<>, false, { %composer: Composer?, %changed: Int ->
     sourceInformation(%composer, "C:Test.kt")
     if (%composer.shouldExecute(%changed and 0b0011 != 0b0010, %changed and 0b0001)) {
@@ -106,8 +107,9 @@ fun Test1(block: Function3<Function2<Composer, Int, Unit>, Composer, Int, Unit>,
 }
 @Composable
 @ComposableInferredTarget(scheme = "[0[0[0]]]")
+@FunctionKeyMeta(key = -1192980822, startOffset = 470, endOffset = 787)
 private fun Test2(block: Function3<Function2<Composer, Int, Unit>, Composer, Int, Unit>, %composer: Composer?, %changed: Int) {
-  sourceInformationMarkerStart(%composer, <>, "CC(Test2)<block(...>,<block>:Test.kt")
+  sourceInformationMarkerStart(%composer, <>, "CC(Test2)N(block)<block(...>,<block>:Test.kt")
   val x = ComposableSingletons%TestKt.lambda%-1268429142
   val y = { %composer: Composer?, %changed: Int ->
     %composer.startReplaceGroup(<>)
@@ -139,8 +141,9 @@ private fun Test2(block: Function3<Function2<Composer, Int, Unit>, Composer, Int
 }
 @Composable
 @ComposableInferredTarget(scheme = "[0[0[0]]]")
+@FunctionKeyMeta(key = -1433520951, startOffset = 841, endOffset = 1158)
 internal fun Test3(block: Function3<Function2<Composer, Int, Unit>, Composer, Int, Unit>, %composer: Composer?, %changed: Int) {
-  sourceInformationMarkerStart(%composer, <>, "CC(Test3)<{>,<block(...>,<{>,<block>:Test.kt")
+  sourceInformationMarkerStart(%composer, <>, "CC(Test3)N(block)<{>,<block(...>,<{>,<block>:Test.kt")
   val x = rememberComposableLambda(<>, false, { %composer: Composer?, %changed: Int ->
     sourceInformation(%composer, "C:Test.kt")
     if (%composer.shouldExecute(%changed and 0b0011 != 0b0010, %changed and 0b0001)) {
@@ -199,8 +202,9 @@ internal fun Test3(block: Function3<Function2<Composer, Int, Unit>, Composer, In
 @Composable
 @PublishedApi
 @ComposableInferredTarget(scheme = "[0[0[0]]]")
+@FunctionKeyMeta(key = -1674061080, startOffset = 1238, endOffset = 1555)
 internal fun Test4(block: Function3<Function2<Composer, Int, Unit>, Composer, Int, Unit>, %composer: Composer?, %changed: Int) {
-  sourceInformationMarkerStart(%composer, <>, "CC(Test4)<{>,<block(...>,<{>,<block>:Test.kt")
+  sourceInformationMarkerStart(%composer, <>, "CC(Test4)N(block)<{>,<block(...>,<{>,<block>:Test.kt")
   val x = rememberComposableLambda(<>, false, { %composer: Composer?, %changed: Int ->
     sourceInformation(%composer, "C:Test.kt")
     if (%composer.shouldExecute(%changed and 0b0011 != 0b0010, %changed and 0b0001)) {

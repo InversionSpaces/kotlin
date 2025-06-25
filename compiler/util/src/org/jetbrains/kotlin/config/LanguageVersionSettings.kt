@@ -418,6 +418,7 @@ enum class LanguageFeature(
     ForbidParenthesizedLhsInAssignments(KOTLIN_2_3, enabledInProgressiveMode = true, "KT-70507"),
     AllowEagerSupertypeAccessibilityChecks(KOTLIN_2_3, "KT-73611"),
     DontMakeExplicitJavaTypeArgumentsFlexible(KOTLIN_2_3, "KT-71718"),
+    DontIgnoreUpperBoundViolatedOnImplicitArguments(KOTLIN_2_3, "KT-67146"),
     ResolveTopLevelLambdasAsSyntheticCallArgument(KOTLIN_2_3, "KT-67869"),
     DataFlowBasedExhaustiveness(sinceVersion = KOTLIN_2_3, issue = "KT-76635"),
     UnstableSmartcastOnDelegatedProperties(KOTLIN_2_3, enabledInProgressiveMode = true, "KTLC-273"),
@@ -429,11 +430,15 @@ enum class LanguageFeature(
     AllowCheckForErasedTypesInContracts(KOTLIN_2_3, "KT-45683"),
     AllowContractsOnSomeOperators(KOTLIN_2_3, "KT-32313"),
     AllowContractsOnPropertyAccessors(KOTLIN_2_3, "KT-27090"),
+    ConditionImpliesReturnsContracts(KOTLIN_2_3, "KT-8889"),
+    HoldsInContracts(KOTLIN_2_3, "KT-32993"),
 
-    // 2.4 TODO set sinceVersion to 2.4 when it becomes available
+    // 2.4
 
-    ForbidExposingLessVisibleTypesInInline(sinceVersion = null, enabledInProgressiveMode = true, "KTLC-283"),
-    ForbidCaptureInlinableLambdasInJsCode(sinceVersion = null, enabledInProgressiveMode = true, "KT-69297"),
+    ForbidExposingLessVisibleTypesInInline(KOTLIN_2_4, enabledInProgressiveMode = true, "KTLC-283"),
+    ForbidCaptureInlinableLambdasInJsCode(KOTLIN_2_4, enabledInProgressiveMode = true, "KT-69297"),
+    ForbidInitializationBeforeDeclarationInAnonymous(KOTLIN_2_4, enabledInProgressiveMode = true, "KT-77156"),
+    AllowReifiedTypeInCatchClause(KOTLIN_2_4, issue = "KT-54363"),
 
     // End of 2.* language features --------------------------------------------------
 
@@ -563,7 +568,7 @@ enum class LanguageFeature(
  * Placeholder for old language features for which the ticket was not specified.
  * Please never use it for new features.
  */
-private const val NO_ISSUE_SPECIFIED = "No YT issue"
+const val NO_ISSUE_SPECIFIED = "No YT issue"
 
 enum class LanguageVersion(val major: Int, val minor: Int) : DescriptionAware, LanguageOrApiVersion {
     KOTLIN_1_0(1, 0),
@@ -581,6 +586,7 @@ enum class LanguageVersion(val major: Int, val minor: Int) : DescriptionAware, L
     KOTLIN_2_1(2, 1),
     KOTLIN_2_2(2, 2),
     KOTLIN_2_3(2, 3),
+    KOTLIN_2_4(2, 4),
     ;
 
     override val isStable: Boolean
@@ -608,7 +614,7 @@ enum class LanguageVersion(val major: Int, val minor: Int) : DescriptionAware, L
             str.split(".", "-").let { if (it.size >= 2) fromVersionString("${it[0]}.${it[1]}") else null }
 
         // Version status
-        //            1.0..1.7        1.8..1.9           2.0..2.2    2.3
+        //            1.0..1.7        1.8..1.9           2.0..2.2    2.3..2.4
         // Language:  UNSUPPORTED --> DEPRECATED ------> STABLE ---> EXPERIMENTAL
         // API:       UNSUPPORTED --> DEPRECATED ------> STABLE ---> EXPERIMENTAL
 

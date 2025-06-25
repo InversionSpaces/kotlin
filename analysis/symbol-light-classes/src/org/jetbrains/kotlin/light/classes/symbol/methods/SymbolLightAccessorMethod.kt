@@ -17,7 +17,6 @@ import org.jetbrains.kotlin.analysis.api.KaSession
 import org.jetbrains.kotlin.analysis.api.symbols.*
 import org.jetbrains.kotlin.analysis.api.symbols.pointers.KaSymbolPointer
 import org.jetbrains.kotlin.analysis.api.types.KaTypeMappingMode
-import org.jetbrains.kotlin.analysis.api.types.KaTypeNullability
 import org.jetbrains.kotlin.asJava.builder.LightMemberOrigin
 import org.jetbrains.kotlin.asJava.builder.LightMemberOriginForDeclaration
 import org.jetbrains.kotlin.asJava.classes.METHOD_INDEX_FOR_GETTER
@@ -58,7 +57,6 @@ internal class SymbolLightAccessorMethod private constructor(
     methodIndex,
 ) {
     private constructor(
-        ktAnalysisSession: KaSession,
         propertyAccessorSymbol: KaPropertyAccessorSymbol,
         containingPropertySymbol: KaPropertySymbol,
         lightMemberOrigin: LightMemberOrigin?,
@@ -71,9 +69,9 @@ internal class SymbolLightAccessorMethod private constructor(
         methodIndex = if (propertyAccessorSymbol is KaPropertyGetterSymbol) METHOD_INDEX_FOR_GETTER else METHOD_INDEX_FOR_SETTER,
         isGetter = propertyAccessorSymbol is KaPropertyGetterSymbol,
         propertyAccessorDeclaration = propertyAccessorSymbol.sourcePsiSafe(),
-        propertyAccessorSymbolPointer = with(ktAnalysisSession) { propertyAccessorSymbol.createPointer() },
+        propertyAccessorSymbolPointer = propertyAccessorSymbol.createPointer(),
         containingPropertyDeclaration = containingPropertySymbol.sourcePsiSafe(),
-        containingPropertySymbolPointer = with(ktAnalysisSession) { containingPropertySymbol.createPointer() },
+        containingPropertySymbolPointer = containingPropertySymbol.createPointer(),
         isTopLevel = isTopLevel,
         suppressStatic = suppressStatic,
     )
@@ -197,13 +195,12 @@ internal class SymbolLightAccessorMethod private constructor(
                         if (nullabilityApplicable) {
                             withPropertySymbol { propertySymbol ->
                                 when {
-                                    propertySymbol.isLateInit -> KaTypeNullability.NON_NULLABLE
-                                    forceBoxedReturnType(propertySymbol) -> KaTypeNullability.NON_NULLABLE
-                                    else -> getTypeNullability(propertySymbol.returnType)
+                                    propertySymbol.isLateInit || forceBoxedReturnType(propertySymbol) -> NullabilityAnnotation.NON_NULLABLE
+                                    else -> getRequiredNullabilityAnnotation(propertySymbol.returnType)
                                 }
                             }
                         } else {
-                            KaTypeNullability.UNKNOWN
+                            NullabilityAnnotation.NOT_REQUIRED
                         }
                     },
                     MethodAdditionalAnnotationsProvider
@@ -297,7 +294,6 @@ internal class SymbolLightAccessorMethod private constructor(
                     val setterParameter = (accessorSymbol as? KaPropertySetterSymbol)?.parameter ?: return@withAccessorSymbol
                     builder.addParameter(
                         SymbolLightSetterParameter(
-                            ktAnalysisSession = this,
                             containingPropertySymbolPointer = containingPropertySymbolPointer,
                             parameterSymbol = setterParameter,
                             containingMethod = this@SymbolLightAccessorMethod,
@@ -476,7 +472,6 @@ internal class SymbolLightAccessorMethod private constructor(
                 } ?: declaration.sourceMemberGeneratedLightMemberOrigin()
 
                 return SymbolLightAccessorMethod(
-                    ktAnalysisSession = this@createPropertyAccessors,
                     propertyAccessorSymbol = accessor,
                     containingPropertySymbol = declaration,
                     lightMemberOrigin = lightMemberOrigin,

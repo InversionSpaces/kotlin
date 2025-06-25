@@ -7,7 +7,6 @@ package org.jetbrains.kotlin.konan.test.blackbox;
 
 import com.intellij.testFramework.TestDataPath;
 import org.jetbrains.kotlin.test.util.KtTestUtil;
-import org.jetbrains.kotlin.konan.test.blackbox.support.group.ClassicPipeline;
 import org.jetbrains.kotlin.test.TestMetadata;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +17,6 @@ import java.util.regex.Pattern;
 @SuppressWarnings("all")
 @TestMetadata("compiler/testData/klib/partial-linkage")
 @TestDataPath("$PROJECT_ROOT")
-@ClassicPipeline()
 public class NativePartialLinkageTestGenerated extends AbstractNativePartialLinkageTest {
   @Test
   @TestMetadata("addEnumEntry")
@@ -71,6 +69,12 @@ public class NativePartialLinkageTestGenerated extends AbstractNativePartialLink
   @TestMetadata("externalDeclarationsKJS")
   public void testExternalDeclarationsKJS() {
     runTest("compiler/testData/klib/partial-linkage/externalDeclarationsKJS/");
+  }
+
+  @Test
+  @TestMetadata("fakeOverridesUnboundClassifiers")
+  public void testFakeOverridesUnboundClassifiers() {
+    runTest("compiler/testData/klib/partial-linkage/fakeOverridesUnboundClassifiers/");
   }
 
   @Test

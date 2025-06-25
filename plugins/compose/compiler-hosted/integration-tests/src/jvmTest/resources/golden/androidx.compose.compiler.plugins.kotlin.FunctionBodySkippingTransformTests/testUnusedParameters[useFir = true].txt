@@ -27,9 +27,10 @@ fun Skippable3(a: Unstable, b: Stable, c: MaybeStable) { }
 // ------------------------------------------
 
 @Composable
+@FunctionKeyMeta(key = -577006022, startOffset = 165, endOffset = 236)
 fun Unskippable(a: Unstable, b: Stable, c: MaybeStable, %composer: Composer?, %changed: Int) {
   %composer = %composer.startRestartGroup(<>)
-  sourceInformation(%composer, "C(Unskippable):Test.kt")
+  sourceInformation(%composer, "C(Unskippable)N(a,b,c):Test.kt")
   val %dirty = %changed
   if (%changed and 0b0110 == 0) {
     %dirty = %dirty or if (%composer.changedInstance(a)) 0b0100 else 0b0010
@@ -50,9 +51,10 @@ fun Unskippable(a: Unstable, b: Stable, c: MaybeStable, %composer: Composer?, %c
   }
 }
 @Composable
+@FunctionKeyMeta(key = -1828306198, startOffset = 249, endOffset = 319)
 fun Skippable1(a: Unstable, b: Stable, c: MaybeStable, %composer: Composer?, %changed: Int) {
   %composer = %composer.startRestartGroup(<>)
-  sourceInformation(%composer, "C(Skippable1):Test.kt")
+  sourceInformation(%composer, "C(Skippable1)N(a,b,c):Test.kt")
   val %dirty = %changed
   if (%changed and 0b00110000 == 0) {
     %dirty = %dirty or if (%composer.changed(b)) 0b00100000 else 0b00010000
@@ -73,9 +75,10 @@ fun Skippable1(a: Unstable, b: Stable, c: MaybeStable, %composer: Composer?, %ch
   }
 }
 @Composable
+@FunctionKeyMeta(key = 536041993, startOffset = 332, endOffset = 402)
 fun Skippable2(a: Unstable, b: Stable, c: MaybeStable, %composer: Composer?, %changed: Int) {
   %composer = %composer.startRestartGroup(<>)
-  sourceInformation(%composer, "C(Skippable2):Test.kt")
+  sourceInformation(%composer, "C(Skippable2)N(a,b,c):Test.kt")
   val %dirty = %changed
   if (%changed and 0b000110000000 == 0) {
     %dirty = %dirty or if (if (%changed and 0b001000000000 == 0) {
@@ -101,9 +104,10 @@ fun Skippable2(a: Unstable, b: Stable, c: MaybeStable, %composer: Composer?, %ch
   }
 }
 @Composable
+@FunctionKeyMeta(key = -1394577112, startOffset = 415, endOffset = 473)
 fun Skippable3(a: Unstable, b: Stable, c: MaybeStable, %composer: Composer?, %changed: Int) {
   %composer = %composer.startRestartGroup(<>)
-  sourceInformation(%composer, "C(Skippable3):Test.kt")
+  sourceInformation(%composer, "C(Skippable3)N(a,b,c):Test.kt")
   if (%composer.shouldExecute(%changed and 0b0001 != 0, %changed and 0b0001)) {
     if (isTraceInProgress()) {
       traceEventStart(<>, %changed, -1, <>)

@@ -205,10 +205,10 @@ class Fir2IrDeclarationStorage(
         val parentIsExpect: Boolean,
     ) {
         companion object {
+            context(c: Fir2IrComponents)
             operator fun invoke(
                 originalSymbol: FirCallableSymbol<*>,
-                dispatchReceiverLookupTag: ConeClassLikeLookupTag,
-                c: Fir2IrComponents
+                dispatchReceiverLookupTag: ConeClassLikeLookupTag
             ): FakeOverrideIdentifier {
                 return FakeOverrideIdentifier(
                     originalSymbol,
@@ -225,7 +225,9 @@ class Fir2IrDeclarationStorage(
     private val delegatedClassesMap: MutableMap<IrClassSymbol, MutableMap<IrClassSymbol, IrFieldSymbol>> = commonMemberStorage.delegatedClassesInfo
     private val firClassesWithInheritanceByDelegation: MutableSet<FirClass> = commonMemberStorage.firClassesWithInheritanceByDelegation
 
-    private val localStorage: Fir2IrLocalCallableStorage by threadLocal { Fir2IrLocalCallableStorage() }
+    private val localStorage: Fir2IrLocalCallableStorage by threadLocal {
+        Fir2IrLocalCallableStorage(commonMemberStorage.localCallableCache)
+    }
 
     // TODO: move to common storage
     private val propertyForFieldCache: ConcurrentHashMap<FirField, IrPropertySymbol> = ConcurrentHashMap()
@@ -421,7 +423,6 @@ class Fir2IrDeclarationStorage(
                 val key = FakeOverrideIdentifier(
                     originalFunction.symbol,
                     fakeOverrideOwnerLookupTag ?: function.containingClassLookupTag()!!,
-                    c
                 )
                 irForFirSessionDependantDeclarationMap[key] = irFunctionSymbol
             }
@@ -669,7 +670,6 @@ class Fir2IrDeclarationStorage(
             val key = FakeOverrideIdentifier(
                 originalProperty.symbol,
                 fakeOverrideOwnerLookupTag ?: property.containingClassLookupTag()!!,
-                c
             )
             irForFirSessionDependantDeclarationMap[key] = irPropertySymbol
         } else {
@@ -898,7 +898,6 @@ class Fir2IrDeclarationStorage(
             val key = FakeOverrideIdentifier(
                 originalField.symbol,
                 fakeOverrideOwnerLookupTag ?: field.containingClassLookupTag()!!,
-                c
             )
             irForFirSessionDependantDeclarationMap[key] = irPropertySymbol
         } else {
@@ -1193,7 +1192,6 @@ class Fir2IrDeclarationStorage(
             val key = FakeOverrideIdentifier(
                 declaration.unwrapFakeOverridesOrDelegated().symbol,
                 fakeOverrideOwnerLookupTag ?: declaration.containingClassLookupTag()!!,
-                c
             )
             irForFirSessionDependantDeclarationMap[key]?.let { return it as IS }
         } else {
@@ -1335,10 +1333,11 @@ class Fir2IrDeclarationStorage(
             symbol is IrScriptSymbol ||
             symbol is IrReplSnippetSymbol
         ) {
+            @OptIn(LeakedDeclarationCaches::class)
             if (configuration.allowNonCachedDeclarations) {
                 // See KDoc to `fillUnboundSymbols` function
-                @OptIn(LeakedDeclarationCaches::class)
                 fillUnboundSymbols(localStorage.lastCache.localFunctions)
+                extensions.preserveLocalScope(symbol, localStorage.lastCache)
             }
             localStorage.leaveCallable()
         }

@@ -666,6 +666,16 @@ public class ParsingTestGenerated extends AbstractParsingTest {
       runTest("compiler/testData/psi/multifileClass2.kt");
     }
 
+    @TestMetadata("mustUseReturnValueFullEnabled.kt")
+    public void testMustUseReturnValueFullEnabled() {
+      runTest("compiler/testData/psi/mustUseReturnValueFullEnabled.kt");
+    }
+
+    @TestMetadata("mustUseReturnValueHalfEnabled.kt")
+    public void testMustUseReturnValueHalfEnabled() {
+      runTest("compiler/testData/psi/mustUseReturnValueHalfEnabled.kt");
+    }
+
     @TestMetadata("NamedClassObject.kt")
     public void testNamedClassObject() {
       runTest("compiler/testData/psi/NamedClassObject.kt");
@@ -774,6 +784,11 @@ public class ParsingTestGenerated extends AbstractParsingTest {
     @TestMetadata("Properties_ERR.kt")
     public void testProperties_ERR() {
       runTest("compiler/testData/psi/Properties_ERR.kt");
+    }
+
+    @TestMetadata("propertyAccessors.kt")
+    public void testPropertyAccessors() {
+      runTest("compiler/testData/psi/propertyAccessors.kt");
     }
 
     @TestMetadata("PropertyInvokes.kt")
@@ -1078,9 +1093,39 @@ public class ParsingTestGenerated extends AbstractParsingTest {
         KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/psi/annotation"), Pattern.compile("^(.*)\\.kts?$"), null, true);
       }
 
+      @TestMetadata("annotatedDefaultPropertyAccessor.kt")
+      public void testAnnotatedDefaultPropertyAccessor() {
+        runTest("compiler/testData/psi/annotation/annotatedDefaultPropertyAccessor.kt");
+      }
+
+      @TestMetadata("annotatedDefaultPropertyAccessorK1.kt")
+      public void testAnnotatedDefaultPropertyAccessorK1() {
+        runTest("compiler/testData/psi/annotation/annotatedDefaultPropertyAccessorK1.kt");
+      }
+
       @TestMetadata("AnnotatedExpressions.kt")
       public void testAnnotatedExpressions() {
         runTest("compiler/testData/psi/annotation/AnnotatedExpressions.kt");
+      }
+
+      @TestMetadata("annotatedProperties.kt")
+      public void testAnnotatedProperties() {
+        runTest("compiler/testData/psi/annotation/annotatedProperties.kt");
+      }
+
+      @TestMetadata("annotatedPropertiesK1.kt")
+      public void testAnnotatedPropertiesK1() {
+        runTest("compiler/testData/psi/annotation/annotatedPropertiesK1.kt");
+      }
+
+      @TestMetadata("annotatedProperty.kt")
+      public void testAnnotatedProperty() {
+        runTest("compiler/testData/psi/annotation/annotatedProperty.kt");
+      }
+
+      @TestMetadata("annotatedReturnType.kt")
+      public void testAnnotatedReturnType() {
+        runTest("compiler/testData/psi/annotation/annotatedReturnType.kt");
       }
 
       @TestMetadata("Annotations.kt")

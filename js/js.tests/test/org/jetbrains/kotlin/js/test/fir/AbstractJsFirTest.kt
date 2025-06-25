@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.test.builders.*
 import org.jetbrains.kotlin.test.configuration.commonFirHandlersForCodegenTest
 import org.jetbrains.kotlin.test.directives.*
 import org.jetbrains.kotlin.test.directives.CodegenTestDirectives.DUMP_IR_AFTER_INLINE
+import org.jetbrains.kotlin.test.directives.KlibAbiConsistencyDirectives.CHECK_SAME_ABI_AFTER_INLINING
 import org.jetbrains.kotlin.test.directives.KlibBasedCompilerTestDirectives.IGNORE_KLIB_SYNTHETIC_ACCESSORS_CHECKS
 import org.jetbrains.kotlin.test.directives.LanguageSettingsDirectives.LANGUAGE
 import org.jetbrains.kotlin.test.directives.model.ValueDirective
@@ -119,6 +120,7 @@ open class AbstractFirJsCodegenBoxTestBase(testGroupOutputDirPrefix: String) : A
 open class AbstractFirJsCodegenBoxTest : AbstractFirJsCodegenBoxTestBase(
     testGroupOutputDirPrefix = "codegen/firBox/"
 )
+
 open class AbstractFirJsCodegenBoxWithInlinedFunInKlibTest : AbstractFirJsCodegenBoxTestBase(
     testGroupOutputDirPrefix = "codegen/firBoxWithInlinedFunInKlib"
 ) {
@@ -126,6 +128,7 @@ open class AbstractFirJsCodegenBoxWithInlinedFunInKlibTest : AbstractFirJsCodege
         super.configure(builder)
         with(builder) {
             defaultDirectives {
+                +CHECK_SAME_ABI_AFTER_INLINING
                 LANGUAGE with "+${LanguageFeature.IrInlinerBeforeKlibSerialization.name}"
             }
             configureLoweredIrHandlersStep {
@@ -140,9 +143,11 @@ open class AbstractFirJsCodegenInlineTest : AbstractFirJsTest(
     testGroupOutputDirPrefix = "codegen/firBoxInline/"
 )
 
-open class AbstractFirJsTypeScriptExportTest : AbstractFirJsTest(
+open class AbstractFirJsTypeScriptExportTest(
+    testGroupOutputDirPrefix: String = "typescript-export/fir/"
+) : AbstractFirJsTest(
     pathToTestDir = "${JsEnvironmentConfigurator.TEST_DATA_DIR_PATH}/typescript-export/",
-    testGroupOutputDirPrefix = "typescript-export/fir/"
+    testGroupOutputDirPrefix = testGroupOutputDirPrefix
 ) {
     override fun configure(builder: TestConfigurationBuilder) {
         super.configure(builder)
@@ -150,9 +155,24 @@ open class AbstractFirJsTypeScriptExportTest : AbstractFirJsTest(
     }
 }
 
-open class AbstractFirJsES6TypeScriptExportTest : AbstractFirJsES6Test(
+open class AbstractFirJsTypeScriptExportWithInlinedFunInKlibTest : AbstractFirJsTypeScriptExportTest(
+    testGroupOutputDirPrefix = "typescript-export/firWithInlinedFunInKlib"
+) {
+    override fun configure(builder: TestConfigurationBuilder) {
+        super.configure(builder)
+        with(builder) {
+            defaultDirectives {
+                LANGUAGE with "+${LanguageFeature.IrInlinerBeforeKlibSerialization.name}"
+            }
+        }
+    }
+}
+
+open class AbstractFirJsES6TypeScriptExportTest(
+    testGroupOutputDirPrefix: String = "typescript-export/fir-es6"
+) : AbstractFirJsES6Test(
     pathToTestDir = "${JsEnvironmentConfigurator.TEST_DATA_DIR_PATH}/typescript-export/",
-    testGroupOutputDirPrefix = "typescript-export/fir-es6"
+    testGroupOutputDirPrefix = testGroupOutputDirPrefix
 ) {
     override fun configure(builder: TestConfigurationBuilder) {
         super.configure(builder)
@@ -201,9 +221,11 @@ open class AbstractFirMultiModuleOrderTest : AbstractFirJsTest(
     }
 }
 
-open class AbstractFirJsSteppingTest : AbstractFirJsTest(
+open class AbstractFirJsSteppingTest(
+    testGroupOutputDirPrefix: String = "debug/firStepping/"
+) : AbstractFirJsTest(
     pathToTestDir = "compiler/testData/debug/stepping/",
-    testGroupOutputDirPrefix = "debug/firStepping/"
+    testGroupOutputDirPrefix = testGroupOutputDirPrefix
 ) {
     override val enableBoxHandlers: Boolean
         get() = false
@@ -214,10 +236,38 @@ open class AbstractFirJsSteppingTest : AbstractFirJsTest(
     }
 }
 
-open class AbstractFirJsCodegenWasmJsInteropTest : AbstractFirJsTest(
+open class AbstractFirJsSteppingWithInlinedFunInKlibTest : AbstractFirJsSteppingTest(
+    testGroupOutputDirPrefix = "debug/firSteppingWithInlinedFunInKlib/"
+) {
+    override fun configure(builder: TestConfigurationBuilder) {
+        super.configure(builder)
+        with(builder) {
+            defaultDirectives {
+                LANGUAGE with "+${LanguageFeature.IrInlinerBeforeKlibSerialization.name}"
+            }
+        }
+    }
+}
+
+open class AbstractFirJsCodegenWasmJsInteropTest(
+    testGroupOutputDirPrefix: String = "codegen/firWasmJsInteropJs/"
+) : AbstractFirJsTest(
     pathToTestDir = "compiler/testData/codegen/wasmJsInterop/",
-    testGroupOutputDirPrefix = "codegen/firWasmJsInteropJs/"
+    testGroupOutputDirPrefix = testGroupOutputDirPrefix
 )
+
+open class AbstractFirJsCodegenWasmJsInteropWithInlinedFunInKlibTest : AbstractFirJsCodegenWasmJsInteropTest(
+    testGroupOutputDirPrefix = "codegen/firWasmJsInteropJsWithInlinedFunInKlib/"
+) {
+    override fun configure(builder: TestConfigurationBuilder) {
+        super.configure(builder)
+        with(builder) {
+            defaultDirectives {
+                LANGUAGE with "+${LanguageFeature.IrInlinerBeforeKlibSerialization.name}"
+            }
+        }
+    }
+}
 
 // TODO(KT-64570): Don't inherit from AbstractFirJsTest after we move the common prefix of lowerings before serialization.
 open class AbstractFirJsKlibSyntheticAccessorTest : AbstractFirJsTest(

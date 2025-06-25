@@ -10,10 +10,11 @@ import org.jetbrains.kotlin.fir.FirModuleData
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.deserialization.ModuleDataProvider
 import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrar
-import org.jetbrains.kotlin.fir.java.FirProjectSessionProvider
 import org.jetbrains.kotlin.fir.session.FirSessionConfigurator
 import org.jetbrains.kotlin.fir.session.FirWasmSessionFactory
-import org.jetbrains.kotlin.library.metadata.resolver.KotlinResolvedLibrary
+import org.jetbrains.kotlin.ir.backend.js.loadWebKlibsInTestPipeline
+import org.jetbrains.kotlin.library.KotlinLibrary
+import org.jetbrains.kotlin.library.loader.KlibPlatformChecker
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.platform.wasm.WasmTarget
 import org.jetbrains.kotlin.test.model.DependencyRelation
@@ -21,35 +22,28 @@ import org.jetbrains.kotlin.test.model.TestModule
 import org.jetbrains.kotlin.test.services.TestServices
 import org.jetbrains.kotlin.test.services.configuration.WasmEnvironmentConfigurator
 import org.jetbrains.kotlin.test.services.configuration.getKlibDependencies
-import org.jetbrains.kotlin.wasm.config.WasmConfigurationKeys
+import org.jetbrains.kotlin.wasm.config.wasmTarget
 import java.io.File
 
 object TestFirWasmSessionFactory {
     fun createLibrarySession(
         mainModuleName: Name,
-        sessionProvider: FirProjectSessionProvider,
         moduleDataProvider: ModuleDataProvider,
         module: TestModule,
         testServices: TestServices,
         configuration: CompilerConfiguration,
         extensionRegistrars: List<FirExtensionRegistrar>,
     ): FirSession {
-        val target = configuration.get(WasmConfigurationKeys.WASM_TARGET, WasmTarget.JS)
-        val resolvedLibraries = resolveLibraries(
-            configuration = configuration,
-            paths = getAllWasmDependenciesPaths(module, testServices, target)
-        )
+        val libraries = loadWasmLibraries(module, testServices, configuration)
 
         val sharedLibrarySession = FirWasmSessionFactory.createSharedLibrarySession(
             mainModuleName,
-            sessionProvider,
             configuration,
             extensionRegistrars
         )
 
         return FirWasmSessionFactory.createLibrarySession(
-            resolvedLibraries.map { it.library },
-            sessionProvider,
+            libraries,
             sharedLibrarySession,
             moduleDataProvider,
             extensionRegistrars,
@@ -59,14 +53,12 @@ object TestFirWasmSessionFactory {
 
     fun createModuleBasedSession(
         mainModuleData: FirModuleData,
-        sessionProvider: FirProjectSessionProvider,
         extensionRegistrars: List<FirExtensionRegistrar>,
         configuration: CompilerConfiguration,
         sessionConfigurator: FirSessionConfigurator.() -> Unit,
     ): FirSession =
         FirWasmSessionFactory.createSourceSession(
             mainModuleData,
-            sessionProvider,
             extensionRegistrars,
             configuration,
             isForLeafHmppModule = false,
@@ -75,17 +67,16 @@ object TestFirWasmSessionFactory {
         )
 }
 
-fun resolveWasmLibraries(
+fun loadWasmLibraries(
     module: TestModule,
     testServices: TestServices,
-    configuration: CompilerConfiguration
-): List<KotlinResolvedLibrary> {
-    val paths = getAllWasmDependenciesPaths(
-        module = module,
-        testServices = testServices,
-        target = configuration.get(WasmConfigurationKeys.WASM_TARGET, WasmTarget.JS)
-    )
-    return resolveLibraries(configuration, paths)
+    configuration: CompilerConfiguration,
+): List<KotlinLibrary> {
+    return loadWebKlibsInTestPipeline(
+        configuration = configuration,
+        libraryPaths = getAllWasmDependenciesPaths(module, testServices, configuration.wasmTarget),
+        platformChecker = KlibPlatformChecker.Wasm(configuration.wasmTarget.alias),
+    ).all
 }
 
 fun getAllWasmDependenciesPaths(

@@ -54,15 +54,11 @@ gradlePlugin {
 }
 
 repositories {
-    mavenCentral()
-    google()
+    mavenCentral { setUrl("https://cache-redirector.jetbrains.com/maven-central") }
+    google { setUrl("https://cache-redirector.jetbrains.com/dl.google.com/dl/android/maven2") }
     maven("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies")
     maven("https://redirector.kotlinlang.org/maven/kotlin-dependencies")
     gradlePluginPortal()
-
-    extra["bootstrapKotlinRepo"]?.let {
-        maven(url = it)
-    }
 }
 
 kotlin {

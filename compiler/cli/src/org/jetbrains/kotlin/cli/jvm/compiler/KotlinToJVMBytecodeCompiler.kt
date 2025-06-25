@@ -21,7 +21,6 @@ import org.jetbrains.kotlin.cli.common.config.addKotlinSourceRoot
 import org.jetbrains.kotlin.cli.common.fir.FirDiagnosticsCompilerResultsReporter
 import org.jetbrains.kotlin.cli.common.messages.AnalyzerWithCompilerReport
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.cli.common.messages.toLogger
 import org.jetbrains.kotlin.cli.common.perfManager
 import org.jetbrains.kotlin.cli.jvm.config.*
 import org.jetbrains.kotlin.cli.jvm.config.ClassicFrontendSpecificJvmConfigurationKeys.JAVA_CLASSES_TRACKER
@@ -38,8 +37,9 @@ import org.jetbrains.kotlin.diagnostics.impl.BaseDiagnosticsCollector
 import org.jetbrains.kotlin.fir.backend.jvm.FirJvmBackendClassResolver
 import org.jetbrains.kotlin.fir.backend.jvm.FirJvmBackendExtension
 import org.jetbrains.kotlin.fir.pipeline.Fir2IrActualizedResult
-import org.jetbrains.kotlin.ir.backend.jvm.jvmResolveLibraries
+import org.jetbrains.kotlin.ir.backend.jvm.loadJvmKlibs
 import org.jetbrains.kotlin.ir.declarations.impl.IrModuleFragmentImpl
+import org.jetbrains.kotlin.library.KotlinLibrary
 import org.jetbrains.kotlin.load.kotlin.ModuleVisibilityManager
 import org.jetbrains.kotlin.modules.Module
 import org.jetbrains.kotlin.modules.TargetId
@@ -50,6 +50,7 @@ import org.jetbrains.kotlin.resolve.jvm.KotlinJavaPsiFacade
 import org.jetbrains.kotlin.util.PhaseType
 import org.jetbrains.kotlin.util.tryMeasurePhaseTime
 import org.jetbrains.kotlin.utils.addToStdlib.runIf
+import org.jetbrains.kotlin.utils.fileUtils.resolveSymlinksGracefully
 import java.io.File
 
 object KotlinToJVMBytecodeCompiler {
@@ -322,12 +323,10 @@ object KotlinToJVMBytecodeCompiler {
     }
 
     fun analyze(environment: KotlinCoreEnvironment): AnalysisResult? {
+        val klibs: List<KotlinLibrary> = loadJvmKlibs(environment.configuration).all
+
         val collector = environment.messageCollector
         val sourceFiles = environment.getSourceFiles()
-
-        val resolvedKlibs = environment.configuration.get(JVMConfigurationKeys.KLIB_PATHS)?.let { klibPaths ->
-            jvmResolveLibraries(klibPaths, collector.toLogger())
-        }?.getFullList() ?: emptyList()
 
         val analyzerWithCompilerReport = AnalyzerWithCompilerReport(
             collector,
@@ -343,6 +342,7 @@ object KotlinToJVMBytecodeCompiler {
             // To support partial and incremental compilation, we add the scope which contains binaries from output directories
             // of the compiled modules (.class) to the list of scopes of the source module
             val scope = if (moduleOutputs.isEmpty()) sourcesOnly else sourcesOnly.uniteWith(DirectoriesScope(project, moduleOutputs))
+            @Suppress("DEPRECATION")
             TopDownAnalyzerFacadeForJVM.analyzeFilesWithJavaIntegration(
                 project,
                 sourceFiles,
@@ -350,7 +350,7 @@ object KotlinToJVMBytecodeCompiler {
                 environment.configuration,
                 environment::createPackagePartProvider,
                 sourceModuleSearchScope = scope,
-                klibList = resolvedKlibs
+                klibList = klibs
             )
         }
 
@@ -471,10 +471,11 @@ fun CompilerConfiguration.configureSourceRoots(chunk: List<Module>, buildFile: F
 
     for (module in chunk) {
         for (classpathRoot in module.getClasspathRoots()) {
+            val file = resolveSymlinksGracefully(classpathRoot).toFile()
             if (isJava9Module) {
-                add(CLIConfigurationKeys.CONTENT_ROOTS, JvmModulePathRoot(File(classpathRoot)))
+                add(CLIConfigurationKeys.CONTENT_ROOTS, JvmModulePathRoot(file))
             }
-            add(CLIConfigurationKeys.CONTENT_ROOTS, JvmClasspathRoot(File(classpathRoot)))
+            add(CLIConfigurationKeys.CONTENT_ROOTS, JvmClasspathRoot(file))
         }
     }
 

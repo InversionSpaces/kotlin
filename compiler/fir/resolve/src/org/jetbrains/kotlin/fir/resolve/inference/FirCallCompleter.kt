@@ -32,7 +32,7 @@ import org.jetbrains.kotlin.fir.resolve.transformers.FirCallCompletionResultsWri
 import org.jetbrains.kotlin.fir.resolve.transformers.body.resolve.FirAbstractBodyResolveTransformer
 import org.jetbrains.kotlin.fir.resolve.transformers.body.resolve.FirAbstractBodyResolveTransformerDispatcher
 import org.jetbrains.kotlin.fir.resolve.transformers.body.resolve.resultType
-import org.jetbrains.kotlin.fir.resolve.transformers.replaceLambdaArgumentInvocationKinds
+import org.jetbrains.kotlin.fir.resolve.transformers.replaceLambdaArgumentEffects
 import org.jetbrains.kotlin.fir.resolve.typeFromCallee
 import org.jetbrains.kotlin.fir.symbols.FirBasedSymbol
 import org.jetbrains.kotlin.fir.symbols.SyntheticCallableId
@@ -107,7 +107,7 @@ class FirCallCompleter(
 
         val analyzer = createPostponedArgumentsAnalyzer(transformer.resolutionContext)
         if (call is FirFunctionCall) {
-            call.replaceLambdaArgumentInvocationKinds(session)
+            call.replaceLambdaArgumentEffects(session)
         }
 
         return when (completionMode) {
@@ -365,18 +365,7 @@ class FirCallCompleter(
             val lambda: FirAnonymousFunction = lambdaAtom.anonymousFunction
             val needItParam = lambda.valueParameters.isEmpty() && parameters.size == 1
 
-            val matchedParameter = candidate.argumentMapping.firstNotNullOfOrNull { (currentAtom, currentValueParameter) ->
-                val currentArgument = currentAtom.expression
-                val currentLambdaArgument =
-                    (currentArgument as? FirAnonymousFunctionExpression)?.anonymousFunction
-                if (currentLambdaArgument === lambda) {
-                    currentValueParameter
-                } else {
-                    null
-                }
-            }
-
-            lambda.matchingParameterFunctionType = matchedParameter?.returnTypeRef?.coneType
+            lambda.matchingParameterFunctionType = lambdaAtom.expectedType
 
             val itParam = when {
                 needItParam -> {

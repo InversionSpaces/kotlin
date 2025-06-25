@@ -29,9 +29,10 @@ fun interface Decoration {
 // ------------------------------------------
 
 @Composable
+@FunctionKeyMeta(key = 2083614743, startOffset = 92, endOffset = 317)
 private fun Decorated(boolean: Boolean, %composer: Composer?, %changed: Int) {
   %composer = %composer.startRestartGroup(<>)
-  sourceInformation(%composer, "C(Decorated)<Decora...>:Test.kt")
+  sourceInformation(%composer, "C(Decorated)N(boolean)<Decora...>:Test.kt")
   val %dirty = %changed
   if (%changed and 0b0110 == 0) {
     %dirty = %dirty or if (%composer.changed(boolean)) 0b0100 else 0b0010
@@ -45,9 +46,10 @@ private fun Decorated(boolean: Boolean, %composer: Composer?, %changed: Int) {
       class <no name provided> : Decoration {
         @Composable
         @ComposableInferredTarget(scheme = "[0[0]]")
+        @FunctionKeyMeta(key = -1679813187, startOffset = 206, endOffset = 302)
         override fun Decoration(content: Function2<Composer, Int, Unit>, %composer: Composer?, %changed: Int) {
           %composer = %composer.startRestartGroup(<>)
-          sourceInformation(%composer, "C(Decoration)<conten...>:Test.kt")
+          sourceInformation(%composer, "C(Decoration)N(content)<conten...>:Test.kt")
           val %dirty = %changed
           if (%changed and 0b0110 == 0) {
             %dirty = %dirty or if (%composer.changedInstance(content)) 0b0100 else 0b0010
@@ -87,9 +89,10 @@ private fun Decorated(boolean: Boolean, %composer: Composer?, %changed: Int) {
 }
 @Composable
 @ComposableInferredTarget(scheme = "[0[0]]")
+@FunctionKeyMeta(key = 487175084, startOffset = 363, endOffset = 475)
 private fun Decoratable(decorator: Decoration, %composer: Composer?, %changed: Int) {
   %composer = %composer.startRestartGroup(<>)
-  sourceInformation(%composer, "C(Decoratable)<Decora...>:Test.kt")
+  sourceInformation(%composer, "C(Decoratable)N(decorator)<Decora...>:Test.kt")
   val %dirty = %changed
   if (%changed and 0b0110 == 0) {
     %dirty = %dirty or if (if (%changed and 0b1000 == 0) {
@@ -116,6 +119,7 @@ private fun Decoratable(decorator: Decoration, %composer: Composer?, %changed: I
 }
 interface Decoration {
   @Composable
+  @FunctionKeyMeta(key = 1815970683, startOffset = 544, endOffset = 591)
   abstract fun Decoration(content: Function2<Composer, Int, Unit>, %composer: Composer?, %changed: Int)
 }
 internal object ComposableSingletons%TestKt {

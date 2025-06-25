@@ -20,9 +20,10 @@ fun Example(
 
 @Composable
 @ComposableInferredTarget(scheme = "[0[0]]")
+@FunctionKeyMeta(key = -1128416959, startOffset = 165, endOffset = 238)
 fun Example(content: Function2<Composer, Int, Unit>?, %composer: Composer?, %changed: Int, %default: Int) {
   %composer = %composer.startRestartGroup(<>)
-  sourceInformation(%composer, "C(Example)<conten...>:Test.kt")
+  sourceInformation(%composer, "C(Example)N(content)<conten...>:Test.kt")
   val %dirty = %changed
   if (%default and 0b0001 != 0) {
     %dirty = %dirty or 0b0110

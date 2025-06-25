@@ -41,7 +41,7 @@ import org.jetbrains.kotlin.types.Variance
 object FirJsExportDeclarationChecker : FirBasicDeclarationChecker(MppCheckerKind.Platform) {
     context(context: CheckerContext, reporter: DiagnosticReporter)
     override fun check(declaration: FirDeclaration) {
-        if (!declaration.symbol.isExportedObject(context) || declaration !is FirMemberDeclaration) {
+        if (!declaration.symbol.isExportedObject() || declaration !is FirMemberDeclaration) {
             return
         }
 
@@ -75,7 +75,7 @@ object FirJsExportDeclarationChecker : FirBasicDeclarationChecker(MppCheckerKind
             reportWrongExportedDeclaration("expect")
         }
 
-        validateDeclarationOnConsumableName(declaration, context, reporter)
+        validateDeclarationOnConsumableName(declaration)
 
         when (declaration) {
             is FirFunction -> {
@@ -234,15 +234,7 @@ object FirJsExportDeclarationChecker : FirBasicDeclarationChecker(MppCheckerKind
         currentlyProcessed: MutableSet<ConeKotlinType> = hashSetOf(),
     ): Boolean {
         val typeFromProjection = when (kind) {
-            ProjectionKind.INVARIANT -> type
-            ProjectionKind.IN -> when (declarationSite.variance) {
-                Variance.IN_VARIANCE -> type
-                else -> null
-            }
-            ProjectionKind.OUT -> when (declarationSite.variance) {
-                Variance.OUT_VARIANCE -> type
-                else -> null
-            }
+            ProjectionKind.INVARIANT, ProjectionKind.OUT, ProjectionKind.IN -> type
             ProjectionKind.STAR -> when (declarationSite.variance) {
                 Variance.INVARIANT -> null
                 else -> declarationSite.getProjectionForRawType(session, makeNullable = false)
@@ -300,10 +292,9 @@ object FirJsExportDeclarationChecker : FirBasicDeclarationChecker(MppCheckerKind
                 || isMap
                 || isMutableMap
 
+    context(context: CheckerContext, reporter: DiagnosticReporter)
     private fun validateDeclarationOnConsumableName(
         declaration: FirMemberDeclaration,
-        context: CheckerContext,
-        reporter: DiagnosticReporter,
     ) {
         if (!context.isTopLevel || declaration.nameOrSpecialName.isSpecial) {
             return
@@ -317,6 +308,6 @@ object FirJsExportDeclarationChecker : FirBasicDeclarationChecker(MppCheckerKind
             return
         }
 
-        reporter.reportOn(reportTarget, FirJsErrors.NON_CONSUMABLE_EXPORTED_IDENTIFIER, name, context)
+        reporter.reportOn(reportTarget, FirJsErrors.NON_CONSUMABLE_EXPORTED_IDENTIFIER, name)
     }
 }

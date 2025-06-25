@@ -17,9 +17,10 @@ fun Something(param: String, rcvr: Int) {
 // ------------------------------------------
 
 @Composable
+@FunctionKeyMeta(key = 216170096, startOffset = 93, endOffset = 273)
 fun Something(param: String, rcvr: Int, %composer: Composer?, %changed: Int) {
   %composer = %composer.startRestartGroup(<>)
-  sourceInformation(%composer, "C(Something)<rcvr::...>:Test.kt")
+  sourceInformation(%composer, "C(Something)N(param,rcvr)<rcvr::...>:Test.kt")
   val %dirty = %changed
   if (%changed and 0b0110 == 0) {
     %dirty = %dirty or if (%composer.changed(param)) 0b0100 else 0b0010

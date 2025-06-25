@@ -19,8 +19,7 @@ import org.jetbrains.kotlin.codegen.coroutines.SuspensionPointKind
 import org.jetbrains.kotlin.codegen.coroutines.generateCoroutineSuspendedCheck
 import org.jetbrains.kotlin.codegen.inline.*
 import org.jetbrains.kotlin.codegen.inline.ReifiedTypeInliner.Companion.putNeedClassReificationMarker
-import org.jetbrains.kotlin.codegen.inline.ReifiedTypeInliner.OperationKind.AS
-import org.jetbrains.kotlin.codegen.inline.ReifiedTypeInliner.OperationKind.SAFE_AS
+import org.jetbrains.kotlin.codegen.inline.ReifiedTypeInliner.OperationKind.*
 import org.jetbrains.kotlin.codegen.intrinsics.TypeIntrinsics
 import org.jetbrains.kotlin.codegen.pseudoInsns.fakeAlwaysFalseIfeq
 import org.jetbrains.kotlin.codegen.pseudoInsns.fixStackAndJump
@@ -368,26 +367,30 @@ class ExpressionCodegen(
             mv.visitLocalVariable("this", classCodegen.type.descriptor, null, startLabel, endLabel, 0)
         }
         for (parameter in irFunction.parameters) {
-            fun writeToLVT(isReceiver: Boolean) = writeValueParameterInLocalVariableTable(parameter, startLabel, endLabel, isReceiver)
+            fun writeToLVT(useReceiverNaming: Boolean) = writeValueParameterInLocalVariableTable(parameter, startLabel, endLabel, useReceiverNaming)
             when (parameter.kind) {
                 IrParameterKind.DispatchReceiver -> {}
-                IrParameterKind.Context -> writeToLVT(isReceiver = parameter.origin == IrDeclarationOrigin.UNDERSCORE_PARAMETER)
-                IrParameterKind.ExtensionReceiver -> writeToLVT(isReceiver = true)
+                IrParameterKind.Context -> writeToLVT(useReceiverNaming = false)
+                IrParameterKind.ExtensionReceiver -> writeToLVT(useReceiverNaming = !parameter.hasFixedName)
                 IrParameterKind.Regular -> when (parameter.origin) {
                     IrDeclarationOrigin.MASK_FOR_DEFAULT_FUNCTION, IrDeclarationOrigin.METHOD_HANDLER_IN_DEFAULT_FUNCTION -> {}
-                    else -> writeToLVT(isReceiver = false)
+                    else -> writeToLVT(useReceiverNaming = false)
                 }
             }
         }
     }
 
-    private fun writeValueParameterInLocalVariableTable(param: IrValueParameter, startLabel: Label, endLabel: Label, isReceiver: Boolean) {
+    private fun writeValueParameterInLocalVariableTable(
+        param: IrValueParameter, startLabel: Label, endLabel: Label, useReceiverNaming: Boolean
+    ) {
         if (!param.isVisibleInLVT) return
 
         // If the parameter is an extension receiver parameter or a captured extension receiver from enclosing,
         // then generate name accordingly.
-        val name = if (param.origin == BOUND_RECEIVER_PARAMETER || isReceiver) {
+        val name = if (param.origin == BOUND_RECEIVER_PARAMETER || useReceiverNaming) {
             getNameForReceiverParameter(irFunction.toIrBasedDescriptor(), context.config.languageVersionSettings)
+        } else if (param.kind == IrParameterKind.Context) {
+            irFunction.anonymousContextParameterName(param) ?: param.name.asString()
         } else {
             param.name.asString()
         }
@@ -428,7 +431,7 @@ class ExpressionCodegen(
     private val IrValueDeclaration.isVisibleInLVT: Boolean
         get() = origin != IrDeclarationOrigin.IR_TEMPORARY_VARIABLE &&
                 origin != IrDeclarationOrigin.FOR_LOOP_ITERATOR &&
-                origin != IrDeclarationOrigin.UNDERSCORE_PARAMETER &&
+                (origin != IrDeclarationOrigin.UNDERSCORE_PARAMETER || this is IrValueParameter && this.kind == IrParameterKind.Context) &&
                 origin != IrDeclarationOrigin.DESTRUCTURED_OBJECT_PARAMETER &&
                 origin != JvmLoweredDeclarationOrigin.TEMPORARY_MULTI_FIELD_VALUE_CLASS_VARIABLE &&
                 origin != JvmLoweredDeclarationOrigin.TEMPORARY_MULTI_FIELD_VALUE_CLASS_PARAMETER
@@ -634,6 +637,7 @@ class ExpressionCodegen(
 
     private fun IrFunctionAccessExpression.getSuspensionPointKind(): SuspensionPointKind =
         when {
+            this is IrCall && this.originalForReflectiveCall != null -> this.originalForReflectiveCall!!.getSuspensionPointKind()
             !symbol.owner.isSuspend || !irFunction.shouldContainSuspendMarkers() ->
                 SuspensionPointKind.NEVER
             // Copy-pasted bytecode blocks are not suspension points.
@@ -947,7 +951,8 @@ class ExpressionCodegen(
 
     override fun visitClass(declaration: IrClass, data: BlockInfo): PromisedValue {
         if (declaration.origin != JvmLoweredDeclarationOrigin.CONTINUATION_CLASS) {
-            val childCodegen = ClassCodegen.getOrCreate(declaration, context, enclosingFunctionForLocalObjects)
+            val childCodegen =
+                ClassCodegen.getOrCreate(declaration, context, classCodegen.intrinsicExtensions, enclosingFunctionForLocalObjects)
             childCodegen.generate()
             closureReifiedMarkers[declaration] = childCodegen.reifiedTypeParametersUsages
         }
@@ -1311,6 +1316,7 @@ class ExpressionCodegen(
             val descriptorType = parameter.asmType
             val index = frameMap.enter(parameter, descriptorType)
             clause.markLineNumber(true)
+            putReifiedOperationMarkerIfTypeIsReifiedParameter(parameter.type, CATCH)
             mv.store(index, descriptorType)
             val afterStore = markNewLabel()
 
@@ -1530,9 +1536,14 @@ class ExpressionCodegen(
         data: BlockInfo,
         signature: JvmMethodSignature
     ): IrCallGenerator {
+        // we do not inline into @JvmStatic wrappers to keep bytecode smaller, but for private ones
+        // inlining is preferred (compared to the necessity in extra access-method)
+        fun IrFunction.isNonPrivateJvmStaticWrapper() =
+            origin == JvmLoweredDeclarationOrigin.JVM_STATIC_WRAPPER && visibility != DescriptorVisibilities.PRIVATE
+
         if (!element.symbol.owner.isInlineFunctionCall(context) ||
             classCodegen.irClass.fileParent.fileEntry is MultifileFacadeFileEntry ||
-            irFunction.origin == JvmLoweredDeclarationOrigin.JVM_STATIC_WRAPPER ||
+            irFunction.isNonPrivateJvmStaticWrapper() ||
             irFunction.isInvokeSuspendOfContinuation()
         ) {
             return IrCallGenerator.DefaultCallGenerator

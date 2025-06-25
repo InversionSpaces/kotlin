@@ -3,18 +3,7 @@ import org.gradle.plugins.ide.idea.model.IdeaModel
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 buildscript {
-    // a workaround for kotlin compiler classpath in kotlin project: sometimes gradle substitutes
-    // kotlin-stdlib external dependency with local project :kotlin-stdlib in kotlinCompilerClasspath configuration.
-    // see also configureCompilerClasspath@
-    val bootstrapCompilerClasspath by configurations.creating
-    val bootstrapBuildToolsApiClasspath by configurations.creating
-    val gradlePluginsBuildToolsApiClasspath by configurations.creating
-
     dependencies {
-        bootstrapCompilerClasspath(kotlin("compiler-embeddable", bootstrapKotlinVersion))
-        bootstrapBuildToolsApiClasspath(kotlin("build-tools-impl", bootstrapKotlinVersion))
-        gradlePluginsBuildToolsApiClasspath(kotlin("build-tools-impl", libs.versions.kotlin.`for`.gradle.plugins.compilation.get()))
-
         classpath("org.jetbrains.kotlin:kotlin-build-gradle-plugin:${kotlinBuildProperties.buildGradlePluginVersion}")
     }
 
@@ -126,7 +115,7 @@ if (!project.hasProperty("versions.kotlin-native")) {
     extra["versions.kotlin-native"] = if (kotlinBuildProperties.isKotlinNativeEnabled) {
         kotlinBuildProperties.defaultSnapshotVersion
     } else {
-        "2.2.20-dev-3101"
+        "2.2.20-dev-5253"
     }
 }
 
@@ -159,7 +148,11 @@ val irCompilerModulesForIDE = arrayOf(
 ).also { extra["irCompilerModulesForIDE"] = it }
 
 val commonCompilerModules = arrayOf(
-    ":compiler:psi",
+    ":compiler:psi:psi-api",
+    ":compiler:psi:psi-impl",
+    ":compiler:psi:psi-utils",
+    ":compiler:psi:psi-frontend-utils",
+    ":compiler:psi:parser",
     ":compiler:frontend.common-psi",
     ":compiler:frontend.common",
     ":compiler:util",
@@ -800,7 +793,6 @@ tasks {
     }
 
     register("jvmCompilerTest") {
-        dependsOn("dist")
         dependsOn(
             ":compiler:tests-common-new:test",
             ":compiler:container:test",
@@ -854,6 +846,7 @@ tasks {
         dependsOn(":native:native.tests:cli-tests:check")
         dependsOn(":native:native.tests:codegen-box:check")
         dependsOn(":native:native.tests:driver:check")
+        dependsOn(":native:native.tests:gc-fuzzing-tests:check")
         dependsOn(":native:native.tests:stress:check")
         dependsOn(":native:native.tests:klib-compatibility:check")
         dependsOn(":native:objcexport-header-generator:check")
@@ -936,6 +929,7 @@ tasks {
     register("miscCompilerTest") {
         dependsOn(":compiler:test")
         dependsOn(":compiler:tests-integration:test")
+        dependsOn(":kotlin-compiler-embeddable:test")
         dependsOn("incrementalCompilationTest")
         dependsOn("scriptingTest")
         dependsOn("jvmCompilerIntegrationTest")
@@ -1055,6 +1049,12 @@ tasks {
         dependsOn("test")
     }
 
+    register("dependenciesAll") {
+        subprojects.forEach {
+            dependsOn(it.tasks.named("dependencies"))
+        }
+    }
+
     named("checkBuild") {
         if (kotlinBuildProperties.isTeamcityBuild) {
             val bootstrapKotlinVersion = bootstrapKotlinVersion
@@ -1092,7 +1092,7 @@ tasks {
             environment("JDK_1_8", getToolchainJdkHomeFor(JdkMajorVersion.JDK_1_8).get())
         }
     }
-    register<Exec>("mvnPublish") {
+    val mvnPublishTask = register<Exec>("mvnPublish") {
         group = "publishing"
         workingDir = rootProject.projectDir.resolve("libraries")
         commandLine = getMvnwCmd() + listOf(
@@ -1101,8 +1101,18 @@ tasks {
             "-Ddeploy-snapshot-repo=local",
             "-Ddeploy-snapshot-url=file://${rootProject.projectDir.resolve("build/repo")}"
         )
+
+        val jdkToolchain1_8 = getToolchainJdkHomeFor(JdkMajorVersion.JDK_1_8)
         doFirst {
-            environment("JDK_1_8", getToolchainJdkHomeFor(JdkMajorVersion.JDK_1_8).get())
+            environment("JDK_1_8", jdkToolchain1_8.get())
+        }
+    }
+
+    // 'mvnPublish' is required for local bootstrap
+    if (!kotlinBuildProperties.isTeamcityBuild) {
+        register("publish") {
+            group = "publishing"
+            dependsOn(mvnPublishTask)
         }
     }
 

@@ -57,7 +57,7 @@ private class A {
 }
 
 inline fun internal4() {
-    A.B.<!NON_PUBLIC_CALL_FROM_PUBLIC_INLINE!>foo<!>()// should be an error
+    A.<!LESS_VISIBLE_TYPE_ACCESS_IN_INLINE_WARNING!>B<!>.<!NON_PUBLIC_CALL_FROM_PUBLIC_INLINE!>foo<!>()// should be an error
 }
 
 class C2 {
@@ -81,3 +81,7 @@ class C3 {
         <!NON_PUBLIC_CALL_FROM_PUBLIC_INLINE!>foo<!>() // already an error, should be an error
     }
 }
+
+/* GENERATED_FIR_TAGS: anonymousObjectExpression, assignment, checkNotNullCall, classDeclaration, classReference,
+companionObject, functionDeclaration, functionalType, inline, integerLiteral, interfaceDeclaration, isExpression,
+lambdaLiteral, nestedClass, nullableType, objectDeclaration, propertyDeclaration, typeConstraint, typeParameter */

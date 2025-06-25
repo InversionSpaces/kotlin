@@ -5,7 +5,7 @@
 
 package org.jetbrains.kotlin.test.frontend.classic
 
-import org.jetbrains.kotlin.backend.common.serialization.sortDependencies
+import org.jetbrains.kotlin.backend.common.LoadedKlibs
 import org.jetbrains.kotlin.backend.jvm.JvmIrCodegenFactory
 import org.jetbrains.kotlin.cli.js.klib.TopDownAnalyzerFacadeForJSIR
 import org.jetbrains.kotlin.cli.js.klib.TopDownAnalyzerFacadeForWasm
@@ -83,18 +83,21 @@ class ClassicFrontend2IrConverter(
         val sourceFiles = psiFiles.values.toList()
         val icData = configuration.incrementalDataProvider?.getSerializedData(sourceFiles) ?: emptyList()
 
+        val klibs = LoadedKlibs(all = JsEnvironmentConfigurator.getDependencyLibrariesFor(module, testServices))
+
         val (moduleFragment, pluginContext) = generateIrForKlibSerialization(
             project = project,
             files = sourceFiles,
             configuration = configuration,
             analysisResult = analysisResult,
-            sortedDependencies = sortDependencies(JsEnvironmentConfigurator.getAllDependenciesMappingFor(module, testServices)),
+            klibs = klibs,
             icData = icData,
             irFactory = IrFactoryImpl,
         ) {
             testServices.libraryProvider.getDescriptorByCompiledLibrary(it)
         }
 
+        @Suppress("DEPRECATION")
         val hasErrors = TopDownAnalyzerFacadeForJSIR.checkForErrors(sourceFiles, analysisResult.bindingContext)
         val metadataSerializer = KlibMetadataIncrementalSerializer(
             sourceFiles,
@@ -126,19 +129,24 @@ class ClassicFrontend2IrConverter(
         val sourceFiles = psiFiles.values.toList()
         val icData = configuration.incrementalDataProvider?.getSerializedData(sourceFiles) ?: emptyList()
 
+        val klibs = LoadedKlibs(all = WasmEnvironmentConfigurator.getDependencyLibrariesFor(module, testServices))
+
         val (moduleFragment, pluginContext) = generateIrForKlibSerialization(
             project = project,
             files = sourceFiles,
             configuration = configuration,
             analysisResult = analysisResult,
-            sortedDependencies = sortDependencies(WasmEnvironmentConfigurator.getAllDependenciesMappingFor(module, testServices)),
+            klibs = klibs,
             icData = icData,
             irFactory = IrFactoryImpl,
         ) {
             testServices.libraryProvider.getDescriptorByCompiledLibrary(it)
         }
 
+        @Suppress("DEPRECATION")
         val analyzerFacade = TopDownAnalyzerFacadeForWasm.facadeFor(configuration.get(WasmConfigurationKeys.WASM_TARGET))
+
+        @Suppress("DEPRECATION")
         val hasErrors = analyzerFacade.checkForErrors(sourceFiles, analysisResult.bindingContext)
         val metadataSerializer = KlibMetadataIncrementalSerializer(
             sourceFiles,

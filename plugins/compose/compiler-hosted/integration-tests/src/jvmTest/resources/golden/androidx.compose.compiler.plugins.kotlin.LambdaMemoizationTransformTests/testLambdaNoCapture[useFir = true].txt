@@ -21,9 +21,10 @@ fun Test() {
 // ------------------------------------------
 
 @Composable
+@FunctionKeyMeta(key = -586260151, startOffset = 93, endOffset = 168)
 fun TestLambda(content: Function0<Unit>, %composer: Composer?, %changed: Int) {
   %composer = %composer.startRestartGroup(<>)
-  sourceInformation(%composer, "C(TestLambda):Test.kt")
+  sourceInformation(%composer, "C(TestLambda)N(content):Test.kt")
   val %dirty = %changed
   if (%changed and 0b0110 == 0) {
     %dirty = %dirty or if (%composer.changedInstance(content)) 0b0100 else 0b0010
@@ -44,6 +45,7 @@ fun TestLambda(content: Function0<Unit>, %composer: Composer?, %changed: Int) {
   }
 }
 @Composable
+@FunctionKeyMeta(key = -1794342280, startOffset = 206, endOffset = 318)
 fun Test(%composer: Composer?, %changed: Int) {
   %composer = %composer.startRestartGroup(<>)
   sourceInformation(%composer, "C(Test)<{>,<TestLa...>:Test.kt")

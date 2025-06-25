@@ -53,9 +53,6 @@ fun main(args: Array<String>) {
             testClass<AbstractJsPartialLinkageNoICES6TestCase>(annotations = listOf(*legacyFrontend(), *es6())) {
                 model(pattern = "^([^_](.+))$", targetBackend = TargetBackend.JS_IR_ES6, recursive = false)
             }
-            testClass<AbstractFirJsPartialLinkageNoICTestCase> {
-                model(pattern = "^([^_](.+))$", targetBackend = TargetBackend.JS_IR, recursive = false)
-            }
         }
 
         testGroup("js/js.tests/tests-gen", "compiler/testData/klib/syntheticAccessors") {
@@ -187,6 +184,10 @@ fun main(args: Array<String>) {
             testClass<AbstractFirJsES6TypeScriptExportTest>(annotations = listOf(*es6())) {
                 model(pattern = "^([^_](.+))\\.kt$")
             }
+
+            testClass<AbstractFirJsTypeScriptExportWithInlinedFunInKlibTest>(annotations = listOf(*es6())) {
+                model(pattern = "^([^_](.+))\\.kt$")
+            }
         }
 
         testGroup("js/js.tests/tests-gen", "js/js.translator/testData/webDemoExamples", testRunnerMethodName = "runTest0") {
@@ -255,6 +256,10 @@ fun main(args: Array<String>) {
                 model("boxWasmJsInterop")
             }
 
+            testClass<AbstractFirJsCodegenWasmJsInteropWithInlinedFunInKlibTest> {
+                model("boxWasmJsInterop")
+            }
+
             testClass<AbstractFirJsES6CodegenWasmJsInteropTest>(annotations = listOf(*es6())) {
                 model("boxWasmJsInterop")
             }
@@ -276,6 +281,10 @@ fun main(args: Array<String>) {
             }
 
             testClass<AbstractFirJsSteppingTest> {
+                model("stepping")
+            }
+
+            testClass<AbstractFirJsSteppingWithInlinedFunInKlibTest> {
                 model("stepping")
             }
 

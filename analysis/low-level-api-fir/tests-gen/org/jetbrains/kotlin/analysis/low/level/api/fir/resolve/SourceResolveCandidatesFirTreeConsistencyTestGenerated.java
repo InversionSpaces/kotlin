@@ -3233,6 +3233,30 @@ public class SourceResolveCandidatesFirTreeConsistencyTestGenerated extends Abst
       runTest("analysis/analysis-api/testData/components/resolver/singleByPsi/java/SyntheticProperty.kt");
     }
 
+    @Test
+    @TestMetadata("SyntheticPropertyJavaOverride.kt")
+    public void testSyntheticPropertyJavaOverride() {
+      runTest("analysis/analysis-api/testData/components/resolver/singleByPsi/java/SyntheticPropertyJavaOverride.kt");
+    }
+
+    @Test
+    @TestMetadata("SyntheticPropertyJavaOverrideGeneric.kt")
+    public void testSyntheticPropertyJavaOverrideGeneric() {
+      runTest("analysis/analysis-api/testData/components/resolver/singleByPsi/java/SyntheticPropertyJavaOverrideGeneric.kt");
+    }
+
+    @Test
+    @TestMetadata("SyntheticPropertyKotlinOverride.kt")
+    public void testSyntheticPropertyKotlinOverride() {
+      runTest("analysis/analysis-api/testData/components/resolver/singleByPsi/java/SyntheticPropertyKotlinOverride.kt");
+    }
+
+    @Test
+    @TestMetadata("SyntheticPropertyKotlinOverrideGeneric.kt")
+    public void testSyntheticPropertyKotlinOverrideGeneric() {
+      runTest("analysis/analysis-api/testData/components/resolver/singleByPsi/java/SyntheticPropertyKotlinOverrideGeneric.kt");
+    }
+
     @Nested
     @TestMetadata("analysis/analysis-api/testData/components/resolver/singleByPsi/java/enumWithCustomGetName")
     @TestDataPath("$PROJECT_ROOT")
@@ -3735,6 +3759,12 @@ public class SourceResolveCandidatesFirTreeConsistencyTestGenerated extends Abst
       }
 
       @Test
+      @TestMetadata("FunctionContextParameter.kt")
+      public void testFunctionContextParameter() {
+        runTest("analysis/analysis-api/testData/components/resolver/singleByPsi/kDoc/parameters/FunctionContextParameter.kt");
+      }
+
+      @Test
       @TestMetadata("FunctionTypeParameter.kt")
       public void testFunctionTypeParameter() {
         runTest("analysis/analysis-api/testData/components/resolver/singleByPsi/kDoc/parameters/FunctionTypeParameter.kt");
@@ -4214,6 +4244,12 @@ public class SourceResolveCandidatesFirTreeConsistencyTestGenerated extends Abst
       @Test
       public void testAllFilesPresentInWithErrors() {
         KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("analysis/analysis-api/testData/components/resolver/singleByPsi/kDoc/withErrors"), Pattern.compile("^(.+)\\.(kt)$"), null, true);
+      }
+
+      @Test
+      @TestMetadata("duplicatedContextParameters.kt")
+      public void testDuplicatedContextParameters() {
+        runTest("analysis/analysis-api/testData/components/resolver/singleByPsi/kDoc/withErrors/duplicatedContextParameters.kt");
       }
 
       @Test

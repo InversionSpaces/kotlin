@@ -204,6 +204,12 @@
             "major": 2,
             "minor": 2,
             "patch": 0
+        },
+        {
+            "name": "2.2.20",
+            "major": 2,
+            "minor": 2,
+            "patch": 20
         }
     ],
     "types": {
@@ -331,6 +337,15 @@
                     "name": "2.3",
                     "releaseVersionsMetadata": {
                         "introducedVersion": "2.2.0",
+                        "stabilizedVersion": null,
+                        "deprecatedVersion": null,
+                        "removedVersion": null
+                    }
+                },
+                {
+                    "name": "2.4",
+                    "releaseVersionsMetadata": {
+                        "introducedVersion": "2.2.20",
                         "stabilizedVersion": null,
                         "deprecatedVersion": null,
                         "removedVersion": null
@@ -1482,7 +1497,7 @@
                         "shortName": null,
                         "deprecatedName": null,
                         "description": {
-                            "current": "Dump detailed performance statistics to the specified file.",
+                            "current": "Dump detailed performance statistics to the specified file in plain text, JSON or markdown format (it's detected by the file's extension).\nAlso, it supports the placeholder `*` and directory for generating file names based on the module being compiled and the current time stamp.\nExample: `path/to/dir/*.log` creates logs like `path/to/dir/my-module_2025-06-20-12-22-32.log` in plain text format, `path/to/dir/` creates logs like `path/to/dir/my-log_2025-06-20-12-22-32.json`.",
                             "valueInVersions": []
                         },
                         "delimiter": null,
@@ -2091,9 +2106,9 @@
                             "valueInVersions": []
                         },
                         "releaseVersionsMetadata": {
-                            "introducedVersion": "1.4.0",
-                            "stabilizedVersion": "1.4.0",
-                            "deprecatedVersion": null,
+                            "introducedVersion": "2.0.0",
+                            "stabilizedVersion": null,
+                            "deprecatedVersion": "2.2.20",
                             "removedVersion": null
                         }
                     },
@@ -2880,7 +2895,7 @@
                             "current": "Declare common klib dependencies for the specific fragment.\nThis argument is required for any HMPP module except the platform leaf module: it takes dependencies from -cp/-libraries.\nThe argument should be used only if the new compilation scheme is enabled with -Xseparate-kmp-compilation\n",
                             "valueInVersions": []
                         },
-                        "delimiter": null,
+                        "delimiter": "None",
                         "valueType": {
                             "type": "org.jetbrains.kotlin.arguments.dsl.types.StringArrayType",
                             "defaultValue": {
@@ -3240,6 +3255,37 @@
                         "releaseVersionsMetadata": {
                             "introducedVersion": "1.4.0",
                             "stabilizedVersion": "1.4.0",
+                            "deprecatedVersion": null,
+                            "removedVersion": null
+                        }
+                    },
+                    {
+                        "name": "Xallow-reified-type-in-catch",
+                        "shortName": null,
+                        "deprecatedName": null,
+                        "description": {
+                            "current": "Allow 'catch' parameters to have reified types.",
+                            "valueInVersions": []
+                        },
+                        "delimiter": null,
+                        "valueType": {
+                            "type": "org.jetbrains.kotlin.arguments.dsl.types.BooleanType",
+                            "isNullable": {
+                                "current": false,
+                                "valueInVersions": []
+                            },
+                            "defaultValue": {
+                                "current": false,
+                                "valueInVersions": []
+                            }
+                        },
+                        "valueDescription": {
+                            "current": null,
+                            "valueInVersions": []
+                        },
+                        "releaseVersionsMetadata": {
+                            "introducedVersion": "2.2.20",
+                            "stabilizedVersion": null,
                             "deprecatedVersion": null,
                             "removedVersion": null
                         }
@@ -5635,6 +5681,37 @@
                                     "deprecatedVersion": null,
                                     "removedVersion": null
                                 }
+                            },
+                            {
+                                "name": "Xwhen-expressions",
+                                "shortName": null,
+                                "deprecatedName": null,
+                                "description": {
+                                    "current": "Select the code generation scheme for type-checking 'when' expressions:\n-Xwhen-expressions=indy         Generate type-checking 'when' expressions using 'invokedynamic' with 'SwitchBootstraps.typeSwitch(..)' and \n                                following 'tableswitch' or 'lookupswitch'. This requires '-jvm-target 21' or greater.\n-Xwhen-expressions=inline       Generate type-checking 'when' expressions as a chain of type checks.\nThe default value is 'inline'.",
+                                    "valueInVersions": []
+                                },
+                                "delimiter": null,
+                                "valueType": {
+                                    "type": "org.jetbrains.kotlin.arguments.dsl.types.StringType",
+                                    "isNullable": {
+                                        "current": true,
+                                        "valueInVersions": []
+                                    },
+                                    "defaultValue": {
+                                        "current": null,
+                                        "valueInVersions": []
+                                    }
+                                },
+                                "valueDescription": {
+                                    "current": "{indy|inline}",
+                                    "valueInVersions": []
+                                },
+                                "releaseVersionsMetadata": {
+                                    "introducedVersion": "2.2.20",
+                                    "stabilizedVersion": null,
+                                    "deprecatedVersion": null,
+                                    "removedVersion": null
+                                }
                             }
                         ],
                         "nestedLevels": []
@@ -6046,37 +6123,6 @@
                                         "releaseVersionsMetadata": {
                                             "introducedVersion": "1.4.0",
                                             "stabilizedVersion": "1.4.0",
-                                            "deprecatedVersion": null,
-                                            "removedVersion": null
-                                        }
-                                    },
-                                    {
-                                        "name": "Xwasm-optimise-lambda-calls",
-                                        "shortName": null,
-                                        "deprecatedName": null,
-                                        "description": {
-                                            "current": "Use lambda calls optimisation using special interface table slots.",
-                                            "valueInVersions": []
-                                        },
-                                        "delimiter": null,
-                                        "valueType": {
-                                            "type": "org.jetbrains.kotlin.arguments.dsl.types.BooleanType",
-                                            "isNullable": {
-                                                "current": false,
-                                                "valueInVersions": []
-                                            },
-                                            "defaultValue": {
-                                                "current": false,
-                                                "valueInVersions": []
-                                            }
-                                        },
-                                        "valueDescription": {
-                                            "current": null,
-                                            "valueInVersions": []
-                                        },
-                                        "releaseVersionsMetadata": {
-                                            "introducedVersion": "2.2.0",
-                                            "stabilizedVersion": null,
                                             "deprecatedVersion": null,
                                             "removedVersion": null
                                         }

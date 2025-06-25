@@ -356,13 +356,13 @@ internal class ClassMemberGenerator(
 
         // Unwrap substitution overrides from both derived class and a superclass
         val constructorSymbol = referencedSymbol
-            .unwrapCallRepresentative(c, referencedSymbol.containingClassLookupTag())
-            .unwrapCallRepresentative(c, referencedSymbol.resolvedReturnType.classLikeLookupTagIfAny)
+            .unwrapCallRepresentative(referencedSymbol.containingClassLookupTag())
+            .unwrapCallRepresentative(referencedSymbol.resolvedReturnType.classLikeLookupTagIfAny)
 
         check(constructorSymbol is FirConstructorSymbol)
 
         val irConstructorSymbol = declarationStorage.getIrFunctionSymbol(constructorSymbol) as IrConstructorSymbol
-        val typeArguments = constructedTypeRef.coneType.fullyExpandedType(session).typeArguments
+        val typeArguments = constructedTypeRef.coneType.fullyExpandedType().typeArguments
         val constructor = constructorSymbol.fir
         /*
          * We should generate enum constructor call only if it is used to create new enum entry (so it's a super constructor call)

@@ -18,9 +18,7 @@ import org.jetbrains.kotlin.fir.resolve.diagnostics.ConePlaceholderProjectionInQ
 import org.jetbrains.kotlin.fir.resolve.fullyExpandedType
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassLikeSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirTypeAliasSymbol
-import org.jetbrains.kotlin.fir.types.ConeErrorType
 import org.jetbrains.kotlin.fir.types.FirErrorTypeRef
-import org.jetbrains.kotlin.fir.types.FirPlaceholderProjection
 import org.jetbrains.kotlin.fir.types.FirTypeProjectionWithVariance
 import org.jetbrains.kotlin.fir.types.constructType
 
@@ -55,7 +53,7 @@ object FirTypeArgumentsOfQualifierOfCallableReferenceChecker : FirCallableRefere
 
         if (correspondingDeclaration is FirTypeAliasSymbol) {
             val qualifierType = correspondingDeclaration.constructType(typeArgumentsWithSourceInfo.toTypedArray())
-            val expandedLhsType = qualifierType.fullyExpandedType(context.session)
+            val expandedLhsType = qualifierType.fullyExpandedType()
             typeArgumentsWithSourceInfo = expandedLhsType.typeArguments.toList()
 
             val expandedClassSymbol = correspondingDeclaration.resolvedExpandedTypeRef.toRegularClassSymbol(context.session) ?: return
@@ -64,11 +62,13 @@ object FirTypeArgumentsOfQualifierOfCallableReferenceChecker : FirCallableRefere
 
         val substitutor = FE10LikeConeSubstitutor(typeParameterSymbols, typeArgumentsWithSourceInfo, context.session)
         checkUpperBoundViolated(
-            context,
-            reporter,
             typeParameterSymbols,
             typeArgumentsWithSourceInfo,
             substitutor,
+            // Manipulations with `constructType()` and `fullyExpandedType()` above may shove
+            // the argument with the true source element arbitrarily deep, so we may end up
+            // with "source must not be null".
+            fallbackSource = lhs.source,
         )
     }
 }

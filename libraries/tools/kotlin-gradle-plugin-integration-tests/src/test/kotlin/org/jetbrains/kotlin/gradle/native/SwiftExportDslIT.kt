@@ -10,6 +10,7 @@ import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.swiftexport.ExperimentalSwiftExportDsl
 import org.jetbrains.kotlin.gradle.testbase.*
 import org.jetbrains.kotlin.gradle.uklibs.*
+import org.jetbrains.kotlin.gradle.util.publishMultiplatformLibrary
 import org.jetbrains.kotlin.gradle.util.swiftExportEmbedAndSignEnvVariables
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.condition.OS
@@ -32,7 +33,12 @@ class SwiftExportDslIT : KGPBaseTest() {
         gradleVersion: GradleVersion,
         @TempDir testBuildDir: Path,
     ) {
-        project("empty", gradleVersion) {
+        project(
+            "empty",
+            gradleVersion,
+            // KT-78385 Swift Export is not compatible with Gradle isolated projects
+            buildOptions = defaultBuildOptions.disableIsolatedProjects(),
+        ) {
             plugins {
                 kotlin("multiplatform")
             }
@@ -120,7 +126,12 @@ class SwiftExportDslIT : KGPBaseTest() {
         gradleVersion: GradleVersion,
         @TempDir testBuildDir: Path,
     ) {
-        project("empty", gradleVersion) {
+        project(
+            "empty",
+            gradleVersion,
+            // KT-78385 Swift Export is not compatible with Gradle isolated projects
+            buildOptions = defaultBuildOptions.disableIsolatedProjects(),
+        ) {
             plugins {
                 kotlin("multiplatform")
             }
@@ -195,7 +206,12 @@ class SwiftExportDslIT : KGPBaseTest() {
         gradleVersion: GradleVersion,
         @TempDir testBuildDir: Path,
     ) {
-        project("empty", gradleVersion) {
+        project(
+            "empty",
+            gradleVersion,
+            // KT-78385 Swift Export is not compatible with Gradle isolated projects
+            buildOptions = defaultBuildOptions.disableIsolatedProjects(),
+        ) {
             plugins {
                 kotlin("multiplatform")
             }
@@ -271,20 +287,7 @@ class SwiftExportDslIT : KGPBaseTest() {
         @TempDir testBuildDir: Path,
     ) {
         // Publish dependency
-        val multiplatformLibrary = project("empty", gradleVersion) {
-            plugins {
-                kotlin("multiplatform")
-            }
-            settingsBuildScriptInjection {
-                settings.rootProject.name = "multiplatformLibrary"
-            }
-            buildScriptInjection {
-                project.applyMultiplatform {
-                    iosArm64()
-                    sourceSets.commonMain.get().compileStubSourceWithSourceSetName()
-                }
-            }
-        }.publish(publisherConfiguration = PublisherConfiguration())
+        val multiplatformLibrary = publishMultiplatformLibrary(gradleVersion)
 
         project(
             "empty",
@@ -324,7 +327,12 @@ class SwiftExportDslIT : KGPBaseTest() {
         gradleVersion: GradleVersion,
         @TempDir testBuildDir: Path,
     ) {
-        project("empty", gradleVersion) {
+        project(
+            "empty",
+            gradleVersion,
+            // KT-78385 Swift Export is not compatible with Gradle isolated projects
+            buildOptions = defaultBuildOptions.disableIsolatedProjects(),
+        ) {
             plugins {
                 kotlin("multiplatform")
             }

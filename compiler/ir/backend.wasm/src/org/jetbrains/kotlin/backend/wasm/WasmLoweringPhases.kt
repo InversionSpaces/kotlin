@@ -6,13 +6,13 @@
 package org.jetbrains.kotlin.backend.wasm
 
 import org.jetbrains.kotlin.backend.common.ir.Symbols.Companion.isTypeOfIntrinsic
-import org.jetbrains.kotlin.backend.common.ir.isReifiable
 import org.jetbrains.kotlin.backend.common.lower.*
 import org.jetbrains.kotlin.backend.common.lower.coroutines.AddContinuationToNonLocalSuspendFunctionsLowering
 import org.jetbrains.kotlin.backend.common.lower.inline.LocalClassesInInlineLambdasLowering
 import org.jetbrains.kotlin.backend.common.lower.loops.ForLoopsLowering
 import org.jetbrains.kotlin.backend.common.lower.optimizations.PropertyAccessorInlineLowering
 import org.jetbrains.kotlin.backend.common.phaser.*
+import org.jetbrains.kotlin.backend.common.lower.DelegatedPropertyOptimizationLowering
 import org.jetbrains.kotlin.backend.wasm.lower.*
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.KlibConfigurationKeys
@@ -24,11 +24,9 @@ import org.jetbrains.kotlin.ir.backend.js.lower.coroutines.AddContinuationToFunc
 import org.jetbrains.kotlin.ir.backend.js.lower.coroutines.JsSuspendFunctionsLowering
 import org.jetbrains.kotlin.ir.backend.js.lower.inline.RemoveInlineDeclarationsWithReifiedTypeParametersLowering
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
-import org.jetbrains.kotlin.ir.expressions.IrFunctionReference
 import org.jetbrains.kotlin.ir.inline.*
 import org.jetbrains.kotlin.ir.interpreter.IrInterpreterConfiguration
 import org.jetbrains.kotlin.platform.wasm.WasmPlatforms
-import org.jetbrains.kotlin.utils.bind
 import org.jetbrains.kotlin.wasm.config.WasmConfigurationKeys
 
 private fun List<CompilerPhase<WasmBackendContext, IrModuleFragment, IrModuleFragment>>.toCompilerPhase() =
@@ -44,14 +42,8 @@ private val validateIrAfterInliningOnlyPrivateFunctionsPhase = makeIrModulePhase
         IrValidationAfterInliningOnlyPrivateFunctionsPhase(
             context,
             checkInlineFunctionCallSites = { inlineFunctionUseSite ->
-                val inlineFunction = inlineFunctionUseSite.symbol.owner
-                when {
-                    // TODO: remove this condition after the fix of KT-69457:
-                    inlineFunctionUseSite is IrFunctionReference && !inlineFunction.isReifiable() -> true // temporarily permitted
-
-                    // Call sites of only non-private functions are allowed at this stage.
-                    else -> !inlineFunctionUseSite.symbol.isConsideredAsPrivateForInlining()
-                }
+                // Call sites of only non-private functions are allowed at this stage.
+                !inlineFunctionUseSite.symbol.isConsideredAsPrivateForInlining()
             }
         )
     },
@@ -66,9 +58,6 @@ private val validateIrAfterInliningAllFunctionsPhase = makeIrModulePhase(
                 // No inline function call sites should remain at this stage.
                 val inlineFunction = inlineFunctionUseSite.symbol.owner
                 when {
-                    // TODO: remove this condition after the fix of KT-69457:
-                    inlineFunctionUseSite is IrFunctionReference && !inlineFunction.isReifiable() -> true // temporarily permitted
-
                     // TODO: remove this condition after the fix of KT-70361:
                     isTypeOfIntrinsic(inlineFunction.symbol) -> true // temporarily permitted
 
@@ -120,27 +109,22 @@ private val rangeContainsLoweringPhase = makeIrModulePhase(
     name = "RangeContainsLowering",
 )
 
-private val inlineCallableReferenceToLambdaPhase = makeIrModulePhase(
-    ::WasmInlineCallableReferenceToLambdaPhase,
-    name = "WasmInlineCallableReferenceToLambdaPhase",
-)
-
-
-private val wrapInlineDeclarationsWithReifiedTypeParametersLowering = makeIrModulePhase(
-    ::WrapInlineDeclarationsWithReifiedTypeParametersLowering,
-    name = "WrapInlineDeclarationsWithReifiedTypeParametersLowering",
-)
 
 private val arrayConstructorPhase = makeIrModulePhase(
     ::ArrayConstructorLowering,
     name = "ArrayConstructor",
-    prerequisite = setOf(inlineCallableReferenceToLambdaPhase)
 )
 
 private val sharedVariablesLoweringPhase = makeIrModulePhase(
     ::SharedVariablesLowering,
     name = "SharedVariablesLowering",
     prerequisite = setOf(lateinitPhase)
+)
+
+private val specializeSharedVariableBoxesPhase = makeIrModulePhase<WasmBackendContext>(
+    { context -> SharedVariablesPrimitiveBoxSpecializationLowering(context, context.symbols) },
+    name = "SharedVariablesPrimitiveBoxSpecializationLowering",
+    prerequisite = setOf(sharedVariablesLoweringPhase)
 )
 
 private val localClassesInInlineLambdasPhase = makeIrModulePhase(
@@ -159,7 +143,7 @@ private val inlineOnlyPrivateFunctionsPhase = makeIrModulePhase(
         )
     },
     name = "InlineOnlyPrivateFunctions",
-    prerequisite = setOf(wrapInlineDeclarationsWithReifiedTypeParametersLowering, arrayConstructorPhase)
+    prerequisite = setOf(arrayConstructorPhase)
 )
 
 private val outerThisSpecialAccessorInInlineFunctionsPhase = makeIrModulePhase(
@@ -287,12 +271,18 @@ private val upgradeCallableReferences = makeIrModulePhase(
         UpgradeCallableReferences(
             ctx,
             upgradeFunctionReferencesAndLambdas = true,
-            upgradePropertyReferences = false,
-            upgradeLocalDelegatedPropertyReferences = false,
+            upgradePropertyReferences = true,
+            upgradeLocalDelegatedPropertyReferences = true,
             upgradeSamConversions = false,
         )
     },
     name = "UpgradeCallableReferences"
+)
+
+private val delegatedPropertyOptimizationPhase = makeIrModulePhase(
+    lowering = ::DelegatedPropertyOptimizationLowering,
+    name = "DelegatedPropertyOptimization",
+    prerequisite = setOf()
 )
 
 private val propertyReferenceLowering = makeIrModulePhase(
@@ -301,7 +291,7 @@ private val propertyReferenceLowering = makeIrModulePhase(
 )
 
 private val callableReferencePhase = makeIrModulePhase(
-    ::CallableReferenceLowering,
+    ::WasmCallableReferenceLowering,
     name = "WasmCallableReferenceLowering",
 )
 
@@ -605,18 +595,16 @@ fun getWasmLowerings(
     configuration: CompilerConfiguration,
     isIncremental: Boolean,
 ): List<NamedCompilerPhase<WasmBackendContext, IrModuleFragment, IrModuleFragment>> {
-    val syntheticAccessorsDumpDir = configuration[KlibConfigurationKeys.SYNTHETIC_ACCESSORS_DUMP_DIR]
     val isDebugFriendlyCompilation = configuration.getBoolean(WasmConfigurationKeys.WASM_FORCE_DEBUG_FRIENDLY_COMPILATION)
 
     return listOfNotNull(
         // BEGIN: Common Native/JS/Wasm prefix.
         validateIrBeforeLowering,
+        upgradeCallableReferences,
         lateinitPhase,
         sharedVariablesLoweringPhase,
         localClassesInInlineLambdasPhase,
-        inlineCallableReferenceToLambdaPhase,
         arrayConstructorPhase,
-        wrapInlineDeclarationsWithReifiedTypeParametersLowering,
         inlineOnlyPrivateFunctionsPhase,
         outerThisSpecialAccessorInInlineFunctionsPhase,
         syntheticAccessorGenerationPhase,
@@ -624,11 +612,12 @@ fun getWasmLowerings(
         // just because it goes so in Native.
         validateIrAfterInliningOnlyPrivateFunctionsPhase,
         inlineAllFunctionsPhase,
-        dumpSyntheticAccessorsPhase.takeIf { syntheticAccessorsDumpDir != null },
+        dumpSyntheticAccessorsPhase.takeIf { configuration[KlibConfigurationKeys.SYNTHETIC_ACCESSORS_DUMP_DIR] != null },
         validateIrAfterInliningAllFunctionsPhase,
         // END: Common Native/JS/Wasm prefix.
 
         constEvaluationPhase,
+        specializeSharedVariableBoxesPhase,
         removeInlineDeclarationsWithReifiedTypeParametersLoweringPhase,
 
         jsCodeCallsLowering,
@@ -652,9 +641,10 @@ fun getWasmLowerings(
         enumEntryCreateGetInstancesFunsLoweringPhase,
         enumSyntheticFunsLoweringPhase,
 
+        delegatedPropertyOptimizationPhase,
         propertyReferenceLowering,
-        upgradeCallableReferences,
         callableReferencePhase,
+
         singleAbstractMethodPhase,
         localDelegatedPropertiesLoweringPhase,
         localDeclarationsLoweringPhase,

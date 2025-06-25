@@ -20,15 +20,17 @@ private interface DefaultParamInterface {
 
 private interface DefaultParamInterface {
   @Composable
+  @FunctionKeyMeta(key = 1531877915, startOffset = 94, endOffset = 206)
   abstract fun Content(content: Function2<Composer, Int, Unit>, %composer: Composer?, %changed: Int)
   @Composable
+  @FunctionKeyMeta(key = -57199539, startOffset = 223, endOffset = 323)
   abstract fun ComposedContent(content: Function2<Composer, Int, Unit>, %composer: Composer?, %changed: Int)
   class ComposeDefaultImpls {
     @Composable
     @ComposableInferredTarget(scheme = "[0[0]]")
     fun ComposedContent%default(content: Function2<Composer, Int, Unit>?, %this%: DefaultParamInterface, %composer: Composer?, %changed: Int, %default: Int) {
       %composer = %composer.startRestartGroup(<>)
-      sourceInformation(%composer, "C(ComposedContent%default):Test.kt")
+      sourceInformation(%composer, "C(ComposedContent%default)N(content):Test.kt")
       val %dirty = %changed
       if (%default and 0b0001 != 0) {
         %dirty = %dirty or 0b0110
@@ -65,7 +67,7 @@ private interface DefaultParamInterface {
     @ComposableInferredTarget(scheme = "[0[0]]")
     fun Content%default(content: Function2<Composer, Int, Unit>?, %this%: DefaultParamInterface, %composer: Composer?, %changed: Int, %default: Int) {
       %composer = %composer.startRestartGroup(<>)
-      sourceInformation(%composer, "C(Content%default)<{>:Test.kt")
+      sourceInformation(%composer, "C(Content%default)N(content)<{>:Test.kt")
       val %dirty = %changed
       if (%default and 0b0001 != 0) {
         %dirty = %dirty or 0b0110

@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.ir.util.isNullable
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.name.StandardClassIds
 import org.jetbrains.kotlin.platform.wasm.WasmTarget
 import org.jetbrains.kotlin.resolve.scopes.MemberScope
 import org.jetbrains.kotlin.wasm.config.wasmTarget
@@ -59,6 +60,8 @@ class WasmSymbols(
         val isSupportedInterface = getInternalFunction("isSupportedInterface")
         val getInterfaceVTable = getInternalFunction("getInterfaceVTable")
         val wasmGetInterfaceVTableBodyImpl = getInternalFunction("wasmGetInterfaceVTableBodyImpl")
+        val kFunctionImpl: IrClassSymbol = getInternalClass("KFunctionImpl")
+        val kFunctionErrorImpl: IrClassSymbol = getInternalClass("KFunctionErrorImpl")
     }
 
     internal val reflectionSymbols: WasmReflectionSymbols = WasmReflectionSymbols()
@@ -76,6 +79,7 @@ class WasmSymbols(
     override val throwNullPointerException = getInternalFunction("THROW_NPE")
     override val throwISE = getInternalFunction("THROW_ISE")
     override val throwTypeCastException = getInternalFunction("THROW_CCE")
+    val throwTypeCastWithInfoException = getInternalFunction("THROW_CCE_WITH_INFO")
     override val throwIAE = getInternalFunction("THROW_IAE")
     val throwNoBranchMatchedException =
         getInternalFunction("throwNoBranchMatchedException")
@@ -112,7 +116,7 @@ class WasmSymbols(
     override val arraysContentEquals: Map<IrType, IrSimpleFunctionSymbol>
         get() = _arraysContentEquals.associateBy { it.owner.parameters[0].type.makeNotNull() }
 
-    val throwLinkageError = getInternalFunction("throwLinkageError")
+    val throwLinkageError = getFunction("throwIrLinkageError", StandardClassIds.BASE_INTERNAL_PACKAGE)
 
     val enumEntries = getIrClass(FqName.fromSegments(listOf("kotlin", "enums", "EnumEntries")))
     val createEnumEntries = symbolFinder.topLevelFunctions(enumsInternalPackageFqName, "enumEntries")
@@ -156,22 +160,6 @@ class WasmSymbols(
 
     fun findVoidConsumer(type: IrType): IrSimpleFunctionSymbol =
         consumePrimitiveIntoVoid[type] ?: consumeAnyIntoVoid
-
-    private val closureBoxAnyClass = getInternalClass("ClosureBoxAny")
-
-    private val closureBoxClasses = mapOf(
-        irBuiltIns.booleanType to getInternalClass("ClosureBoxBoolean"),
-        irBuiltIns.byteType to getInternalClass("ClosureBoxByte"),
-        irBuiltIns.shortType to getInternalClass("ClosureBoxShort"),
-        irBuiltIns.charType to getInternalClass("ClosureBoxChar"),
-        irBuiltIns.intType to getInternalClass("ClosureBoxInt"),
-        irBuiltIns.longType to getInternalClass("ClosureBoxLong"),
-        irBuiltIns.floatType to getInternalClass("ClosureBoxFloat"),
-        irBuiltIns.doubleType to getInternalClass("ClosureBoxDouble")
-    )
-
-    fun findClosureBoxClass(type: IrType): IrClassSymbol =
-        closureBoxClasses[type] ?: closureBoxAnyClass
 
     val equalityFunctions =
         mapOf(
@@ -273,10 +261,6 @@ class WasmSymbols(
     val kMutableProperty0Impl: IrClassSymbol = getInternalClass("KMutableProperty0Impl")
     val kMutableProperty1Impl: IrClassSymbol = getInternalClass("KMutableProperty1Impl")
     val kMutableProperty2Impl: IrClassSymbol = getInternalClass("KMutableProperty2Impl")
-
-    val kMutableProperty0: IrClassSymbol = getIrClass(FqName("kotlin.reflect.KMutableProperty0"))
-    val kMutableProperty1: IrClassSymbol = getIrClass(FqName("kotlin.reflect.KMutableProperty1"))
-    val kMutableProperty2: IrClassSymbol = getIrClass(FqName("kotlin.reflect.KMutableProperty2"))
 
     val arraysCopyInto = symbolFinder.topLevelFunctions(StandardNames.COLLECTIONS_PACKAGE_FQ_NAME, "copyInto")
 

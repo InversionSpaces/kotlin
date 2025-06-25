@@ -4557,6 +4557,12 @@ public class NativeUnboundIrSerializationTestGenerated extends AbstractNativeUnb
       }
 
       @Test
+      @TestMetadata("asToNothing.kt")
+      public void testAsToNothing() {
+        runTest("compiler/testData/codegen/box/casts/asToNothing.kt");
+      }
+
+      @Test
       @TestMetadata("asUnit.kt")
       public void testAsUnit() {
         runTest("compiler/testData/codegen/box/casts/asUnit.kt");
@@ -6415,6 +6421,12 @@ public class NativeUnboundIrSerializationTestGenerated extends AbstractNativeUnb
         @TestMetadata("capturedVarsOfSize2.kt")
         public void testCapturedVarsOfSize2() {
           runTest("compiler/testData/codegen/box/closures/capturedVarsOptimization/capturedVarsOfSize2.kt");
+        }
+
+        @Test
+        @TestMetadata("closureBoxedVarOptimizations.kt")
+        public void testClosureBoxedVarOptimizations() {
+          runTest("compiler/testData/codegen/box/closures/capturedVarsOptimization/closureBoxedVarOptimizations.kt", TransformersFunctions.getRemoveOptionalJvmInlineAnnotation());
         }
 
         @Test
@@ -12772,6 +12784,12 @@ public class NativeUnboundIrSerializationTestGenerated extends AbstractNativeUnb
       }
 
       @Test
+      @TestMetadata("kt59326.kt")
+      public void testKt59326() {
+        runTest("compiler/testData/codegen/box/defaultArguments/kt59326.kt");
+      }
+
+      @Test
       @TestMetadata("kt6382.kt")
       public void testKt6382() {
         runTest("compiler/testData/codegen/box/defaultArguments/kt6382.kt");
@@ -13867,6 +13885,12 @@ public class NativeUnboundIrSerializationTestGenerated extends AbstractNativeUnb
         @TestMetadata("kt23117.kt")
         public void testKt23117() {
           runTest("compiler/testData/codegen/box/delegatedProperty/local/kt23117.kt");
+        }
+
+        @Test
+        @TestMetadata("kt78073.kt")
+        public void testKt78073() {
+          runTest("compiler/testData/codegen/box/delegatedProperty/local/kt78073.kt");
         }
 
         @Test
@@ -16987,6 +17011,12 @@ public class NativeUnboundIrSerializationTestGenerated extends AbstractNativeUnb
       }
 
       @Test
+      @TestMetadata("kt77685.kt")
+      public void testKt77685() {
+        runTest("compiler/testData/codegen/box/funInterface/kt77685.kt");
+      }
+
+      @Test
       @TestMetadata("multimodule.kt")
       public void testMultimodule() {
         runTest("compiler/testData/codegen/box/funInterface/multimodule.kt");
@@ -18406,6 +18436,12 @@ public class NativeUnboundIrSerializationTestGenerated extends AbstractNativeUnb
       @TestMetadata("capturedStarProjection.kt")
       public void testCapturedStarProjection() {
         runTest("compiler/testData/codegen/box/inference/capturedStarProjection.kt");
+      }
+
+      @Test
+      @TestMetadata("capturedTypeAsLambdaInputType.kt")
+      public void testCapturedTypeAsLambdaInputType() {
+        runTest("compiler/testData/codegen/box/inference/capturedTypeAsLambdaInputType.kt");
       }
 
       @Test
@@ -38005,6 +38041,12 @@ public class NativeUnboundIrSerializationTestGenerated extends AbstractNativeUnb
         }
 
         @Test
+        @TestMetadata("definitelyNotNullType.kt")
+        public void testDefinitelyNotNullType() {
+          runTest("compiler/testData/codegen/box/reflection/typeOf/definitelyNotNullType.kt");
+        }
+
+        @Test
         @TestMetadata("inNestedInline.kt")
         public void testInNestedInline() {
           runTest("compiler/testData/codegen/box/reflection/typeOf/inNestedInline.kt");
@@ -38805,6 +38847,42 @@ public class NativeUnboundIrSerializationTestGenerated extends AbstractNativeUnb
         @TestMetadata("jaggedDeep.kt")
         public void testJaggedDeep() {
           runTest("compiler/testData/codegen/box/reified/arraysReification/jaggedDeep.kt");
+        }
+      }
+
+      @Nested
+      @TestMetadata("compiler/testData/codegen/box/reified/catchParameter")
+      @TestDataPath("$PROJECT_ROOT")
+      @Tag("klib")
+      public class CatchParameter {
+        @Test
+        @TestMetadata("nestedReifiedCatch.kt")
+        public void testNestedReifiedCatch() {
+          runTest("compiler/testData/codegen/box/reified/catchParameter/nestedReifiedCatch.kt");
+        }
+
+        @Test
+        @TestMetadata("nullableExceptionType.kt")
+        public void testNullableExceptionType() {
+          runTest("compiler/testData/codegen/box/reified/catchParameter/nullableExceptionType.kt");
+        }
+
+        @Test
+        @TestMetadata("nullableNothing.kt")
+        public void testNullableNothing() {
+          runTest("compiler/testData/codegen/box/reified/catchParameter/nullableNothing.kt");
+        }
+
+        @Test
+        @TestMetadata("reificationClash.kt")
+        public void testReificationClash() {
+          runTest("compiler/testData/codegen/box/reified/catchParameter/reificationClash.kt");
+        }
+
+        @Test
+        @TestMetadata("tryCatchReifiedType.kt")
+        public void testTryCatchReifiedType() {
+          runTest("compiler/testData/codegen/box/reified/catchParameter/tryCatchReifiedType.kt");
         }
       }
     }
@@ -40568,6 +40646,108 @@ public class NativeUnboundIrSerializationTestGenerated extends AbstractNativeUnb
       }
 
       @Nested
+      @TestMetadata("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues")
+      @TestDataPath("$PROJECT_ROOT")
+      @Tag("klib")
+      public class FunctionsWithDefaultValues {
+        @Test
+        @TestMetadata("extensionFunction.kt")
+        public void testExtensionFunction() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/extensionFunction.kt");
+        }
+
+        @Test
+        @TestMetadata("extensionFunctionCrossModuleCase.kt")
+        public void testExtensionFunctionCrossModuleCase() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/extensionFunctionCrossModuleCase.kt");
+        }
+
+        @Test
+        @TestMetadata("extensionFunctionCrossModuleTransitiveCase.kt")
+        public void testExtensionFunctionCrossModuleTransitiveCase() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/extensionFunctionCrossModuleTransitiveCase.kt");
+        }
+
+        @Test
+        @TestMetadata("extensionFunctionTransitiveCase.kt")
+        public void testExtensionFunctionTransitiveCase() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/extensionFunctionTransitiveCase.kt");
+        }
+
+        @Test
+        @TestMetadata("memberFunction.kt")
+        public void testMemberFunction() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/memberFunction.kt");
+        }
+
+        @Test
+        @TestMetadata("memberFunctionCrossModuleCase.kt")
+        public void testMemberFunctionCrossModuleCase() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/memberFunctionCrossModuleCase.kt");
+        }
+
+        @Test
+        @TestMetadata("memberFunctionCrossModuleTransitiveCase.kt")
+        public void testMemberFunctionCrossModuleTransitiveCase() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/memberFunctionCrossModuleTransitiveCase.kt");
+        }
+
+        @Test
+        @TestMetadata("memberFunctionTransitiveCase.kt")
+        public void testMemberFunctionTransitiveCase() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/memberFunctionTransitiveCase.kt");
+        }
+
+        @Test
+        @TestMetadata("severalDefaultValues.kt")
+        public void testSeveralDefaultValues() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/severalDefaultValues.kt");
+        }
+
+        @Test
+        @TestMetadata("severalDefaultValuesCrossModuleCase.kt")
+        public void testSeveralDefaultValuesCrossModuleCase() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/severalDefaultValuesCrossModuleCase.kt");
+        }
+
+        @Test
+        @TestMetadata("severalDefaultValuesCrossModuleTransitiveCase.kt")
+        public void testSeveralDefaultValuesCrossModuleTransitiveCase() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/severalDefaultValuesCrossModuleTransitiveCase.kt");
+        }
+
+        @Test
+        @TestMetadata("severalDefaultValuesTransitiveCase.kt")
+        public void testSeveralDefaultValuesTransitiveCase() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/severalDefaultValuesTransitiveCase.kt");
+        }
+
+        @Test
+        @TestMetadata("topLevelFunction.kt")
+        public void testTopLevelFunction() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/topLevelFunction.kt");
+        }
+
+        @Test
+        @TestMetadata("topLevelFunctionCrossModuleCase.kt")
+        public void testTopLevelFunctionCrossModuleCase() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/topLevelFunctionCrossModuleCase.kt");
+        }
+
+        @Test
+        @TestMetadata("topLevelFunctionCrossModuleTransitiveCase.kt")
+        public void testTopLevelFunctionCrossModuleTransitiveCase() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/topLevelFunctionCrossModuleTransitiveCase.kt");
+        }
+
+        @Test
+        @TestMetadata("topLevelFunctionTransitiveCase.kt")
+        public void testTopLevelFunctionTransitiveCase() {
+          runTest("compiler/testData/codegen/box/syntheticAccessors/functionsWithDefaultValues/topLevelFunctionTransitiveCase.kt");
+        }
+      }
+
+      @Nested
       @TestMetadata("compiler/testData/codegen/box/syntheticAccessors/protectedJavaFieldAccessor")
       @TestDataPath("$PROJECT_ROOT")
       @Tag("klib")
@@ -41833,6 +42013,12 @@ public class NativeUnboundIrSerializationTestGenerated extends AbstractNativeUnb
       }
 
       @Test
+      @TestMetadata("emptyVarArg.kt")
+      public void testEmptyVarArg() {
+        runTest("compiler/testData/codegen/box/vararg/emptyVarArg.kt");
+      }
+
+      @Test
       @TestMetadata("evaluationOrder.kt")
       public void testEvaluationOrder() {
         runTest("compiler/testData/codegen/box/vararg/evaluationOrder.kt");
@@ -42725,6 +42911,12 @@ public class NativeUnboundIrSerializationTestGenerated extends AbstractNativeUnb
       @TestMetadata("capturedLocalFunRef.kt")
       public void testCapturedLocalFunRef() {
         runTest("compiler/testData/codegen/boxInline/anonymousObject/capturedLocalFunRef.kt");
+      }
+
+      @Test
+      @TestMetadata("capturedLocalFunReflection.kt")
+      public void testCapturedLocalFunReflection() {
+        runTest("compiler/testData/codegen/boxInline/anonymousObject/capturedLocalFunReflection.kt");
       }
 
       @Test

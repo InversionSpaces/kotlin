@@ -27,23 +27,6 @@ project.configureTests()
 // therefore it is disabled by default
 // buildDir = File(commonBuildDir, project.name)
 
-afterEvaluate {
-    run configureCompilerClasspath@{
-        val bootstrapCompilerClasspath by rootProject.buildscript.configurations
-        configurations.findByName("kotlinCompilerClasspath")?.let {
-            dependencies.add(it.name, files(bootstrapCompilerClasspath))
-        }
-        val bootstrapBuildToolsApiClasspath by rootProject.buildscript.configurations
-        configurations.findByName("kotlinBuildToolsApiClasspath")?.let {
-            it.dependencies.clear() // it's different from `bootstrapCompilerClasspath` as this configuration does not use "default dependencies"
-            dependencies.add(it.name, files(bootstrapBuildToolsApiClasspath))
-        }
-
-        configurations.findByName("kotlinCompilerPluginClasspath")
-            ?.exclude("org.jetbrains.kotlin", "kotlin-scripting-compiler-embeddable")
-    }
-}
-
 fun Project.addImplicitDependenciesConfiguration() {
     configurations.maybeCreate("implicitDependencies").apply {
         isCanBeConsumed = false
@@ -309,7 +292,7 @@ fun Project.configureTests() {
     }
 
     tasks.withType<Test>().configureEach {
-        if (!plugins.hasPlugin("compiler-tests-convention")) {
+        if (!plugins.hasPlugin("compiler-tests-convention") && !plugins.hasPlugin("test-inputs-check")) {
             outputs.doNotCacheIf("https://youtrack.jetbrains.com/issue/KTI-112") { true }
         }
         if (project.kotlinBuildProperties.limitTestTasksConcurrency) {

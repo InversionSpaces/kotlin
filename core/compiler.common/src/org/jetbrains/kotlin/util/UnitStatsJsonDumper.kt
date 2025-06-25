@@ -13,6 +13,7 @@ object UnitStatsJsonDumper {
             return buildString {
                 appendArrayElement(this, indent = 0, trailingComma = false) {
                     name?.let { appendKeyValue(::name, it, indent = 1) }
+                    appendKeyValue(::timeStampMs, timeStampMs, indent = 1)
 
                     // Unfortunately, it's not possible to ignore the properties `platform`, `compilerType`, `hasErrors` if they have default values
                     // because Gson library (that used in build tools) deserializes them to real `null` instead of default values that causes NRE on valid code
@@ -26,6 +27,9 @@ object UnitStatsJsonDumper {
                     initStats?.let { appendTime(::initStats, it, indent = 1, trailingComma = true) }
                     analysisStats?.let { appendTime(::analysisStats, it, indent = 1, trailingComma = true) }
                     translationToIrStats?.let { appendTime(::translationToIrStats, it, indent = 1, trailingComma = true) }
+                    irPreLoweringStats?.let { appendTime(::irPreLoweringStats, it, indent = 1, trailingComma = true) }
+                    irSerializationStats?.let { appendTime(::irSerializationStats, it, indent = 1, trailingComma = true) }
+                    klibWritingStats?.let { appendTime(::klibWritingStats, it, indent = 1, trailingComma = true) }
                     irLoweringStats?.let { appendTime(::irLoweringStats, it, indent = 1, trailingComma = true) }
                     backendStats?.let { appendTime(::backendStats, it, indent = 1, trailingComma = true) }
 

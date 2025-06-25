@@ -29,7 +29,10 @@ object FirContextParametersDeclarationChecker : FirBasicDeclarationChecker(MppCh
     override fun check(declaration: FirDeclaration) {
         if (declaration.source?.kind is KtFakeSourceElementKind) return
 
-        val contextListSources = declaration.source?.findContextReceiverListSources().orEmpty().ifEmpty { return }
+        val contextListSources = when (declaration) {
+            is FirFile -> declaration.packageDirective.source
+            else -> declaration.source
+        }?.findContextReceiverListSources().orEmpty().ifEmpty { return }
 
         val source = contextListSources.first()
 
@@ -81,7 +84,7 @@ object FirContextParametersDeclarationChecker : FirBasicDeclarationChecker(MppCh
         }
 
         if (contextReceiversEnabled) {
-            if (checkSubTypes(contextParameters.map { it.returnTypeRef.coneType }, context)) {
+            if (checkSubTypes(contextParameters.map { it.returnTypeRef.coneType })) {
                 reporter.reportOn(
                     source,
                     FirErrors.SUBTYPING_BETWEEN_CONTEXT_RECEIVERS
@@ -108,7 +111,7 @@ object FirContextParametersDeclarationChecker : FirBasicDeclarationChecker(MppCh
                     reporter.reportOn(modifier.source, FirErrors.WRONG_MODIFIER_TARGET, modifier.token, "context parameter")
                 }
 
-                FirFunctionParameterChecker.checkValOrVar(parameter, reporter, context)
+                FirFunctionParameterChecker.checkValOrVar(parameter)
             }
         }
     }
@@ -137,11 +140,12 @@ object FirContextParametersDeclarationChecker : FirBasicDeclarationChecker(MppCh
         }
     }
 
-    /**
-     * Simplified checking of subtype relation used in context receiver checkers.
-     * It converts type parameters to star projections and top level type parameters to its supertypes. Then it checks the relation.
-     */
-    fun checkSubTypes(types: List<ConeKotlinType>, context: CheckerContext): Boolean {
+    context(context: CheckerContext)
+            /**
+             * Simplified checking of subtype relation used in context receiver checkers.
+             * It converts type parameters to star projections and top level type parameters to its supertypes. Then it checks the relation.
+             */
+    fun checkSubTypes(types: List<ConeKotlinType>): Boolean {
         fun replaceTypeParametersByStarProjections(type: ConeClassLikeType): ConeClassLikeType {
             return type.withArguments(type.typeArguments.map {
                 when {

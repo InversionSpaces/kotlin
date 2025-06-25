@@ -18,10 +18,11 @@ fun String.B() { }
 // ------------------------------------------
 
 @Composable
+@FunctionKeyMeta(key = 1899537321, startOffset = 85, endOffset = 103)
 context(foo: Foo, bar: Bar)
 fun String.A(%composer: Composer?, %changed: Int) {
   %composer = %composer.startRestartGroup(<>)
-  sourceInformation(%composer, "C(A)P(1):Test.kt")
+  sourceInformation(%composer, "C(A)N(foo,bar):Test.kt")
   if (%composer.shouldExecute(%changed and 0b0001 != 0, %changed and 0b0001)) {
     if (isTraceInProgress()) {
       traceEventStart(<>, %changed, -1, <>)
@@ -37,10 +38,11 @@ fun String.A(%composer: Composer?, %changed: Int) {
   }
 }
 @Composable
+@FunctionKeyMeta(key = 784865119, startOffset = 161, endOffset = 179)
 context(foo: Foo, bar: Bar, fooBar: FooBar)
 fun String.B(%composer: Composer?, %changed: Int) {
   %composer = %composer.startRestartGroup(<>)
-  sourceInformation(%composer, "C(B)P(1):Test.kt")
+  sourceInformation(%composer, "C(B)N(foo,bar,fooBar):Test.kt")
   if (%composer.shouldExecute(%changed and 0b0001 != 0, %changed and 0b0001)) {
     if (isTraceInProgress()) {
       traceEventStart(<>, %changed, -1, <>)

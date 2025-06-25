@@ -192,6 +192,23 @@ public class FirLightTreeDiagnosticsWithoutAliasExpansionTestGenerated extends A
           runTest("compiler/fir/analysis-tests/testData/resolve/contextParameters/diagnostics/unsupportedContextParameters.kt");
         }
       }
+
+      @Nested
+      @TestMetadata("compiler/fir/analysis-tests/testData/resolve/contextParameters/inference")
+      @TestDataPath("$PROJECT_ROOT")
+      public class Inference {
+      }
+
+      @Nested
+      @TestMetadata("compiler/fir/analysis-tests/testData/resolve/contextParameters/overloads")
+      @TestDataPath("$PROJECT_ROOT")
+      public class Overloads {
+        @Test
+        @TestMetadata("OverloadingByTypeAlias.kt")
+        public void testOverloadingByTypeAlias() {
+          runTest("compiler/fir/analysis-tests/testData/resolve/contextParameters/overloads/OverloadingByTypeAlias.kt");
+        }
+      }
     }
 
     @Nested
@@ -254,12 +271,6 @@ public class FirLightTreeDiagnosticsWithoutAliasExpansionTestGenerated extends A
       @TestMetadata("ArrayEqualityCanBeReplacedWithEquals.kt")
       public void testArrayEqualityCanBeReplacedWithEquals() {
         runTest("compiler/fir/analysis-tests/testData/resolve/extraCheckers/ArrayEqualityCanBeReplacedWithEquals.kt");
-      }
-
-      @Test
-      @TestMetadata("RedundantExplicitTypeChecker.kt")
-      public void testRedundantExplicitTypeChecker() {
-        runTest("compiler/fir/analysis-tests/testData/resolve/extraCheckers/RedundantExplicitTypeChecker.kt");
       }
 
       @Test

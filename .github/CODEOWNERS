@@ -30,6 +30,7 @@
 
 /compiler/arguments.common/ @JetBrains/kotlin-frontend @JetBrains/kotlin-build-tools
 /compiler/arguments/ @JetBrains/kotlin-frontend @JetBrains/kotlin-build-tools
+/compiler/arguments/src/org/jetbrains/kotlin/arguments/description/WasmCompilerArguments.kt @JetBrains/kotlin-wasm
 /compiler/android-tests/ @JetBrains/kotlin-jvm
 /compiler/backend/ @JetBrains/kotlin-jvm
 /compiler/backend.common.jvm/ @JetBrains/kotlin-jvm
@@ -84,7 +85,11 @@
 /compiler/light-classes/ @JetBrains/kotlin-analysis-api
 /compiler/plugin-api/ @JetBrains/kotlin-frontend
 /compiler/preloader/ @JetBrains/kotlin-frontend
-/compiler/psi/ @JetBrains/kotlin-frontend
+/compiler/psi/parser/ @JetBrains/kotlin-frontend
+/compiler/psi/psi-api/ @JetBrains/kotlin-analysis-api
+/compiler/psi/psi-impl/ @JetBrains/kotlin-analysis-api
+/compiler/psi/psi-utils/ @JetBrains/kotlin-analysis-api
+/compiler/psi/psi-frontend-utils/ @JetBrains/kotlin-analysis-api
 /compiler/multiplatform-parsing/ @JetBrains/kotlin-frontend
 /compiler/resolution/ @JetBrains/kotlin-frontend
 /compiler/resolution.common/ @JetBrains/kotlin-frontend
@@ -348,6 +353,7 @@
 /libraries/tools/kotlinp/ @JetBrains/kotlin-jvm @JetBrains/kotlin-common-backend
 /libraries/tools/kotlinp/jvm/ @JetBrains/kotlin-jvm
 /libraries/tools/kotlinp/klib/ @JetBrains/kotlin-common-backend
+/libraries/tools/stats-analyser/ @JetBrains/kotlin-frontend
 /libraries/tools/maven-archetypes/ @JetBrains/kotlin-build-tools
 /libraries/tools/mutability-annotations-compat/ @JetBrains/kotlin-libraries
 /libraries/tools/script-runtime/ @JetBrains/kotlin-frontend

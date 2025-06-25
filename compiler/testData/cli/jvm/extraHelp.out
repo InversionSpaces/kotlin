@@ -141,6 +141,12 @@ where advanced options include:
                              Enable behaviour needed to compile builtins as part of JVM stdlib
   -Xoutput-builtins-metadata Output builtins metadata as .kotlin_builtins files
   -Xannotations-in-metadata  Write annotations on declarations into the metadata (in addition to the JVM bytecode), and read annotations from the metadata if they are present.
+  -Xwhen-expressions={indy|inline}
+                             Select the code generation scheme for type-checking 'when' expressions:
+                             -Xwhen-expressions=indy         Generate type-checking 'when' expressions using 'invokedynamic' with 'SwitchBootstraps.typeSwitch(..)' and
+                                                             following 'tableswitch' or 'lookupswitch'. This requires '-jvm-target 21' or greater.
+                             -Xwhen-expressions=inline       Generate type-checking 'when' expressions as a chain of type checks.
+                             The default value is 'inline'.
   -Xrepl                     Run Kotlin REPL (deprecated)
   -Xno-inline                Disable method inlining.
   -Xskip-metadata-version-check Allow loading classes with bad metadata versions and pre-release classes.
@@ -157,7 +163,9 @@ where advanced options include:
   -Xnew-inference            Enable the new experimental generic type inference algorithm.
   -Xinline-classes           Enable experimental inline classes.
   -Xreport-perf              Report detailed performance statistics.
-  -Xdump-perf=<path>         Dump detailed performance statistics to the specified file.
+  -Xdump-perf=<path>         Dump detailed performance statistics to the specified file in plain text, JSON or markdown format (it's detected by the file's extension).
+                             Also, it supports the placeholder `*` and directory for generating file names based on the module being compiled and the current time stamp.
+                             Example: `path/to/dir/*.log` creates logs like `path/to/dir/my-module_2025-06-20-12-22-32.log` in plain text format, `path/to/dir/` creates logs like `path/to/dir/my-log_2025-06-20-12-22-32.json`.
   -Xmetadata-version         Change the metadata version of the generated binary files.
   -Xcommon-sources=<path>    Sources of the common module that need to be compiled together with this module in multiplatform mode.
                              They should be a subset of sources passed as free arguments.
@@ -245,6 +253,7 @@ where advanced options include:
                              -Xannotation-default-target=param-property:  use '@param:' target if applicable, and also use the first of either '@property:' or '@field:';
                              default: 'first-only-warn' in language version 2.2+, 'first-only' in version 2.1 and before.
   -Xannotation-target-all    Enable experimental language support for @all: annotation use-site target.
+  -Xallow-reified-type-in-catch Allow 'catch' parameters to have reified types.
 
 Advanced options are non-standard and may be changed or removed without any notice.
 OK

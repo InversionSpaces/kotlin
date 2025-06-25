@@ -73,18 +73,22 @@ fun compileToLoweredIr(
     generateTypeScriptFragment: Boolean,
     propertyLazyInitialization: Boolean,
 ): LoweredIrWithExtraArtifacts {
-    val (moduleFragment, dependencyModules, irBuiltIns, symbolTable, irLinker) = irModuleInfo
-
-    val allModules = when (mainModule) {
-        is MainModule.SourceFiles -> dependencyModules + listOf(moduleFragment)
-        is MainModule.Klib -> dependencyModules
-    }
+    val (moduleFragment, moduleDependencies, irBuiltIns, symbolTable, irLinker) = irModuleInfo
 
     val moduleDescriptor = moduleFragment.descriptor
     val context = WasmBackendContext(moduleDescriptor, irBuiltIns, symbolTable, moduleFragment, propertyLazyInitialization, configuration)
 
     // Create stubs
     ExternalDependenciesGenerator(symbolTable, listOf(irLinker)).generateUnboundSymbolsAsDependencies()
+
+    // Sort dependencies after IR linkage.
+    val sortedModuleDependencies = irLinker.moduleDependencyTracker.reverseTopoOrder(moduleDependencies)
+
+    val allModules = when (mainModule) {
+        is MainModule.SourceFiles -> sortedModuleDependencies.all + moduleFragment
+        is MainModule.Klib -> sortedModuleDependencies.all
+    }
+
     allModules.forEach { it.patchDeclarationParents() }
 
     irLinker.postProcess(inOrAfterLinkageStep = true)

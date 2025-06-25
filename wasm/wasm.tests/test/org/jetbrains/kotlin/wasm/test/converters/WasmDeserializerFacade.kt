@@ -5,6 +5,7 @@
 
 package org.jetbrains.kotlin.wasm.test.converters
 
+import org.jetbrains.kotlin.backend.common.LoadedKlibs
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContextImpl
 import org.jetbrains.kotlin.backend.common.linkage.partial.PartialLinkageConfig
 import org.jetbrains.kotlin.backend.common.linkage.partial.PartialLinkageLogLevel
@@ -20,7 +21,7 @@ import org.jetbrains.kotlin.ir.backend.js.WholeWorldStageController
 import org.jetbrains.kotlin.ir.backend.js.loadIr
 import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.JsManglerDesc
 import org.jetbrains.kotlin.ir.util.SymbolTable
-import org.jetbrains.kotlin.platform.wasm.WasmTarget
+import org.jetbrains.kotlin.library.KotlinLibrary
 import org.jetbrains.kotlin.psi2ir.generators.TypeTranslatorImpl
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.test.backend.ir.IrBackendInput
@@ -32,7 +33,6 @@ import org.jetbrains.kotlin.test.services.configuration.WasmEnvironmentConfigura
 import org.jetbrains.kotlin.test.services.configuration.getDependencies
 import org.jetbrains.kotlin.test.services.defaultsProvider
 import org.jetbrains.kotlin.test.services.libraryProvider
-import org.jetbrains.kotlin.wasm.config.WasmConfigurationKeys
 
 class WasmDeserializerFacade(
     testServices: TestServices,
@@ -47,22 +47,28 @@ class WasmDeserializerFacade(
         require(WasmEnvironmentConfigurator.isMainModule(module, testServices))
         val configuration = testServices.compilerConfigurationProvider.getCompilerConfiguration(module)
 
-        // TODO: turn on PL only when it's really necessary, see KT-73841
         // Enforce PL with the ERROR log level to fail any tests where PL detected any incompatibilities.
         configuration.setupPartialLinkageConfig(PartialLinkageConfig(PartialLinkageMode.ENABLE, PartialLinkageLogLevel.ERROR))
 
-        val libraries = WasmEnvironmentConfigurator.getAllRecursiveLibrariesFor(module, testServices).map { it.key.libraryFile.canonicalPath }
+        val moduleDescriptor = testServices.moduleDescriptorProvider.getModuleDescriptor(module)
+        val mainModuleLib: KotlinLibrary = testServices.libraryProvider.getCompiledLibraryByDescriptor(moduleDescriptor)
+        val friendLibraries: List<KotlinLibrary> = getDependencies(module, testServices, DependencyRelation.FriendDependency)
+            .map { testServices.libraryProvider.getCompiledLibraryByDescriptor(it) }
 
-        val friendLibraries = getDependencies(module, testServices, DependencyRelation.FriendDependency)
-            .map(testServices.libraryProvider::getPathByDescriptor)
         val mainModule = MainModule.Klib(inputArtifact.outputFile.absolutePath)
         val project = testServices.compilerConfigurationProvider.getProject(module)
+
+        val klibs = LoadedKlibs(
+            all = WasmEnvironmentConfigurator.getDependencyLibrariesFor(module, testServices) + mainModuleLib,
+            friends = friendLibraries,
+            included = mainModuleLib
+        )
+
         val moduleStructure = ModulesStructure(
             project = project,
             mainModule = mainModule,
             compilerConfiguration = configuration,
-            libraryPaths = libraries + mainModule.libPath,
-            friendDependenciesPaths = friendLibraries
+            klibs = klibs,
         )
 
         val moduleInfo = loadIr(
@@ -72,7 +78,6 @@ class WasmDeserializerFacade(
         )
 
         val symbolTable = SymbolTable(IdSignatureDescriptor(JsManglerDesc), IrFactoryImplForWasmIC(WholeWorldStageController()))
-        val moduleDescriptor = testServices.moduleDescriptorProvider.getModuleDescriptor(module)
         val pluginContext = IrPluginContextImpl(
             module = moduleDescriptor,
             bindingContext = BindingContext.EMPTY,
