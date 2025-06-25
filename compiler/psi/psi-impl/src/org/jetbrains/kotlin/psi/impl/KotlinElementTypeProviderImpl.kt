@@ -42,6 +42,9 @@ object KotlinElementTypeProviderImpl : KotlinElementTypeProvider {
     override val typeAliasType: KtStubElementType<KotlinTypeAliasStub, KtTypeAlias> =
         KtStubElementTypes.TYPEALIAS
 
+    override val refinementType: KtStubElementType<KotlinRefinementStub, KtRefinement> =
+        KtStubElementTypes.REFINEMENT
+
     override val classBodyType: KtStubElementType<KotlinPlaceHolderStub<KtClassBody>, KtClassBody> =
         KtStubElementTypes.CLASS_BODY
 
@@ -164,9 +167,6 @@ object KotlinElementTypeProviderImpl : KotlinElementTypeProvider {
 
     override val typeProjectionType: KtStubElementType<KotlinTypeProjectionStub, KtTypeProjection> =
         KtStubElementTypes.TYPE_PROJECTION
-
-    override val refinementTypeType: KtStubElementType<KotlinPlaceHolderStub<KtRefinementType>, KtRefinementType> =
-        KtStubElementTypes.REFINEMENT_TYPE
 
 
     // Constants

@@ -23,6 +23,7 @@ public interface KtNodeTypes {
 
     IElementType OBJECT_DECLARATION = KtStubBasedElementTypes.OBJECT_DECLARATION;
     IElementType TYPEALIAS = KtStubBasedElementTypes.TYPEALIAS;
+    IElementType REFINEMENT = KtStubBasedElementTypes.REFINEMENT;
 
     IElementType ENUM_ENTRY             = KtStubBasedElementTypes.ENUM_ENTRY;
     IElementType CLASS_INITIALIZER      = KtStubBasedElementTypes.CLASS_INITIALIZER;
@@ -69,7 +70,6 @@ public interface KtNodeTypes {
     IElementType NULLABLE_TYPE            = KtStubBasedElementTypes.NULLABLE_TYPE;
     IElementType INTERSECTION_TYPE        = KtStubBasedElementTypes.INTERSECTION_TYPE;
     IElementType TYPE_PROJECTION          = KtStubBasedElementTypes.TYPE_PROJECTION;
-    IElementType REFINEMENT_TYPE          = KtStubBasedElementTypes.REFINEMENT_TYPE;
 
     IElementType PROPERTY_ACCESSOR       = KtStubBasedElementTypes.PROPERTY_ACCESSOR;
     IElementType BACKING_FIELD           = KtStubBasedElementTypes.BACKING_FIELD;

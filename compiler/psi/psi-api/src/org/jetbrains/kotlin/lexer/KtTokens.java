@@ -175,7 +175,8 @@ public interface KtTokens {
     int ACTUAL_KEYWORD_Id = 146;
     int INTERPOLATION_PREFIX_Id = 147;
     int ALL_KEYWORD_Id = 148;
-    int SATISFIES_KEYWORD_Id = 149;
+    int REFINEMENT_KEYWORD_Id = 149;
+    int SATISFIES_KEYWORD_Id = 150;
 
     KtToken EOF   = new KtToken("EOF", EOF_Id);
 
@@ -308,6 +309,7 @@ public interface KtTokens {
     KtKeywordToken INIT_KEYWORD        = KtKeywordToken.softKeyword("init", INIT_KEYWORD_Id);
     KtKeywordToken CONTEXT_KEYWORD     = KtKeywordToken.softKeyword("context", CONTEXT_KEYWORD_Id);
     KtKeywordToken SATISFIES_KEYWORD  = KtKeywordToken.softKeyword("satisfies", SATISFIES_KEYWORD_Id);
+    KtKeywordToken REFINEMENT_KEYWORD  = KtKeywordToken.softKeyword("refinement", REFINEMENT_KEYWORD_Id);
 
     KtModifierKeywordToken ABSTRACT_KEYWORD  = KtModifierKeywordToken.softKeywordModifier("abstract", ABSTRACT_KEYWORD_Id);
     KtModifierKeywordToken ENUM_KEYWORD      = KtModifierKeywordToken.softKeywordModifier("enum", ENUM_KEYWORD_Id);

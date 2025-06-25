@@ -38,6 +38,7 @@ interface KotlinElementTypeProvider {
     val classType: KtStubElementType<KotlinClassStub, KtClass>
     val objectType: KtStubElementType<KotlinObjectStub, KtObjectDeclaration>
     val typeAliasType: KtStubElementType<KotlinTypeAliasStub, KtTypeAlias>
+    val refinementType: KtStubElementType<KotlinRefinementStub, KtRefinement>
     val classBodyType: KtStubElementType<KotlinPlaceHolderStub<KtClassBody>, KtClassBody>
 
     // Initializers
@@ -87,7 +88,6 @@ interface KotlinElementTypeProvider {
     val nullableTypeType: KtStubElementType<KotlinPlaceHolderStub<KtNullableType>, KtNullableType>
     val intersectionTypeType: KtStubElementType<KotlinPlaceHolderStub<KtIntersectionType>, KtIntersectionType>
     val typeProjectionType: KtStubElementType<KotlinTypeProjectionStub, KtTypeProjection>
-    val refinementTypeType: KtStubElementType<KotlinPlaceHolderStub<KtRefinementType>, KtRefinementType>
 
     // Constants
     val nullType: KtStubElementType<KotlinConstantExpressionStub, KtConstantExpression>
