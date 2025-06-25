@@ -151,3 +151,12 @@ class FirTypeAliasSymbol(classId: ClassId) : FirClassLikeSymbol<FirTypeAlias>(cl
             return fir.expandedTypeRef as FirResolvedTypeRef
         }
 }
+
+// TODO: Add marker?
+class FirRefinementSymbol(classId: ClassId) : FirClassLikeSymbol<FirRefinement>(classId) {
+    private val lookupTag: ConeClassLikeLookupTag =
+        if (classId.isLocal) ConeClassLikeLookupTagWithFixedSymbol(classId, this)
+        else classId.toLookupTag()
+
+    override fun toLookupTag(): ConeClassLikeLookupTag = lookupTag
+}

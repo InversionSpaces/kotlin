@@ -230,6 +230,7 @@ interface ConeTypeContext : TypeSystemContext, TypeSystemOptimizationContext, Ty
                     is FirAnonymousObjectSymbol -> symbol.fir.typeParameters.size
                     is FirRegularClassSymbol -> symbol.fir.typeParameters.size
                     is FirTypeAliasSymbol -> symbol.fir.typeParameters.size
+                    is FirRefinementSymbol -> TODO()
                     is FirTypeParameterSymbol, null -> 0
                 }
             }
@@ -270,6 +271,7 @@ interface ConeTypeContext : TypeSystemContext, TypeSystemOptimizationContext, Ty
                     is FirTypeParameterSymbol -> symbol.resolvedBounds.map { it.coneType }
                     is FirClassSymbol<*> -> symbol.fir.superConeTypes
                     is FirTypeAliasSymbol -> listOfNotNull(symbol.fir.expandedConeType)
+                    is FirRefinementSymbol -> TODO()
                     null -> listOf(session.builtinTypes.anyType.coneType)
                 }
             }

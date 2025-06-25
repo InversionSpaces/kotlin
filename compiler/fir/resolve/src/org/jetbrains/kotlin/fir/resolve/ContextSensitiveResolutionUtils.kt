@@ -68,6 +68,7 @@ fun ConeKotlinType.getClassRepresentativeForContextSensitiveResolution(session: 
                     fullyExpandedType(session)
                         .takeIf { it !== this }
                         ?.getClassRepresentativeForContextSensitiveResolution(session)
+                is FirRefinementSymbol -> TODO()
                 null -> null
             }
 

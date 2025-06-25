@@ -358,6 +358,7 @@ object FirInlineDeclarationChecker : FirFunctionChecker(MppCheckerKind.Common) {
             return when (val symbol = this) {
                 is FirAnonymousObjectSymbol -> true
                 is FirRegularClassSymbol -> symbol.classId.isLocal
+                is FirRefinementSymbol -> TODO()
                 is FirTypeAliasSymbol, is FirTypeParameterSymbol -> error("Unexpected classifier declaration type: $symbol")
             }
         }
@@ -379,6 +380,7 @@ object FirInlineDeclarationChecker : FirFunctionChecker(MppCheckerKind.Common) {
                 is FirAnonymousObjectSymbol -> return false
                 is FirRegularClassSymbol -> containingClassSymbol.visibility
                 is FirTypeAliasSymbol -> containingClassSymbol.visibility
+                is FirRefinementSymbol -> TODO()
             }
             if (containingClassVisibility == Visibilities.Private || containingClassVisibility == Visibilities.PrivateToThis) {
                 return true

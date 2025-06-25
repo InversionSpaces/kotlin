@@ -102,7 +102,7 @@ class LightTreeRawFirDeclarationBuilder(
                 FUN -> firDeclarationList += convertFunctionDeclaration(child) as FirDeclaration
                 KtNodeTypes.PROPERTY -> firDeclarationList += convertPropertyDeclaration(child)
                 TYPEALIAS -> firDeclarationList += convertTypeAlias(child)
-                REFINEMENT -> firDeclarationList += TODO() as FirDeclaration
+                REFINEMENT -> firDeclarationList += convertRefinement(child)
                 OBJECT_DECLARATION -> firDeclarationList += convertClass(child)
                 DESTRUCTURING_DECLARATION -> {
                     val initializer = buildFirDestructuringDeclarationInitializer(child)
@@ -1364,6 +1364,47 @@ class LightTreeRawFirDeclarationBuilder(
                     if (isInner || isLocal) {
                         context.appendOuterTypeParameters(ignoreLastLevel = false, typeParameters)
                     }
+                }
+            }
+        }
+    }
+
+    private fun convertRefinement(refinement: LighterASTNode): FirDeclaration {
+        var modifiers: ModifierList? = null
+        var identifier: String? = null
+        lateinit var underlyingTypeNode: LighterASTNode
+        lateinit var predicateNode: LighterASTNode
+
+        refinement.forEachChildren {
+            when (it.tokenType) {
+                MODIFIER_LIST -> modifiers = convertModifierList(it)
+                IDENTIFIER -> identifier = it.asText
+                TYPE_REFERENCE -> underlyingTypeNode = it
+                LAMBDA_EXPRESSION -> predicateNode = it
+            }
+        }
+
+        val calculatedModifiers = modifiers ?: ModifierList()
+        val refinementName = identifier.nameAsSafeName()
+        return withChildClassName(refinementName, isExpect = false) {
+            val refinementSymbol = FirRefinementSymbol(context.currentClassId)
+            withContainerSymbol(refinementSymbol) {
+                buildRefinement {
+                    source = refinement.toFirSourceElement()
+                    moduleData = baseModuleData
+                    origin = FirDeclarationOrigin.Source
+                    scopeProvider = baseScopeProvider
+                    name = refinementName
+                    val isLocal = context.inLocalContext
+                    status = FirDeclarationStatusImpl(
+                        if (isLocal) Visibilities.Local else calculatedModifiers.getVisibility(publicByDefault = true),
+                        modality = null,
+                    )
+
+                    symbol = refinementSymbol
+                    underlyingType = convertType(underlyingTypeNode)
+                    predicate = expressionConverter.getAsFirExpression(predicateNode, "Lambda expected")
+                    modifiers?.convertAnnotationsTo(annotations)
                 }
             }
         }

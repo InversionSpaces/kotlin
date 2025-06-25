@@ -554,6 +554,7 @@ class FirSamConstructorStorage(session: FirSession) : FirSessionComponent {
             when (classSymbol) {
                 is FirRegularClassSymbol -> samResolver.buildSamConstructorForRegularClass(classSymbol)
                 is FirTypeAliasSymbol -> samResolver.buildSamConstructorForTypeAlias(classSymbol)
+                is FirRefinementSymbol -> TODO()
                 is FirAnonymousObjectSymbol -> null
             }
         }

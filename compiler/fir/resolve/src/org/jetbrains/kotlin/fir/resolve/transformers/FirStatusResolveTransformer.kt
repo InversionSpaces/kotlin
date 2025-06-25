@@ -183,6 +183,7 @@ open class StatusComputationSession(
                     forceResolveStatusOfCorrespondingClass(classifierSymbol)
                 }
             }
+            is FirRefinementSymbol -> TODO()
             is FirTypeParameterSymbol, is FirAnonymousObjectSymbol -> {}
         }
     }
