@@ -475,6 +475,14 @@ abstract class FirTransformer<in D> : FirVisitor<FirElement, D>() {
         return transformTypeAlias(typeAlias, data)
     }
 
+    open fun transformRefinement(refinement: FirRefinement, data: D): FirStatement {
+        return transformElement(refinement, data)
+    }
+
+    final override fun visitRefinement(refinement: FirRefinement, data: D): FirStatement {
+        return transformRefinement(refinement, data)
+    }
+
     open fun transformAnonymousFunction(anonymousFunction: FirAnonymousFunction, data: D): FirStatement {
         return transformElement(anonymousFunction, data)
     }
@@ -1153,14 +1161,6 @@ abstract class FirTransformer<in D> : FirVisitor<FirElement, D>() {
 
     final override fun visitIntersectionTypeRef(intersectionTypeRef: FirIntersectionTypeRef, data: D): FirTypeRef {
         return transformIntersectionTypeRef(intersectionTypeRef, data)
-    }
-
-    open fun transformRefinementTypeRef(refinementTypeRef: FirRefinementTypeRef, data: D): FirTypeRef {
-        return transformElement(refinementTypeRef, data)
-    }
-
-    final override fun visitRefinementTypeRef(refinementTypeRef: FirRefinementTypeRef, data: D): FirTypeRef {
-        return transformRefinementTypeRef(refinementTypeRef, data)
     }
 
     open fun transformThisReceiverExpression(thisReceiverExpression: FirThisReceiverExpression, data: D): FirStatement {

@@ -53,6 +53,7 @@ object ImplementationConfigurator : AbstractFirTreeImplementationConfigurator() 
         noImpl(anonymousObjectExpression)
 
         impl(typeAlias)
+        impl(refinement)
 
         impl(import)
 
@@ -585,9 +586,6 @@ object ImplementationConfigurator : AbstractFirTreeImplementationConfigurator() 
             defaultFalse("customRenderer", withGetter = true)
         }
         impl(intersectionTypeRef) {
-            defaultFalse("customRenderer", withGetter = true)
-        }
-        impl(refinementTypeRef) {
             defaultFalse("customRenderer", withGetter = true)
         }
         noImpl(implicitTypeRef)

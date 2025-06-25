@@ -18,8 +18,6 @@ import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.declarations.synthetic.FirSyntheticProperty
 import org.jetbrains.kotlin.fir.declarations.utils.contextParametersForFunctionOrContainingProperty
 import org.jetbrains.kotlin.fir.declarations.utils.isExpect
-import org.jetbrains.kotlin.fir.declarations.utils.isRefinementPredicate
-import org.jetbrains.kotlin.fir.declarations.utils.refinementPredicateFor
 import org.jetbrains.kotlin.fir.declarations.utils.isStatic
 import org.jetbrains.kotlin.fir.declarations.utils.nameOrSpecialName
 import org.jetbrains.kotlin.fir.declarations.utils.visibility
@@ -311,11 +309,12 @@ class Fir2IrDeclarationStorage(
         function: FirFunction,
         fakeOverrideOwnerLookupTag: ConeClassLikeLookupTag? = null,
     ): IrSimpleFunctionSymbol? = when {
-        function.isRefinementPredicate -> getCachedIrCallableSymbol(
-            function,
-            fakeOverrideOwnerLookupTag,
-            functionCache::get
-        )
+        // TODO
+//        function.isRefinementPredicate -> getCachedIrCallableSymbol(
+//            function,
+//            fakeOverrideOwnerLookupTag,
+//            functionCache::get
+//        )
         function is FirSimpleFunction -> getCachedIrFunctionSymbol(function, fakeOverrideOwnerLookupTag)
         else -> localStorage.getLocalFunctionSymbol(function)
     }
@@ -414,7 +413,8 @@ class Fir2IrDeclarationStorage(
     ) {
         when {
             function.visibility == Visibilities.Local ||
-                    (function is FirAnonymousFunction && !function.isRefinementPredicate) -> {
+                    // TODO
+                    (function is FirAnonymousFunction /*&& !function.isRefinementPredicate*/) -> {
                 localStorage.putLocalFunction(function, irFunctionSymbol)
             }
 

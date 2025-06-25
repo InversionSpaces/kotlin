@@ -475,6 +475,14 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitElement(typeAlias)
     }
 
+    final override fun visitRefinement(refinement: FirRefinement, data: Nothing?) {
+        visitRefinement(refinement)
+    }
+
+    open fun visitRefinement(refinement: FirRefinement) {
+        visitElement(refinement)
+    }
+
     final override fun visitAnonymousFunction(anonymousFunction: FirAnonymousFunction, data: Nothing?) {
         visitAnonymousFunction(anonymousFunction)
     }
@@ -1153,14 +1161,6 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
 
     open fun visitIntersectionTypeRef(intersectionTypeRef: FirIntersectionTypeRef) {
         visitElement(intersectionTypeRef)
-    }
-
-    final override fun visitRefinementTypeRef(refinementTypeRef: FirRefinementTypeRef, data: Nothing?) {
-        visitRefinementTypeRef(refinementTypeRef)
-    }
-
-    open fun visitRefinementTypeRef(refinementTypeRef: FirRefinementTypeRef) {
-        visitElement(refinementTypeRef)
     }
 
     final override fun visitThisReceiverExpression(thisReceiverExpression: FirThisReceiverExpression, data: Nothing?) {

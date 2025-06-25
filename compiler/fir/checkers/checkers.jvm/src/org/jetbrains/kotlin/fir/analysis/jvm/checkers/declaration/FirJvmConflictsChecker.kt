@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.fir.analysis.checkers.declaration.FirClassLikeChecke
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors
 import org.jetbrains.kotlin.fir.declarations.FirAnonymousObject
 import org.jetbrains.kotlin.fir.declarations.FirClassLikeDeclaration
+import org.jetbrains.kotlin.fir.declarations.FirRefinement
 import org.jetbrains.kotlin.fir.declarations.FirRegularClass
 import org.jetbrains.kotlin.fir.declarations.FirTypeAlias
 import org.jetbrains.kotlin.fir.declarations.utils.classId
@@ -30,6 +31,7 @@ object FirJvmConflictsChecker : FirClassLikeChecker(MppCheckerKind.Common) {
             // I'd say that even regular typealiases should conflict with Java, but it'd be a breaking change.
             // 'actual typealias' is just more important because it's a redeclaration in the "Kotlin-to-Java direct actualization" feature.
             is FirTypeAlias -> declaration.isActual
+            is FirRefinement -> TODO()
         }
         if (!checkRedeclaration) {
             return

@@ -427,16 +427,6 @@ class FirTypeResolverImpl(private val session: FirSession) : FirTypeResolver() {
                     FirTypeResolutionResult(ConeErrorType(ConeForbiddenIntersection), diagnostic = null)
                 }
             }
-            is FirRefinementTypeRef -> {
-                val underlyingType = typeRef.underlyingType.coneType
-                val lookupTag = typeRef.definingSymbol.toLookupTag()
-                val refinementType = ConeRefinementType(
-                    underlyingType,
-                    isMarkedNullable = typeRef.isMarkedNullable,
-                    lookupTag
-                )
-                FirTypeResolutionResult(refinementType, diagnostic = null)
-            }
             else -> error(typeRef.render())
         }.also {
             session.lookupTracker?.recordTypeResolveAsLookup(it.type, typeRef.source, configuration.useSiteFile?.source)

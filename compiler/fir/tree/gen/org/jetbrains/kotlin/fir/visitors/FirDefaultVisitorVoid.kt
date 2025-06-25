@@ -119,6 +119,10 @@ abstract class FirDefaultVisitorVoid : FirVisitorVoid() {
         visitClassLikeDeclaration(typeAlias)
     }
 
+    override fun visitRefinement(refinement: FirRefinement) {
+        visitClassLikeDeclaration(refinement)
+    }
+
     override fun visitAnonymousFunctionExpression(anonymousFunctionExpression: FirAnonymousFunctionExpression) {
         visitExpression(anonymousFunctionExpression)
     }
@@ -325,10 +329,6 @@ abstract class FirDefaultVisitorVoid : FirVisitorVoid() {
 
     override fun visitIntersectionTypeRef(intersectionTypeRef: FirIntersectionTypeRef) {
         visitUnresolvedTypeRef(intersectionTypeRef)
-    }
-
-    override fun visitRefinementTypeRef(refinementTypeRef: FirRefinementTypeRef) {
-        visitUnresolvedTypeRef(refinementTypeRef)
     }
 
     override fun visitThisReceiverExpression(thisReceiverExpression: FirThisReceiverExpression) {

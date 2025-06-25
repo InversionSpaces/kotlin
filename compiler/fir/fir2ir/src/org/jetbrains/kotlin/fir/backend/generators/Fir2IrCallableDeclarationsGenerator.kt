@@ -109,11 +109,14 @@ class Fir2IrCallableDeclarationsGenerator(private val c: Fir2IrComponents) : Fir
             if (symbol.isBound) return symbol.owner
             return lazyDeclarationsGenerator.createIrLazyFunction(function, symbol, irParent, updatedOrigin, isSynthetic)
         }
-        val name = simpleFunction?.name
-            ?: function.refinementPredicateFor
-                ?.definingSymbol?.name?.identifier
-                ?.let { Name.identifier("$it-predicate") }  // TODO: VERY HACKY
-            ?: if (isLambda) SpecialNames.ANONYMOUS else SpecialNames.NO_NAME_PROVIDED
+
+        // TODO
+//        val name = simpleFunction?.name
+//            ?: function.refinementPredicateFor
+//                ?.definingSymbol?.name?.identifier
+//                ?.let { Name.identifier("$it-predicate") }  // TODO: VERY HACKY
+//            ?: if (isLambda) SpecialNames.ANONYMOUS else SpecialNames.NO_NAME_PROVIDED
+        val name = if (isLambda) SpecialNames.ANONYMOUS else SpecialNames.NO_NAME_PROVIDED
         val visibility = simpleFunction?.visibility ?: Visibilities.Local
         val isSuspend =
             if (isLambda) (function.typeRef as? FirResolvedTypeRef)?.coneType?.isSuspendOrKSuspendFunctionType(session) == true

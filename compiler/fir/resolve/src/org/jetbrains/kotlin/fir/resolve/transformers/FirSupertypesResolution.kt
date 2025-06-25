@@ -543,10 +543,7 @@ open class FirSupertypeResolverVisitor(
                     }
                 }
 
-                when (val coneType = resolvedTypeRef.coneType) {
-                    is ConeRefinementType -> visitNestedTypeAliases(coneType.underlyingType)
-                    else -> visitNestedTypeAliases(coneType)
-                }
+                visitNestedTypeAliases(resolvedTypeRef.coneType)
             }
 
             listOf(resolvedTypeRef)
@@ -637,6 +634,7 @@ open class SupertypeComputationSession {
     ): List<FirResolvedTypeRef> = when (classLikeDeclaration) {
         is FirClass -> classLikeDeclaration.superTypeRefs.filterIsInstance<FirResolvedTypeRef>()
         is FirTypeAlias -> listOfNotNull(classLikeDeclaration.expandedTypeRef as? FirResolvedTypeRef)
+        is FirRefinement -> TODO()
     }
 
     /**
@@ -734,10 +732,8 @@ open class SupertypeComputationSession {
                     }
                 }
 
-                val adjustedSupertypeRef = (supertypeRef.delegatedTypeRef as? FirRefinementTypeRef)?.underlyingType ?: supertypeRef
                 // rhs value is required only for the Analysis API, as in the CLI mode there are no invisible dependencies
-                val supertypeFir =
-                    adjustedSupertypeRef.firClassLike(session) ?: adjustedSupertypeRef.firClassLike(classLikeDeclaration.moduleData.session)
+                val supertypeFir = supertypeRef.firClassLike(session) ?: supertypeRef.firClassLike(classLikeDeclaration.moduleData.session)
                 checkIsInLoop(supertypeFir, isSubtypingInvolved, wereTypeArgumentsInvolved)
 
                 // This is an optimization that prevents collecting

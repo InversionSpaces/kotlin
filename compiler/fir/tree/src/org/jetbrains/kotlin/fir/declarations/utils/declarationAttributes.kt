@@ -20,7 +20,6 @@ import org.jetbrains.kotlin.fir.references.impl.FirPropertyFromParameterResolved
 import org.jetbrains.kotlin.fir.symbols.FirBasedSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.*
 import org.jetbrains.kotlin.fir.symbols.lazyResolveToPhase
-import org.jetbrains.kotlin.fir.types.FirRefinementTypeRef
 import org.jetbrains.kotlin.fir.types.coneType
 import org.jetbrains.kotlin.name.Name
 
@@ -86,7 +85,8 @@ var FirProperty.hasBackingFieldAttr: Boolean? by FirDeclarationDataRegistry.data
 @FirImplementationDetail
 var FirProperty.isDelegatedPropertyAttr: Boolean? by FirDeclarationDataRegistry.data(IsDelegatedProperty)
 
-var FirAnonymousFunction.refinementPredicateForAttr: FirRefinementTypeRef? by FirDeclarationDataRegistry.data(RefinementPredicateFor)
+// TODO
+//var FirAnonymousFunction.refinementPredicateForAttr: FirRefinementTypeRef? by FirDeclarationDataRegistry.data(RefinementPredicateFor)
 
 /**
  * Whether this property was deserialized from metadata and the containing class is annotation class.
@@ -210,8 +210,10 @@ val FirProperty.correspondingValueParameterFromPrimaryConstructor: FirValueParam
         return reference.resolvedSymbol as? FirValueParameterSymbol
     }
 
-val FirFunction.refinementPredicateFor: FirRefinementTypeRef?
-    get() = (this as? FirAnonymousFunction)?.refinementPredicateForAttr
+// TODO
+//val FirFunction.refinementPredicateFor: FirRefinementTypeRef?
+//    get() = (this as? FirAnonymousFunction)?.refinementPredicateForAttr
 
-val FirFunction.isRefinementPredicate: Boolean
-    get() = refinementPredicateFor != null
+// TODO
+//val FirFunction.isRefinementPredicate: Boolean
+//    get() = refinementPredicateFor != null

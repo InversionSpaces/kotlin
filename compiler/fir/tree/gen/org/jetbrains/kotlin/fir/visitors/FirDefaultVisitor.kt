@@ -95,6 +95,9 @@ abstract class FirDefaultVisitor<out R, in D> : FirVisitor<R, D>() {
     override fun visitTypeAlias(typeAlias: FirTypeAlias, data: D): R =
         visitClassLikeDeclaration(typeAlias, data)
 
+    override fun visitRefinement(refinement: FirRefinement, data: D): R =
+        visitClassLikeDeclaration(refinement, data)
+
     override fun visitAnonymousFunctionExpression(anonymousFunctionExpression: FirAnonymousFunctionExpression, data: D): R =
         visitExpression(anonymousFunctionExpression, data)
 
@@ -250,9 +253,6 @@ abstract class FirDefaultVisitor<out R, in D> : FirVisitor<R, D>() {
 
     override fun visitIntersectionTypeRef(intersectionTypeRef: FirIntersectionTypeRef, data: D): R =
         visitUnresolvedTypeRef(intersectionTypeRef, data)
-
-    override fun visitRefinementTypeRef(refinementTypeRef: FirRefinementTypeRef, data: D): R =
-        visitUnresolvedTypeRef(refinementTypeRef, data)
 
     override fun visitThisReceiverExpression(thisReceiverExpression: FirThisReceiverExpression, data: D): R =
         visitQualifiedAccessExpression(thisReceiverExpression, data)

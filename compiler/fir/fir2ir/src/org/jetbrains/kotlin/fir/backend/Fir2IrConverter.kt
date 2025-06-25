@@ -39,7 +39,6 @@ import org.jetbrains.kotlin.fir.java.javaElementFinder
 import org.jetbrains.kotlin.fir.references.toResolvedValueParameterSymbol
 import org.jetbrains.kotlin.fir.scopes.processAllFunctions
 import org.jetbrains.kotlin.fir.symbols.lazyDeclarationResolver
-import org.jetbrains.kotlin.fir.types.FirRefinementTypeRef
 import org.jetbrains.kotlin.fir.types.FirResolvedTypeRef
 import org.jetbrains.kotlin.fir.types.isUnit
 import org.jetbrains.kotlin.fir.types.resolvedType
@@ -544,13 +543,14 @@ class Fir2IrConverter(
                     // type alias may be local with error suppression, so it might be missing from classifier storage
                     addDeclarationToParentIfNeeded(irTypeAlias)
 
-                    declaration.refinementPredicateExpr?.let {
-                        val irFunction = declarationStorage.createAndCacheIrFunction(
-                            it.anonymousFunction,
-                            parent,
-                            isLocal = isInLocalClass
-                        )
-                    }
+                    // TODO
+//                    declaration.refinementPredicateExpr?.let {
+//                        val irFunction = declarationStorage.createAndCacheIrFunction(
+//                            it.anonymousFunction,
+//                            parent,
+//                            isLocal = isInLocalClass
+//                        )
+//                    }
                 }
             }
             is FirCodeFragment -> {

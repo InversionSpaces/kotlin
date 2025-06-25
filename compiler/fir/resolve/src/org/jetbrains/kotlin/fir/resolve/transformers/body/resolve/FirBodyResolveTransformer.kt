@@ -15,7 +15,6 @@ import org.jetbrains.kotlin.fir.resolve.transformers.ReturnTypeCalculator
 import org.jetbrains.kotlin.fir.resolve.transformers.ReturnTypeCalculatorForFullBodyResolve
 import org.jetbrains.kotlin.fir.resolve.withExpectedType
 import org.jetbrains.kotlin.fir.types.ConeKotlinType
-import org.jetbrains.kotlin.fir.types.FirRefinementTypeRef
 import org.jetbrains.kotlin.fir.types.FirResolvedTypeRef
 import org.jetbrains.kotlin.fir.types.FirTypeRef
 import org.jetbrains.kotlin.fir.types.coneType
@@ -54,18 +53,18 @@ open class FirBodyResolveTransformer(
         @Suppress("UNCHECKED_CAST")
         override fun <E : FirElement> transformElement(element: E, data: Nothing?): E =
             element.transformChildren(this, data) as E // TODO: Is full traverse necessary?
-
-        override fun transformRefinementTypeRef(refinementTypeRef: FirRefinementTypeRef, data: Nothing?): FirTypeRef =
-            refinementTypeRef.transformUnderlyingType(this, data).let {
-                val underlyingType = it.underlyingType.coneType
-                val expectedType = underlyingType.createPredicate()
-                val resolutionMode = withExpectedType(expectedType)
-                // TODO: Safe the CFG
-                dataFlowAnalyzer.enterRefinementTypePredicate()
-                it.transformPredicate(this@FirBodyResolveTransformer, resolutionMode).also {
-                    dataFlowAnalyzer.exitRefinementTypePredicate()
-                }
-            }
+// TODO
+//        override fun transformRefinementTypeRef(refinementTypeRef: FirRefinementTypeRef, data: Nothing?): FirTypeRef =
+//            refinementTypeRef.transformUnderlyingType(this, data).let {
+//                val underlyingType = it.underlyingType.coneType
+//                val expectedType = underlyingType.createPredicate()
+//                val resolutionMode = withExpectedType(expectedType)
+//                // TODO: Safe the CFG
+//                dataFlowAnalyzer.enterRefinementTypePredicate()
+//                it.transformPredicate(this@FirBodyResolveTransformer, resolutionMode).also {
+//                    dataFlowAnalyzer.exitRefinementTypePredicate()
+//                }
+//            }
 
         override fun transformResolvedTypeRef(resolvedTypeRef: FirResolvedTypeRef, data: Nothing?): FirResolvedTypeRef {
             resolvedTypeRef.delegatedTypeRef?.transformSingle(this@RefinementTypeRefPredicateTransformer, data)

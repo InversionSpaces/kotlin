@@ -449,6 +449,16 @@ object FirTree : AbstractFirTreeBuilder() {
         +annotations
     }
 
+    val refinement: Element by element(Declaration) {
+        parent(classLikeDeclaration)
+
+        +FieldSets.name
+        //+declaredSymbol(...)
+
+        +field("underlyingType", typeRef, withTransform = true)
+        +field("predicate", anonymousFunctionExpression, withTransform = true)
+    }
+
     val anonymousFunction: Element by element(Declaration) {
         parent(function)
         parent(typeParametersOwner)
@@ -1206,15 +1216,6 @@ object FirTree : AbstractFirTreeBuilder() {
 
         +field("leftType", typeRef)
         +field("rightType", typeRef)
-    }
-
-    val refinementTypeRef: Element by element(TypeRefElement) {
-        parent(unresolvedTypeRef)
-
-        +field("underlyingType", typeRef, withTransform = true)
-        +field("predicate", anonymousFunctionExpression, withTransform = true)
-
-        +referencedSymbol("definingSymbol", typeAliasSymbolType)
     }
 
     val thisReceiverExpression: Element by element(Expression) {

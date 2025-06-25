@@ -191,6 +191,9 @@ abstract class FirVisitor<out R, in D> {
     open fun visitTypeAlias(typeAlias: FirTypeAlias, data: D): R =
         visitElement(typeAlias, data)
 
+    open fun visitRefinement(refinement: FirRefinement, data: D): R =
+        visitElement(refinement, data)
+
     open fun visitAnonymousFunction(anonymousFunction: FirAnonymousFunction, data: D): R =
         visitElement(anonymousFunction, data)
 
@@ -445,9 +448,6 @@ abstract class FirVisitor<out R, in D> {
 
     open fun visitIntersectionTypeRef(intersectionTypeRef: FirIntersectionTypeRef, data: D): R =
         visitElement(intersectionTypeRef, data)
-
-    open fun visitRefinementTypeRef(refinementTypeRef: FirRefinementTypeRef, data: D): R =
-        visitElement(refinementTypeRef, data)
 
     open fun visitThisReceiverExpression(thisReceiverExpression: FirThisReceiverExpression, data: D): R =
         visitElement(thisReceiverExpression, data)

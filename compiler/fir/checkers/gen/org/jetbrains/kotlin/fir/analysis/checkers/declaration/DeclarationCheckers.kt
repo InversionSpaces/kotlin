@@ -34,6 +34,7 @@ abstract class DeclarationCheckers {
     open val replSnippetCheckers: Set<FirReplSnippetChecker> = emptySet()
     open val typeParameterCheckers: Set<FirTypeParameterChecker> = emptySet()
     open val typeAliasCheckers: Set<FirTypeAliasChecker> = emptySet()
+    open val refinementCheckers: Set<FirRefinementChecker> = emptySet()
     open val anonymousFunctionCheckers: Set<FirAnonymousFunctionChecker> = emptySet()
     open val propertyAccessorCheckers: Set<FirPropertyAccessorChecker> = emptySet()
     open val backingFieldCheckers: Set<FirBackingFieldChecker> = emptySet()
@@ -60,6 +61,7 @@ abstract class DeclarationCheckers {
     @CheckersComponentInternal internal val allReplSnippetCheckers: Array<FirReplSnippetChecker> by lazy { (replSnippetCheckers + basicDeclarationCheckers).toTypedArray() as Array<FirReplSnippetChecker> }
     @CheckersComponentInternal internal val allTypeParameterCheckers: Array<FirTypeParameterChecker> by lazy { (typeParameterCheckers + basicDeclarationCheckers).toTypedArray() as Array<FirTypeParameterChecker> }
     @CheckersComponentInternal internal val allTypeAliasCheckers: Array<FirTypeAliasChecker> by lazy { (typeAliasCheckers + classLikeCheckers + basicDeclarationCheckers).toTypedArray() as Array<FirTypeAliasChecker> }
+    @CheckersComponentInternal internal val allRefinementCheckers: Array<FirRefinementChecker> by lazy { (refinementCheckers + classLikeCheckers + basicDeclarationCheckers).toTypedArray() as Array<FirRefinementChecker> }
     @CheckersComponentInternal internal val allAnonymousFunctionCheckers: Array<FirAnonymousFunctionChecker> by lazy { (anonymousFunctionCheckers + functionCheckers + callableDeclarationCheckers + basicDeclarationCheckers).toTypedArray() as Array<FirAnonymousFunctionChecker> }
     @CheckersComponentInternal internal val allPropertyAccessorCheckers: Array<FirPropertyAccessorChecker> by lazy { (propertyAccessorCheckers + functionCheckers + callableDeclarationCheckers + basicDeclarationCheckers).toTypedArray() as Array<FirPropertyAccessorChecker> }
     @CheckersComponentInternal internal val allBackingFieldCheckers: Array<FirBackingFieldChecker> by lazy { (backingFieldCheckers + callableDeclarationCheckers + basicDeclarationCheckers).toTypedArray() as Array<FirBackingFieldChecker> }

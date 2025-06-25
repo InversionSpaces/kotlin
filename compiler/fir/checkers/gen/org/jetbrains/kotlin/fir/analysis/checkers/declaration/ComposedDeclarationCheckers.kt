@@ -47,6 +47,8 @@ class ComposedDeclarationCheckers(val predicate: (FirCheckerWithMppKind) -> Bool
         get() = _typeParameterCheckers
     override val typeAliasCheckers: Set<FirTypeAliasChecker>
         get() = _typeAliasCheckers
+    override val refinementCheckers: Set<FirRefinementChecker>
+        get() = _refinementCheckers
     override val anonymousFunctionCheckers: Set<FirAnonymousFunctionChecker>
         get() = _anonymousFunctionCheckers
     override val propertyAccessorCheckers: Set<FirPropertyAccessorChecker>
@@ -82,6 +84,7 @@ class ComposedDeclarationCheckers(val predicate: (FirCheckerWithMppKind) -> Bool
     private val _replSnippetCheckers: MutableSet<FirReplSnippetChecker> = mutableSetOf()
     private val _typeParameterCheckers: MutableSet<FirTypeParameterChecker> = mutableSetOf()
     private val _typeAliasCheckers: MutableSet<FirTypeAliasChecker> = mutableSetOf()
+    private val _refinementCheckers: MutableSet<FirRefinementChecker> = mutableSetOf()
     private val _anonymousFunctionCheckers: MutableSet<FirAnonymousFunctionChecker> = mutableSetOf()
     private val _propertyAccessorCheckers: MutableSet<FirPropertyAccessorChecker> = mutableSetOf()
     private val _backingFieldCheckers: MutableSet<FirBackingFieldChecker> = mutableSetOf()
@@ -109,6 +112,7 @@ class ComposedDeclarationCheckers(val predicate: (FirCheckerWithMppKind) -> Bool
         checkers.replSnippetCheckers.filterTo(_replSnippetCheckers, predicate)
         checkers.typeParameterCheckers.filterTo(_typeParameterCheckers, predicate)
         checkers.typeAliasCheckers.filterTo(_typeAliasCheckers, predicate)
+        checkers.refinementCheckers.filterTo(_refinementCheckers, predicate)
         checkers.anonymousFunctionCheckers.filterTo(_anonymousFunctionCheckers, predicate)
         checkers.propertyAccessorCheckers.filterTo(_propertyAccessorCheckers, predicate)
         checkers.backingFieldCheckers.filterTo(_backingFieldCheckers, predicate)
