@@ -165,6 +165,9 @@ object KotlinElementTypeProviderImpl : KotlinElementTypeProvider {
     override val typeProjectionType: KtStubElementType<KotlinTypeProjectionStub, KtTypeProjection> =
         KtStubElementTypes.TYPE_PROJECTION
 
+    override val refinementTypeType: KtStubElementType<KotlinPlaceHolderStub<KtRefinementType>, KtRefinementType> =
+        KtStubElementTypes.REFINEMENT_TYPE
+
 
     // Constants
     override val nullType: KtStubElementType<KotlinConstantExpressionStub, KtConstantExpression> =

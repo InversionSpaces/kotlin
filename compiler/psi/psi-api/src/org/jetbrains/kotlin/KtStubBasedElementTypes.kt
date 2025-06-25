@@ -196,6 +196,9 @@ internal object KtStubBasedElementTypes {
     val TYPE_PROJECTION: KtStubElementType<KotlinTypeProjectionStub, KtTypeProjection> =
         provider.typeProjectionType
 
+    @JvmField
+    val REFINEMENT_TYPE: KtStubElementType<KotlinPlaceHolderStub<KtRefinementType>, KtRefinementType> =
+        provider.refinementTypeType
 
     // Constants
 

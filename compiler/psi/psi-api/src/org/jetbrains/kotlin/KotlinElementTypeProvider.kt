@@ -87,6 +87,7 @@ interface KotlinElementTypeProvider {
     val nullableTypeType: KtStubElementType<KotlinPlaceHolderStub<KtNullableType>, KtNullableType>
     val intersectionTypeType: KtStubElementType<KotlinPlaceHolderStub<KtIntersectionType>, KtIntersectionType>
     val typeProjectionType: KtStubElementType<KotlinTypeProjectionStub, KtTypeProjection>
+    val refinementTypeType: KtStubElementType<KotlinPlaceHolderStub<KtRefinementType>, KtRefinementType>
 
     // Constants
     val nullType: KtStubElementType<KotlinConstantExpressionStub, KtConstantExpression>

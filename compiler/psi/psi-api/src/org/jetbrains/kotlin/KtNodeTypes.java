@@ -69,6 +69,7 @@ public interface KtNodeTypes {
     IElementType NULLABLE_TYPE            = KtStubBasedElementTypes.NULLABLE_TYPE;
     IElementType INTERSECTION_TYPE        = KtStubBasedElementTypes.INTERSECTION_TYPE;
     IElementType TYPE_PROJECTION          = KtStubBasedElementTypes.TYPE_PROJECTION;
+    IElementType REFINEMENT_TYPE          = KtStubBasedElementTypes.REFINEMENT_TYPE;
 
     IElementType PROPERTY_ACCESSOR       = KtStubBasedElementTypes.PROPERTY_ACCESSOR;
     IElementType BACKING_FIELD           = KtStubBasedElementTypes.BACKING_FIELD;
