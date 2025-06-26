@@ -144,6 +144,12 @@ class FirProviderImpl(val session: FirSession, val kotlinScopeProvider: FirKotli
             data.state.classifierInPackage.getOrPut(classId.packageFqName, ::mutableSetOf).add(classId.shortClassName)
         }
 
+        override fun visitRefinement(refinement: FirRefinement, data: FirRecorderData) {
+            visitClassifier(refinement, data)
+            val classId = refinement.symbol.classId
+            data.state.classifierInPackage.getOrPut(classId.packageFqName, ::mutableSetOf).add(classId.shortClassName)
+        }
+
         private fun visitClassifier(classLike: FirClassLikeDeclaration, data: FirRecorderData) {
             val classId = classLike.symbol.classId
 

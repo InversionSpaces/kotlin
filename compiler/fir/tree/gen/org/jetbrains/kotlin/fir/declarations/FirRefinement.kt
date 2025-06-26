@@ -51,6 +51,8 @@ abstract class FirRefinement : FirClassLikeDeclaration() {
 
     abstract override fun replaceDeprecationsProvider(newDeprecationsProvider: DeprecationsProvider)
 
+    abstract fun replaceUnderlyingType(newUnderlyingType: FirTypeRef)
+
     abstract override fun <D> transformAnnotations(transformer: FirTransformer<D>, data: D): FirRefinement
 
     abstract override fun <D> transformTypeParameters(transformer: FirTransformer<D>, data: D): FirRefinement

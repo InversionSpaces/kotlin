@@ -104,4 +104,8 @@ internal class FirRefinementImpl(
     override fun replaceDeprecationsProvider(newDeprecationsProvider: DeprecationsProvider) {
         deprecationsProvider = newDeprecationsProvider
     }
+
+    override fun replaceUnderlyingType(newUnderlyingType: FirTypeRef) {
+        underlyingType = newUnderlyingType
+    }
 }

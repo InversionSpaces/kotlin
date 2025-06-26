@@ -138,6 +138,16 @@ private class FirApplySupertypesTransformer(
         return anonymousObject.transformChildren(this, data) as FirAnonymousObject
     }
 
+    override fun transformRefinement(refinement: FirRefinement, data: Any?): FirStatement {
+        if (refinement.underlyingType is FirResolvedTypeRef) {
+            return refinement
+        }
+        val resolvedTypeRef = supertypeComputationSession.getResolvedUnderlyingTypeRef(refinement)
+        val resolvedExpandedTypeRef = supertypeComputationSession.expandTypealiasInPlace(resolvedTypeRef, session)
+        refinement.replaceUnderlyingType(resolvedExpandedTypeRef)
+        return refinement
+    }
+
     override fun transformTypeAlias(typeAlias: FirTypeAlias, data: Any?): FirStatement {
         if (typeAlias.expandedTypeRef is FirResolvedTypeRef) {
             return typeAlias
@@ -514,6 +524,10 @@ open class FirSupertypeResolverVisitor(
         }
     }
 
+    override fun visitRefinement(refinement: FirRefinement, data: Any?) {
+        resolveSpecificClassLikeSupertypes(refinement, listOf(refinement.underlyingType), resolveRecursively = true)
+    }
+
     override fun visitTypeAlias(typeAlias: FirTypeAlias, data: Any?) {
         resolveTypeAliasSupertype(typeAlias, typeAlias.expandedTypeRef, resolveRecursively = true)
     }
@@ -817,6 +831,14 @@ open class SupertypeComputationSession {
         val supertypeRefs = getResolvedSupertypeRefs(typeAlias)
         assert(supertypeRefs.size == 1) {
             "Expected single supertypeRefs, but found ${supertypeRefs.size} in ${typeAlias.symbol.classId}"
+        }
+        return supertypeRefs[0]
+    }
+
+    fun getResolvedUnderlyingTypeRef(refinement: FirRefinement): FirTypeRef {
+        val supertypeRefs = getResolvedSupertypeRefs(refinement)
+        assert(supertypeRefs.size == 1) {
+            "Expected single supertypeRefs, but found ${supertypeRefs.size} in ${refinement.symbol.classId}"
         }
         return supertypeRefs[0]
     }
