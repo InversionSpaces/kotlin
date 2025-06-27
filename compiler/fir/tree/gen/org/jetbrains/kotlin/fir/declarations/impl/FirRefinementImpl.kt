@@ -40,7 +40,7 @@ internal class FirRefinementImpl(
     override var deprecationsProvider: DeprecationsProvider,
     override val scopeProvider: FirScopeProvider,
     override val name: Name,
-    override var underlyingType: FirTypeRef,
+    override var underlyingTypeRef: FirTypeRef,
     override var predicate: FirAnonymousFunctionExpression,
 ) : FirRefinement() {
 
@@ -55,7 +55,7 @@ internal class FirRefinementImpl(
         annotations.forEach { it.accept(visitor, data) }
         typeParameters.forEach { it.accept(visitor, data) }
         status.accept(visitor, data)
-        underlyingType.accept(visitor, data)
+        underlyingTypeRef.accept(visitor, data)
         predicate.accept(visitor, data)
     }
 
@@ -63,7 +63,7 @@ internal class FirRefinementImpl(
         transformAnnotations(transformer, data)
         transformTypeParameters(transformer, data)
         transformStatus(transformer, data)
-        transformUnderlyingType(transformer, data)
+        transformUnderlyingTypeRef(transformer, data)
         transformPredicate(transformer, data)
         return this
     }
@@ -83,8 +83,8 @@ internal class FirRefinementImpl(
         return this
     }
 
-    override fun <D> transformUnderlyingType(transformer: FirTransformer<D>, data: D): FirRefinementImpl {
-        underlyingType = underlyingType.transform(transformer, data)
+    override fun <D> transformUnderlyingTypeRef(transformer: FirTransformer<D>, data: D): FirRefinementImpl {
+        underlyingTypeRef = underlyingTypeRef.transform(transformer, data)
         return this
     }
 
@@ -105,7 +105,7 @@ internal class FirRefinementImpl(
         deprecationsProvider = newDeprecationsProvider
     }
 
-    override fun replaceUnderlyingType(newUnderlyingType: FirTypeRef) {
-        underlyingType = newUnderlyingType
+    override fun replaceUnderlyingTypeRef(newUnderlyingTypeRef: FirTypeRef) {
+        underlyingTypeRef = newUnderlyingTypeRef
     }
 }

@@ -50,7 +50,6 @@ val ConeKotlinType.isMarkedNullable: Boolean
         is ConeTypeVariableType -> isMarkedNullable
         is ConeDefinitelyNotNullType -> false
         is ConeIntersectionType -> false
-        is ConeRefinementType -> underlyingType.isMarkedNullable
         is ConeStubType -> isMarkedNullable
     }
 
@@ -89,7 +88,8 @@ inline fun ConeKotlinType.forEachType(
 
             is ConeDefinitelyNotNullType -> stack.add(next.original)
             is ConeIntersectionType -> stack.addAll(next.intersectedTypes)
-            is ConeRefinementType -> stack.add(next.underlyingType)
+            // TODO
+            //is ConeRefinementType -> stack.add(next.underlyingType)
             else -> next.typeArguments.forEach { if (it is ConeKotlinTypeProjection) stack.add(it.type) }
         }
     }
@@ -198,7 +198,6 @@ fun ConeKotlinType.hasCapture(): Boolean = contains { it is ConeCapturedType }
 
 fun ConeRigidType.getConstructor(): TypeConstructorMarker {
     return when (this) {
-        is ConeRefinementType -> this
         is ConeLookupTagBasedType -> this.lookupTag
         is ConeCapturedType -> this.constructor
         is ConeTypeVariableType -> this.typeConstructor

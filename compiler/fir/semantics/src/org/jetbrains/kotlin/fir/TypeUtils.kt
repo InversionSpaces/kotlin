@@ -35,7 +35,6 @@ fun ConeKotlinType?.collectUpperBounds(): Set<ConeClassLikeType> {
             }
             is ConeDefinitelyNotNullType -> collect(type.original)
             is ConeIntersectionType -> type.intersectedTypes.forEach(::collect)
-            is ConeRefinementType -> collect(type.underlyingType)
             is ConeFlexibleType -> collect(type.upperBound)
             is ConeCapturedType -> type.constructor.supertypes?.forEach(::collect)
             is ConeIntegerConstantOperatorType -> upperBounds.add(type.getApproximatedType())

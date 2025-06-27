@@ -455,7 +455,7 @@ object FirTree : AbstractFirTreeBuilder() {
         +FieldSets.name
         //+declaredSymbol(...)
 
-        +field("underlyingType", typeRef, withTransform = true, withReplace = true)
+        +field("underlyingTypeRef", typeRef, withTransform = true, withReplace = true)
         +field("predicate", anonymousFunctionExpression, withTransform = true)
     }
 

@@ -1402,7 +1402,7 @@ class LightTreeRawFirDeclarationBuilder(
                     )
 
                     symbol = refinementSymbol
-                    underlyingType = convertType(underlyingTypeNode)
+                    underlyingTypeRef = convertType(underlyingTypeNode)
                     predicate = expressionConverter.getAsFirExpression(predicateNode, "Lambda expected")
                     modifiers?.convertAnnotationsTo(annotations)
                 }

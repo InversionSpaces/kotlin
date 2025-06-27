@@ -197,6 +197,17 @@ class FirStatusResolver(
     }
 
     fun resolveStatus(
+        refinement: FirRefinement,
+        containingClass: FirClass?,
+        isLocal: Boolean
+    ): FirResolvedDeclarationStatus {
+        val status = refinement.applyExtensionTransformers {
+            transformStatus(it, refinement, containingClass?.symbol, isLocal)
+        }
+        return resolveStatus(refinement, status, containingClass, null, isLocal, emptyList())
+    }
+
+    fun resolveStatus(
         propertyAccessor: FirPropertyAccessor,
         containingClass: FirClass?,
         containingProperty: FirProperty?,

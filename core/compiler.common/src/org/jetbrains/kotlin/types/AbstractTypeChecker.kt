@@ -399,12 +399,10 @@ object AbstractTypeChecker {
         superType: RigidTypeMarker
     ): Boolean {
         if (RUN_SLOW_ASSERTIONS) {
-            assert(subType.isSingleClassifierType() || subType.typeConstructor().let {
-                it.isIntersection() || it.isRefinement()
-            } || state.isAllowedTypeVariable(subType)) {
+            assert(subType.isSingleClassifierType() || subType.typeConstructor().isIntersection() || state.isAllowedTypeVariable(subType)) {
                 "Not singleClassifierType and not intersection subType: $subType"
             }
-            assert(superType.isSingleClassifierType() || superType.typeConstructor().isRefinement() || state.isAllowedTypeVariable(superType)) {
+            assert(superType.isSingleClassifierType() || state.isAllowedTypeVariable(superType)) {
                 "Not singleClassifierType superType: $superType"
             }
         }
@@ -796,13 +794,11 @@ object AbstractNullabilityChecker {
             if (AbstractTypeChecker.RUN_SLOW_ASSERTIONS) {
                 // it makes for case String? & Any <: String
                 assert(
-                    subType.isSingleClassifierType() || subType.typeConstructor().let {
-                        it.isIntersection() || it.isRefinement()
-                    } || state.isAllowedTypeVariable(subType)
+                    subType.isSingleClassifierType() || subType.typeConstructor().isIntersection() || state.isAllowedTypeVariable(subType)
                 ) {
                     "Not singleClassifierType and not intersection subType: $subType"
                 }
-                assert(superType.isSingleClassifierType() || superType.typeConstructor().isRefinement() || state.isAllowedTypeVariable(superType)) {
+                assert(superType.isSingleClassifierType() || state.isAllowedTypeVariable(superType)) {
                     "Not singleClassifierType superType: $superType"
                 }
             }

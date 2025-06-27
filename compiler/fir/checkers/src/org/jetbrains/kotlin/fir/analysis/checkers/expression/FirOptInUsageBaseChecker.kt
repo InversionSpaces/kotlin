@@ -273,10 +273,7 @@ object FirOptInUsageBaseChecker {
                     result, visited, fromSetter = false, dispatchReceiverType = null, fromSupertype = false
                 )
             }
-
-            is FirRefinementSymbol -> TODO()
-
-            is FirAnonymousObjectSymbol, is FirTypeAliasSymbol -> {
+            is FirAnonymousObjectSymbol, is FirTypeAliasSymbol, is FirRefinementSymbol -> {
             }
         }
     }

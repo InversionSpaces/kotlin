@@ -1,8 +1,8 @@
 // FIR_IDENTICAL
-// RUN_PIPELINE_TILL: BACKEND
+// RUN_PIPELINE_TILL: FRONTEND
 // WITH_EXTRA_CHECKERS
 
-typealias Pos = Int satisfies { it > 0 }
+refinement Pos = Int satisfies { it > 0 }
 
 fun bar(): Int = 42
 
@@ -16,3 +16,6 @@ fun main() {
         foo(v)
     }
 }
+
+/* GENERATED_FIR_TAGS: comparisonExpression, functionDeclaration, ifExpression, integerLiteral, isExpression,
+lambdaLiteral, localProperty, propertyDeclaration, smartcast */

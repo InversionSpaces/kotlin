@@ -223,14 +223,13 @@ interface ConeTypeContext : TypeSystemContext, TypeSystemOptimizationContext, Ty
             is ConeCapturedTypeConstructor,
             is ConeTypeVariableTypeConstructor,
             is ConeIntersectionType,
-            is ConeRefinementType // TODO: Is this right?
                 -> 0
             is ConeClassifierLookupTag -> {
                 when (val symbol = toSymbol(session)) {
                     is FirAnonymousObjectSymbol -> symbol.fir.typeParameters.size
                     is FirRegularClassSymbol -> symbol.fir.typeParameters.size
                     is FirTypeAliasSymbol -> symbol.fir.typeParameters.size
-                    is FirRefinementSymbol -> TODO()
+                    is FirRefinementSymbol -> symbol.fir.typeParameters.size
                     is FirTypeParameterSymbol, null -> 0
                 }
             }
@@ -271,13 +270,12 @@ interface ConeTypeContext : TypeSystemContext, TypeSystemOptimizationContext, Ty
                     is FirTypeParameterSymbol -> symbol.resolvedBounds.map { it.coneType }
                     is FirClassSymbol<*> -> symbol.fir.superConeTypes
                     is FirTypeAliasSymbol -> listOfNotNull(symbol.fir.expandedConeType)
-                    is FirRefinementSymbol -> TODO()
+                    is FirRefinementSymbol -> listOfNotNull(symbol.resolvedUnderlyingType)
                     null -> listOf(session.builtinTypes.anyType.coneType)
                 }
             }
             is ConeCapturedTypeConstructor -> supertypes.orEmpty()
             is ConeIntersectionType -> intersectedTypes
-            is ConeRefinementType -> listOf(underlyingType)
             is ConeIntegerLiteralType -> supertypes
         }
     }
@@ -287,7 +285,7 @@ interface ConeTypeContext : TypeSystemContext, TypeSystemOptimizationContext, Ty
     }
 
     override fun TypeConstructorMarker.isRefinement(): Boolean {
-        return this is ConeRefinementType
+        return (this as? ConeClassLikeLookupTag)?.toSymbol(session) is FirRefinementSymbol
     }
 
     override fun TypeConstructorMarker.isClassTypeConstructor(): Boolean {
@@ -341,9 +339,6 @@ interface ConeTypeContext : TypeSystemContext, TypeSystemOptimizationContext, Ty
         require(this is ConeTypeConstructorMarker)
         return when (this) {
             is ConeClassifierLookupTag -> this !is ConeClassLikeErrorLookupTag
-
-            is ConeRefinementType -> true // TODO: is this right?
-
             is ConeStubTypeConstructor,
             is ConeCapturedTypeConstructor,
             is ConeTypeVariableTypeConstructor,

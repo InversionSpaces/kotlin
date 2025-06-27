@@ -326,29 +326,11 @@ class ConeIntersectionType(
     }
 }
 
-class ConeRefinementType(
-    val underlyingType: ConeKotlinType,
-    override val isMarkedNullable: Boolean,
-    override val lookupTag: ConeClassLikeLookupTag,
-) : ConeClassLikeType(), ConeTypeConstructorMarker {
-    override val typeArguments: Array<out ConeTypeProjection>
-        get() = EMPTY_ARRAY
-
-    override val attributes: ConeAttributes
-        get() = underlyingType.attributes
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as ConeRefinementType
-
-        if (underlyingType != other.underlyingType) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return underlyingType.hashCode()
-    }
-}
+//class ConeRefinementType(
+//    override val lookupTag: ConeClassLikeLookupTag,
+//    override val isMarkedNullable: Boolean,
+//    override val attributes: ConeAttributes = ConeAttributes.Empty
+//) : ConeClassLikeType(), ConeTypeConstructorMarker {
+//    override val typeArguments: Array<out ConeTypeProjection>
+//        get() = EMPTY_ARRAY
+//}

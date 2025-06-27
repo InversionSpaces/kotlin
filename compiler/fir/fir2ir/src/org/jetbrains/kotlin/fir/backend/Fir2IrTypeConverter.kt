@@ -111,10 +111,6 @@ class Fir2IrTypeConverter(
                     else -> createErrorType(diagnostic.reason, isMarkedNullable)
                 }
             }
-            is ConeRefinementType -> {
-                val approximated = approximateForIrOrNull()!!
-                approximated.toIrType(typeOrigin)
-            }
             is ConeLookupTagBasedType -> {
                 val typeAnnotations = mutableListOf<IrConstructorCall>()
                 typeAnnotations += with(annotationGenerator) { annotations.toIrAnnotations() }

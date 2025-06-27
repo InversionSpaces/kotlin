@@ -174,7 +174,7 @@ interface IrTypeSystemContext : TypeSystemContext, TypeSystemCommonSuperTypesCon
 
     override fun TypeConstructorMarker.isIntersection() = false
 
-    override fun TypeConstructorMarker.isRefinement() = false // TODO: support refinement in IR
+    override fun TypeConstructorMarker.isRefinement(): Boolean = false // TODO
 
     override fun TypeConstructorMarker.isClassTypeConstructor() = this is IrClassSymbol
 

@@ -12,8 +12,10 @@ import org.jetbrains.kotlin.fir.resolve.defaultType
 import org.jetbrains.kotlin.fir.resolve.fullyExpandedType
 import org.jetbrains.kotlin.fir.resolve.getClassAndItsOuterClassesWhenLocal
 import org.jetbrains.kotlin.fir.resolve.substitution.substitutorByMap
+import org.jetbrains.kotlin.fir.resolve.toRefinementSymbol
 import org.jetbrains.kotlin.fir.resolve.toRegularClassSymbol
 import org.jetbrains.kotlin.fir.resolve.toSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirClassLikeSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirRegularClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirTypeParameterSymbol
@@ -55,10 +57,8 @@ fun isCastErased(supertype: ConeKotlinType, subtype: ConeKotlinType): Boolean {
     // downcasting to a reified type parameter is never erased
     else if (subtype is ConeTypeParameterType) return false
 
-    // TODO: Is it ok to always return false here?
-    if (subtype is ConeRefinementType) return false
-
-    val regularClassSymbol = subtype.toRegularClassSymbol(context.session) ?: return true
+    val regularClassSymbol =
+        subtype.toRegularClassSymbol(context.session) ?: subtype.toRefinementSymbol(context.session) ?: return true
 
     val outerClasses = regularClassSymbol.getClassAndItsOuterClassesWhenLocal(context.session)
 
@@ -103,7 +103,7 @@ fun isCastErased(supertype: ConeKotlinType, subtype: ConeKotlinType): Boolean {
 context(context: CheckerContext)
 fun findStaticallyKnownSubtype(
     supertype: ConeKotlinType,
-    subTypeClassSymbol: FirRegularClassSymbol
+    subTypeClassSymbol: FirClassLikeSymbol<*>
 ): ConeKotlinType {
     assert(!supertype.isMarkedNullable) { "This method only makes sense for non-nullable types" }
 

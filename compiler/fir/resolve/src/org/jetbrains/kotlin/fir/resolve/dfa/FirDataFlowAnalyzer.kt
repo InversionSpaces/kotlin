@@ -1469,11 +1469,11 @@ abstract class FirDataFlowAnalyzer(
 
     // --------------------------- Refinement Type Predicates ---------------------------
 
-    fun enterRefinementTypePredicate() {
+    fun enterRefinementPredicate() {
         graphBuilder.enterFakeExpression().mergeIncomingFlow()
     }
 
-    fun exitRefinementTypePredicate() {
+    fun exitRefinementPredicate() {
         graphBuilder.exitFakeExpression()
         resetSmartCastPosition()
     }

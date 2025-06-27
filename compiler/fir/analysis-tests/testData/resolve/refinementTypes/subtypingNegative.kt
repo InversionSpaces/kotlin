@@ -2,7 +2,7 @@
 // RUN_PIPELINE_TILL: FRONTEND
 // WITH_EXTRA_CHECKERS
 
-typealias Pos = Int satisfies { it > 0 }
+refinement Pos = Int satisfies { it > 0 }
 
 fun bar(): Int = 42
 
@@ -12,3 +12,6 @@ fun main() {
     val v = bar()
     foo(<!ARGUMENT_TYPE_MISMATCH!>v<!>)
 }
+
+/* GENERATED_FIR_TAGS: comparisonExpression, functionDeclaration, integerLiteral, lambdaLiteral, localProperty,
+propertyDeclaration */

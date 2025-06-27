@@ -23,9 +23,6 @@ class ConeTypeApproximator(inferenceContext: ConeInferenceContext, languageVersi
     }
 
     private fun ConeKotlinType.fastPathSkipApproximation(conf: TypeApproximatorConfiguration): Boolean {
-        // TODO: This case is for next if to not trigger on refinement types, is it okay?
-        if (this is ConeRefinementType) return false
-
         if (this is ConeClassLikeType && this.typeArguments.isEmpty() &&
             this.lookupTag.let { !it.isLocalClass() && !it.isAnonymousClass() }
         ) {

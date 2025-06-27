@@ -139,12 +139,12 @@ private class FirApplySupertypesTransformer(
     }
 
     override fun transformRefinement(refinement: FirRefinement, data: Any?): FirStatement {
-        if (refinement.underlyingType is FirResolvedTypeRef) {
+        if (refinement.underlyingTypeRef is FirResolvedTypeRef) {
             return refinement
         }
         val resolvedTypeRef = supertypeComputationSession.getResolvedUnderlyingTypeRef(refinement)
         val resolvedExpandedTypeRef = supertypeComputationSession.expandTypealiasInPlace(resolvedTypeRef, session)
-        refinement.replaceUnderlyingType(resolvedExpandedTypeRef)
+        refinement.replaceUnderlyingTypeRef(resolvedExpandedTypeRef)
         return refinement
     }
 
@@ -525,7 +525,7 @@ open class FirSupertypeResolverVisitor(
     }
 
     override fun visitRefinement(refinement: FirRefinement, data: Any?) {
-        resolveSpecificClassLikeSupertypes(refinement, listOf(refinement.underlyingType), resolveRecursively = true)
+        resolveSpecificClassLikeSupertypes(refinement, listOf(refinement.underlyingTypeRef), resolveRecursively = true)
     }
 
     override fun visitTypeAlias(typeAlias: FirTypeAlias, data: Any?) {

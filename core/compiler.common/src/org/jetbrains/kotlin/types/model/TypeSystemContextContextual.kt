@@ -179,9 +179,6 @@ context(c: TypeSystemContext)
 fun TypeConstructorMarker.isIntersection(): Boolean = with(c) { isIntersection() }
 
 context(c: TypeSystemContext)
-fun TypeConstructorMarker.isRefinement(): Boolean = with(c) { isRefinement() }
-
-context(c: TypeSystemContext)
 fun TypeConstructorMarker.isClassTypeConstructor(): Boolean = with(c) { isClassTypeConstructor() }
 
 context(c: TypeSystemContext)

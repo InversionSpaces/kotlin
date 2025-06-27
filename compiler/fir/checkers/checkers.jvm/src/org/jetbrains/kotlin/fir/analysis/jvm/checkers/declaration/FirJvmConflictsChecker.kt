@@ -31,7 +31,7 @@ object FirJvmConflictsChecker : FirClassLikeChecker(MppCheckerKind.Common) {
             // I'd say that even regular typealiases should conflict with Java, but it'd be a breaking change.
             // 'actual typealias' is just more important because it's a redeclaration in the "Kotlin-to-Java direct actualization" feature.
             is FirTypeAlias -> declaration.isActual
-            is FirRefinement -> TODO()
+            is FirRefinement -> true // TODO: actual/expected?
         }
         if (!checkRedeclaration) {
             return

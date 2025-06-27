@@ -159,4 +159,17 @@ class FirRefinementSymbol(classId: ClassId) : FirClassLikeSymbol<FirRefinement>(
         else classId.toLookupTag()
 
     override fun toLookupTag(): ConeClassLikeLookupTag = lookupTag
+
+    val resolvedUnderlyingTypeRef: FirResolvedTypeRef
+        get() {
+            lazyResolveToPhase(FirResolvePhase.SUPER_TYPES)
+            val resolvedTypeRef = fir.underlyingTypeRef
+            if (resolvedTypeRef !is FirResolvedTypeRef) {
+                errorInLazyResolve("underlyingTypeRef", resolvedTypeRef::class, FirResolvedTypeRef::class)
+            }
+            return resolvedTypeRef
+        }
+
+    val resolvedUnderlyingType: ConeKotlinType
+        get() = resolvedUnderlyingTypeRef.coneType
 }

@@ -39,7 +39,7 @@ class FirRefinementBuilder : FirAnnotationContainerBuilder {
     var deprecationsProvider: DeprecationsProvider = UnresolvedDeprecationProvider
     lateinit var scopeProvider: FirScopeProvider
     lateinit var name: Name
-    lateinit var underlyingType: FirTypeRef
+    lateinit var underlyingTypeRef: FirTypeRef
     lateinit var predicate: FirAnonymousFunctionExpression
 
     override fun build(): FirRefinement {
@@ -56,7 +56,7 @@ class FirRefinementBuilder : FirAnnotationContainerBuilder {
             deprecationsProvider,
             scopeProvider,
             name,
-            underlyingType,
+            underlyingTypeRef,
             predicate,
         )
     }

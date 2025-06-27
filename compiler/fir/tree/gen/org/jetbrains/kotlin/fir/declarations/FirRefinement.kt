@@ -35,7 +35,7 @@ abstract class FirRefinement : FirClassLikeDeclaration() {
     abstract override val deprecationsProvider: DeprecationsProvider
     abstract override val scopeProvider: FirScopeProvider
     abstract val name: Name
-    abstract val underlyingType: FirTypeRef
+    abstract val underlyingTypeRef: FirTypeRef
     abstract val predicate: FirAnonymousFunctionExpression
 
     override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
@@ -51,7 +51,7 @@ abstract class FirRefinement : FirClassLikeDeclaration() {
 
     abstract override fun replaceDeprecationsProvider(newDeprecationsProvider: DeprecationsProvider)
 
-    abstract fun replaceUnderlyingType(newUnderlyingType: FirTypeRef)
+    abstract fun replaceUnderlyingTypeRef(newUnderlyingTypeRef: FirTypeRef)
 
     abstract override fun <D> transformAnnotations(transformer: FirTransformer<D>, data: D): FirRefinement
 
@@ -59,7 +59,7 @@ abstract class FirRefinement : FirClassLikeDeclaration() {
 
     abstract override fun <D> transformStatus(transformer: FirTransformer<D>, data: D): FirRefinement
 
-    abstract fun <D> transformUnderlyingType(transformer: FirTransformer<D>, data: D): FirRefinement
+    abstract fun <D> transformUnderlyingTypeRef(transformer: FirTransformer<D>, data: D): FirRefinement
 
     abstract fun <D> transformPredicate(transformer: FirTransformer<D>, data: D): FirRefinement
 }

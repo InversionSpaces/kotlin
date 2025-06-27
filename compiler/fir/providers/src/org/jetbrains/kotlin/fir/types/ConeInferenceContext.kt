@@ -140,7 +140,6 @@ interface ConeInferenceContext : TypeSystemInferenceExtensionContext, ConeTypeCo
                     constructor.upperBoundForApproximation?.withAttributes(coneAttributes)
                 )
             }
-            is ConeRefinementType -> error("Unexpected refinement type") // TODO: Do I need to support it?
             is ConeCapturedTypeConstructor,
             is ConeIntegerLiteralType,
             is ConeStubTypeConstructor,
