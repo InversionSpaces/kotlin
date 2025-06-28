@@ -185,6 +185,10 @@ open class DescriptorMangleComputer(builder: StringBuilder, mode: MangleMode) :
             descriptor.mangleSimpleDeclaration(descriptor.name.asString())
         }
 
+        override fun visitRefinementDescriptor(descriptor: RefinementDescriptor, data: Nothing?) {
+            descriptor.mangleSimpleDeclaration(descriptor.name.asString())
+        }
+
         override fun visitModuleDeclaration(descriptor: ModuleDescriptor, data: Nothing?) {
             visitModuleDeclaration(descriptor)
         }

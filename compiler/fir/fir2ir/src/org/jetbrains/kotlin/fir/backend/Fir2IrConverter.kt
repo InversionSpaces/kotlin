@@ -175,6 +175,9 @@ class Fir2IrConverter(
                 is FirTypeAlias -> {
                     classifierStorage.createAndCacheIrTypeAlias(it, irFile)
                 }
+                is FirRefinement -> {
+                    classifierStorage.createAndCacheIrRefinement(it, irFile)
+                }
                 else -> {}
             }
         }
@@ -542,16 +545,10 @@ class Fir2IrConverter(
                 classifierStorage.getCachedTypeAlias(declaration)?.let { irTypeAlias ->
                     // type alias may be local with error suppression, so it might be missing from classifier storage
                     addDeclarationToParentIfNeeded(irTypeAlias)
-
-                    // TODO
-//                    declaration.refinementPredicateExpr?.let {
-//                        val irFunction = declarationStorage.createAndCacheIrFunction(
-//                            it.anonymousFunction,
-//                            parent,
-//                            isLocal = isInLocalClass
-//                        )
-//                    }
                 }
+            }
+            is FirRefinement -> {
+
             }
             is FirCodeFragment -> {
                 val codeFragmentClass = classifierStorage.getCachedIrCodeFragment(declaration)!!

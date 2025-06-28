@@ -297,6 +297,26 @@ class Fir2IrClassifiersGenerator(private val c: Fir2IrComponents) : Fir2IrCompon
         }
     }
 
+    fun createIrRefinement(
+        refinement: FirRefinement,
+        parent: IrDeclarationParent,
+        symbol: IrRefinementSymbol,
+    ): IrRefinement = refinement.convertWithOffsets { startOffset, endOffset ->
+        classifierStorage.preCacheTypeParameters(refinement)
+        IrFactoryImpl.createRefinement(
+            startOffset = startOffset,
+            endOffset = endOffset,
+            origin = IrDeclarationOrigin.DEFINED,
+            name = refinement.name,
+            visibility = c.visibilityConverter.convertToDescriptorVisibility(refinement.visibility),
+            symbol = symbol,
+        ).apply {
+            setTypeParameters(this, refinement)
+            setParent(parent)
+            addDeclarationToParent(this, parent)
+        }
+    }
+
     // ------------------------------------ code fragments ------------------------------------
 
     fun createCodeFragmentClass(codeFragment: FirCodeFragment, containingFile: IrFile, symbol: IrClassSymbol): IrClass {

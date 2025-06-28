@@ -175,6 +175,7 @@ abstract class IdSignatureBuilder<Declaration : Any, Mangler : KotlinMangler<Dec
     protected open fun platformSpecificConstructor(descriptor: ConstructorDescriptor) {}
     protected open fun platformSpecificClass(descriptor: ClassDescriptor) {}
     protected open fun platformSpecificAlias(descriptor: TypeAliasDescriptor) {}
+    protected open fun platformSpecificRefinement(descriptor: RefinementDescriptor) {}
     protected open fun platformSpecificPackage(descriptor: PackageFragmentDescriptor) {}
 
     fun buildSignature(declaration: Declaration): IdSignature {

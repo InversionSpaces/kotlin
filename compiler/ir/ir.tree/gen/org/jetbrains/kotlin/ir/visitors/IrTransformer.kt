@@ -75,6 +75,9 @@ abstract class IrTransformer<in D> : IrVisitor<IrElement, D>(), @Suppress("DEPRE
     override fun visitTypeAlias(declaration: IrTypeAlias, data: D): IrStatement =
         visitDeclaration(declaration, data)
 
+    override fun visitRefinement(declaration: IrRefinement, data: D): IrStatement =
+        visitDeclaration(declaration, data)
+
     override fun visitVariable(declaration: IrVariable, data: D): IrStatement =
         visitDeclaration(declaration, data)
 

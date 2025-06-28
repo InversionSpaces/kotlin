@@ -99,3 +99,8 @@ class IrTypeAliasSymbolImpl(
     descriptor: TypeAliasDescriptor? = null,
     signature: IdSignature? = null,
 ) : IrSymbolWithSignature<TypeAliasDescriptor, IrTypeAlias>(descriptor, signature), IrTypeAliasSymbol
+
+class IrRefinementSymbolImpl(
+    descriptor: RefinementDescriptor? = null,
+    signature: IdSignature? = null,
+) : IrSymbolWithSignature<RefinementDescriptor, IrRefinement>(descriptor, signature), IrRefinementSymbol

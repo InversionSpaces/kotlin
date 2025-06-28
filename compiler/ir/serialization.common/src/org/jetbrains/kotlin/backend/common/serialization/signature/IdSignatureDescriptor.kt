@@ -106,6 +106,13 @@ open class IdSignatureDescriptor(override val mangler: KotlinMangler.DescriptorM
             platformSpecificAlias(descriptor)
         }
 
+        override fun visitRefinementDescriptor(descriptor: RefinementDescriptor, data: Nothing?) {
+            collectParents(descriptor)
+            isTopLevelPrivate = isTopLevelPrivate or descriptor.isTopLevelPrivate
+            setExpected(descriptor.isExpect)
+            platformSpecificRefinement(descriptor)
+        }
+
         override fun visitModuleDeclaration(descriptor: ModuleDescriptor, data: Nothing?) {
             platformSpecificModule(descriptor)
         }

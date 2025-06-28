@@ -21,6 +21,7 @@ interface ReferenceSymbolTable {
     fun referenceSimpleFunction(signature: IdSignature): IrSimpleFunctionSymbol
     fun referenceTypeParameter(signature: IdSignature): IrTypeParameterSymbol
     fun referenceTypeAlias(signature: IdSignature): IrTypeAliasSymbol
+    fun referenceRefinement(signature: IdSignature): IrRefinementSymbol
 
     fun enterScope(symbol: IrSymbol)
     fun enterScope(owner: IrDeclaration)

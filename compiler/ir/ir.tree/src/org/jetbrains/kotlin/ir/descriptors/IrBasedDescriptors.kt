@@ -996,6 +996,45 @@ open class IrBasedTypeAliasDescriptor(owner: IrTypeAlias) : IrBasedDeclarationDe
     }
 }
 
+open class IrBasedRefinementDescriptor(owner: IrRefinement) : IrBasedDeclarationDescriptor<IrRefinement>(owner), RefinementDescriptor {
+
+    override fun substitute(substitutor: TypeSubstitutor): ClassifierDescriptorWithTypeParameters =
+        throw UnsupportedOperationException("IrBased descriptors should not be substituted")
+
+    override fun getDefaultType(): SimpleType =
+        throw UnsupportedOperationException("Unexpected use of IrBasedTypeAliasDescriptor $this")
+
+    override fun getTypeConstructor(): TypeConstructor =
+        throw UnsupportedOperationException("Unexpected use of IrBasedTypeAliasDescriptor $this")
+
+    override fun getOriginal(): RefinementDescriptor = this
+
+    override fun isInner(): Boolean = false
+
+    override fun getDeclaredTypeParameters(): List<TypeParameterDescriptor> = owner.typeParameters.memoryOptimizedMap { it.toIrBasedDescriptor() }
+
+    override fun getName(): Name = owner.name
+
+    override fun getModality(): Modality = Modality.FINAL
+
+    override fun getSource(): SourceElement = SourceElement.NO_SOURCE
+
+    override fun getVisibility(): DescriptorVisibility = owner.visibility
+
+    override fun isExpect(): Boolean = false
+
+    override fun isActual(): Boolean = TODO()
+
+    override fun isExternal(): Boolean = false
+
+    override fun <R : Any?, D : Any?> accept(visitor: DeclarationDescriptorVisitor<R, D>, data: D): R =
+        visitor.visitRefinementDescriptor(this, data)
+
+    override fun acceptVoid(visitor: DeclarationDescriptorVisitor<Void, Void>) {
+        visitor.visitRefinementDescriptor(this, null)
+    }
+}
+
 fun IrTypeAlias.toIrBasedDescriptor() = IrBasedTypeAliasDescriptor(this)
 
 open class IrBasedFieldDescriptor(owner: IrField) : PropertyDescriptor, IrBasedDeclarationDescriptor<IrField>(owner) {
@@ -1213,6 +1252,9 @@ private fun makeKotlinType(
                     e
                 )
             }
+        }
+        is IrRefinementSymbol -> {
+            TODO()
         }
         is IrScriptSymbol -> {
             TypeUtils.makeUnsubstitutedType(
