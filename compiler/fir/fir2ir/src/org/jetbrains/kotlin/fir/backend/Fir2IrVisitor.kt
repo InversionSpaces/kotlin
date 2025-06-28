@@ -151,6 +151,11 @@ class Fir2IrVisitor(
         return irTypeAlias
     }
 
+    override fun visitRefinement(refinement: FirRefinement, data: Any?): IrElement = whileAnalysing(session, refinement) {
+        val irRefinement = classifierStorage.getCachedRefinement(refinement)!!
+        return irRefinement
+    }
+
     override fun visitEnumEntry(enumEntry: FirEnumEntry, data: Any?): IrElement = whileAnalysing(session, enumEntry) {
         // At this point all IR for source enum entries should be created and bound to symbols
         @OptIn(UnsafeDuringIrConstructionAPI::class)

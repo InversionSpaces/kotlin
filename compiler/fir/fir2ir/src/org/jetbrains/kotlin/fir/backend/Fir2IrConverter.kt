@@ -548,7 +548,9 @@ class Fir2IrConverter(
                 }
             }
             is FirRefinement -> {
-
+                classifierStorage.getCachedRefinement(declaration)?.let { irRefinement ->
+                    addDeclarationToParentIfNeeded(irRefinement)
+                }
             }
             is FirCodeFragment -> {
                 val codeFragmentClass = classifierStorage.getCachedIrCodeFragment(declaration)!!
