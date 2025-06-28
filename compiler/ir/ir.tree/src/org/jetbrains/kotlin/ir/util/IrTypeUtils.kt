@@ -63,6 +63,7 @@ private inline fun IrClassifierSymbol.checkNameAndPackage(checkName: (String) ->
 
 fun IrClassifierSymbol.superTypes(): List<IrType> = when (this) {
     is IrClassSymbol -> owner.superTypes
+    is IrRefinementSymbol -> TODO()
     is IrTypeParameterSymbol -> owner.superTypes
     is IrScriptSymbol -> emptyList()
 }
@@ -153,7 +154,8 @@ fun IrType.isSubtypeOf(superType: IrType, typeSystem: IrTypeSystemContext): Bool
 fun IrType.isNullable(): Boolean =
     when (this) {
         is IrSimpleType -> when (val classifier = classifier) {
-            is IrClassSymbol -> nullability == SimpleTypeNullability.MARKED_NULLABLE
+            is IrClassSymbol, is IrRefinementSymbol ->
+                nullability == SimpleTypeNullability.MARKED_NULLABLE
             is IrTypeParameterSymbol -> when (nullability) {
                 SimpleTypeNullability.MARKED_NULLABLE -> true
                 // here is a bug, there should be .all check (not .any),

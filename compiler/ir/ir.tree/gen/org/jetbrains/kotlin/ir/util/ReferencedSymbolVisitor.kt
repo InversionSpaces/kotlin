@@ -53,10 +53,13 @@ interface ReferencedSymbolVisitor {
             is IrClassSymbol -> visitReferencedClass(container, symbol)
             is IrScriptSymbol -> visitReferencedScript(container, symbol)
             is IrTypeParameterSymbol -> visitReferencedTypeParameter(container, symbol)
+            is IrRefinementSymbol -> visitReferencedRefinement(container, symbol)
         }
     }
 
     fun visitReferencedTypeParameter(container: IrElement, symbol: IrTypeParameterSymbol) { visitReferencedSymbol(container, symbol) }
+
+    fun visitReferencedRefinement(container: IrElement, symbol: IrRefinementSymbol) { visitReferencedSymbol(container, symbol) }
 
     fun visitReferencedReturnTarget(container: IrElement, symbol: IrReturnTargetSymbol) {
         when (symbol) {

@@ -199,6 +199,12 @@ open class FirTypeResolveTransformer(
         } as FirTypeAlias
     }
 
+    override fun transformRefinement(refinement: FirRefinement, data: Any?): FirRefinement = whileAnalysing(session, refinement) {
+        withScopeCleanup {
+            transformDeclaration(refinement, data)
+        } as FirRefinement
+    }
+
     override fun transformEnumEntry(enumEntry: FirEnumEntry, data: Any?): FirEnumEntry = whileAnalysing(session, enumEntry) {
         enumEntry.transformReturnTypeRef(this, data)
         enumEntry.transformTypeParameters(this, data)

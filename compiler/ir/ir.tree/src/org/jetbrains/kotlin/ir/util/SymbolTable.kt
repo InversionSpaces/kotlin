@@ -30,6 +30,7 @@ open class SymbolTable(
     private val functionSlice = IdSignatureSymbolTableSlice<IrSimpleFunction, IrSimpleFunctionSymbol>(lock)
     private val propertySlice = IdSignatureSymbolTableSlice<IrProperty, IrPropertySymbol>(lock)
     private val typeAliasSlice = IdSignatureSymbolTableSlice<IrTypeAlias, IrTypeAliasSymbol>(lock)
+    private val refinementSlice = IdSignatureSymbolTableSlice<IrRefinement, IrRefinementSymbol>(lock)
     private val globalTypeParameterSlice = IdSignatureSymbolTableSlice<IrTypeParameter, IrTypeParameterSymbol>(lock)
 
     @Suppress("LeakingThis")
@@ -311,6 +312,44 @@ open class SymbolTable(
     ): IrTypeAliasSymbol {
         return when {
             signature.isPubliclyVisible -> typeAliasSlice.referenced(signature) { publicSymbolFactory() }
+            else -> privateSymbolFactory().also {
+                it.privateSignature = signature
+            }
+        }
+    }
+
+    fun declareRefinement(
+        signature: IdSignature,
+        symbolFactory: () -> IrRefinementSymbol,
+        refinementFactory: (IrRefinementSymbol) -> IrRefinement,
+    ): IrRefinement {
+        return refinementSlice.declare(signature, symbolFactory, refinementFactory)
+    }
+
+    fun declareRefinementIfNotExists(
+        signature: IdSignature,
+        symbolFactory: () -> IrRefinementSymbol,
+        refinementFactory: (IrRefinementSymbol) -> IrRefinement,
+    ): IrRefinement {
+        return refinementSlice.declareIfNotExists(signature, symbolFactory, refinementFactory)
+    }
+
+    override fun referenceRefinement(signature: IdSignature): IrRefinementSymbol {
+        return referenceRefinementImpl(
+            signature,
+            { IrRefinementSymbolImpl(signature = signature) },
+            { IrRefinementSymbolImpl() }
+        )
+    }
+
+    @SymbolTableInternals
+    internal inline fun referenceRefinementImpl(
+        signature: IdSignature,
+        publicSymbolFactory: () -> IrRefinementSymbol,
+        privateSymbolFactory: () -> IrRefinementSymbol,
+    ): IrRefinementSymbol {
+        return when {
+            signature.isPubliclyVisible -> refinementSlice.referenced(signature) { publicSymbolFactory() }
             else -> privateSymbolFactory().also {
                 it.privateSignature = signature
             }

@@ -222,13 +222,14 @@ interface ConeTypeContext : TypeSystemContext, TypeSystemOptimizationContext, Ty
         return when (this) {
             is ConeCapturedTypeConstructor,
             is ConeTypeVariableTypeConstructor,
-            is ConeIntersectionType
+            is ConeIntersectionType,
                 -> 0
             is ConeClassifierLookupTag -> {
                 when (val symbol = toSymbol(session)) {
                     is FirAnonymousObjectSymbol -> symbol.fir.typeParameters.size
                     is FirRegularClassSymbol -> symbol.fir.typeParameters.size
                     is FirTypeAliasSymbol -> symbol.fir.typeParameters.size
+                    is FirRefinementSymbol -> symbol.fir.typeParameters.size
                     is FirTypeParameterSymbol, null -> 0
                 }
             }
@@ -269,6 +270,7 @@ interface ConeTypeContext : TypeSystemContext, TypeSystemOptimizationContext, Ty
                     is FirTypeParameterSymbol -> symbol.resolvedBounds.map { it.coneType }
                     is FirClassSymbol<*> -> symbol.fir.superConeTypes
                     is FirTypeAliasSymbol -> listOfNotNull(symbol.fir.expandedConeType)
+                    is FirRefinementSymbol -> listOfNotNull(symbol.resolvedUnderlyingType)
                     null -> listOf(session.builtinTypes.anyType.coneType)
                 }
             }
@@ -280,6 +282,10 @@ interface ConeTypeContext : TypeSystemContext, TypeSystemOptimizationContext, Ty
 
     override fun TypeConstructorMarker.isIntersection(): Boolean {
         return this is ConeIntersectionType
+    }
+
+    override fun TypeConstructorMarker.isRefinement(): Boolean {
+        return (this as? ConeClassLikeLookupTag)?.toSymbol(session) is FirRefinementSymbol
     }
 
     override fun TypeConstructorMarker.isClassTypeConstructor(): Boolean {
@@ -333,7 +339,6 @@ interface ConeTypeContext : TypeSystemContext, TypeSystemOptimizationContext, Ty
         require(this is ConeTypeConstructorMarker)
         return when (this) {
             is ConeClassifierLookupTag -> this !is ConeClassLikeErrorLookupTag
-
             is ConeStubTypeConstructor,
             is ConeCapturedTypeConstructor,
             is ConeTypeVariableTypeConstructor,

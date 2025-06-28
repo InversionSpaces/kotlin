@@ -475,6 +475,14 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitElement(typeAlias)
     }
 
+    final override fun visitRefinement(refinement: FirRefinement, data: Nothing?) {
+        visitRefinement(refinement)
+    }
+
+    open fun visitRefinement(refinement: FirRefinement) {
+        visitElement(refinement)
+    }
+
     final override fun visitAnonymousFunction(anonymousFunction: FirAnonymousFunction, data: Nothing?) {
         visitAnonymousFunction(anonymousFunction)
     }

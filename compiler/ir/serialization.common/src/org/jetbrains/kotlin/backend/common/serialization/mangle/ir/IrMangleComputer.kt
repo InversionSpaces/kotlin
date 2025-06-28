@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.ir.IrBuiltIns
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
+import org.jetbrains.kotlin.ir.symbols.IrRefinementSymbol
 import org.jetbrains.kotlin.ir.symbols.IrScriptSymbol
 import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
 import org.jetbrains.kotlin.ir.types.*
@@ -115,7 +116,8 @@ open class IrMangleComputer(
         when (type) {
             is IrSimpleType -> {
                 when (val classifier = type.classifier) {
-                    is IrClassSymbol -> with(copy(MangleMode.FQNAME)) { classifier.owner.visit() }
+                    is IrClassSymbol, is IrRefinementSymbol ->
+                        with(copy(MangleMode.FQNAME)) { classifier.owner.visit() }
                     is IrTypeParameterSymbol -> tBuilder.mangleTypeParameterReference(classifier)
                     is IrScriptSymbol -> {}
                 }

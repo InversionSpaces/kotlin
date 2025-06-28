@@ -95,6 +95,10 @@ fun ConeKotlinType.toTypeAliasSymbol(session: FirSession): FirTypeAliasSymbol? {
     return toSymbol(session) as? FirTypeAliasSymbol
 }
 
+fun ConeKotlinType.toRefinementSymbol(session: FirSession): FirRefinementSymbol? {
+    return toSymbol(session) as? FirRefinementSymbol
+}
+
 fun ConeKotlinType.toTypeParameterSymbol(session: FirSession): FirTypeParameterSymbol? {
     return toSymbol(session) as? FirTypeParameterSymbol
 }

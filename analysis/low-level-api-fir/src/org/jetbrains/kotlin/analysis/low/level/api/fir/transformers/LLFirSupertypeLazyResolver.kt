@@ -263,6 +263,7 @@ private class LLFirSuperTypeTargetResolver(
 
         val superTypeRefs = when (classLikeDeclaration) {
             is FirTypeAlias -> listOf(classLikeDeclaration.expandedTypeRef)
+            is FirRefinement -> listOf(classLikeDeclaration.underlyingTypeRef)
             is FirClass -> classLikeDeclaration.superTypeRefs
         }
 

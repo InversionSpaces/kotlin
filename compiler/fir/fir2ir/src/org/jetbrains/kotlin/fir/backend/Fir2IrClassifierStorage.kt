@@ -18,6 +18,7 @@ import org.jetbrains.kotlin.fir.lazy.Fir2IrLazyClass
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
 import org.jetbrains.kotlin.fir.resolve.toClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirRefinementSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirReplSnippetSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirTypeAliasSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirTypeParameterSymbol
@@ -42,6 +43,8 @@ class Fir2IrClassifierStorage(
     private val notFoundClassCache: ConcurrentHashMap<ConeClassLikeLookupTag, IrClass> = commonMemberStorage.notFoundClassCache
 
     private val typeAliasCache: MutableMap<FirTypeAlias, IrTypeAliasSymbol> = mutableMapOf()
+
+    private val refinementCache: MutableMap<FirRefinement, IrRefinementSymbol> = mutableMapOf()
 
     private val typeParameterCache: MutableMap<FirTypeParameter, IrTypeParameter> = commonMemberStorage.typeParameterCache
 
@@ -425,6 +428,28 @@ class Fir2IrClassifierStorage(
         typeAliasCache[firTypeAlias] = symbol
         lazyDeclarationsGenerator.createIrLazyTypeAlias(firTypeAlias, irParent, symbol)
         return symbol
+    }
+
+    fun createAndCacheIrRefinement(
+        refinement: FirRefinement,
+        parent: IrDeclarationParent
+    ): IrRefinement {
+        val symbol = IrRefinementSymbolImpl()
+        return classifiersGenerator.createIrRefinement(refinement, parent, symbol).also {
+            refinementCache[refinement] = symbol
+        }
+    }
+
+    internal fun getCachedRefinement(firRefinement: FirRefinement): IrRefinement? {
+        @OptIn(UnsafeDuringIrConstructionAPI::class)
+        return refinementCache[firRefinement]?.owner
+    }
+
+    fun getIrRefinementSymbol(firRefinementSymbol: FirRefinementSymbol): IrRefinementSymbol {
+        val firRefinement = firRefinementSymbol.fir
+        getCachedRefinement(firRefinement)?.let { return it.symbol }
+
+        TODO()
     }
 
     // ------------------------------------ code fragments ------------------------------------

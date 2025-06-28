@@ -281,6 +281,7 @@ object FirImportsChecker : FirFileChecker(MppCheckerKind.Common) {
         return when (classSymbol) {
             is FirRegularClassSymbol -> classSymbol
             is FirTypeAliasSymbol -> classSymbol.fullyExpandedClass(context.session)
+            is FirRefinementSymbol -> TODO()
             is FirAnonymousObjectSymbol -> null
         }
     }

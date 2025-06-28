@@ -50,6 +50,9 @@ abstract class DescriptorExportCheckerVisitor : DeclarationDescriptorVisitor<Boo
     override fun visitTypeAliasDescriptor(descriptor: TypeAliasDescriptor, data: SpecialDeclarationType): Boolean =
         descriptor.isExported()
 
+    override fun visitRefinementDescriptor(descriptor: RefinementDescriptor, data: SpecialDeclarationType?): Boolean? =
+        descriptor.isExported()
+
     override fun visitModuleDeclaration(descriptor: ModuleDescriptor, data: SpecialDeclarationType): Boolean = false
 
     override fun visitConstructorDescriptor(constructorDescriptor: ConstructorDescriptor, data: SpecialDeclarationType): Boolean =

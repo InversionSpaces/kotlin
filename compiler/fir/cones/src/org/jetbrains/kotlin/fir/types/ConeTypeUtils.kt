@@ -88,6 +88,8 @@ inline fun ConeKotlinType.forEachType(
 
             is ConeDefinitelyNotNullType -> stack.add(next.original)
             is ConeIntersectionType -> stack.addAll(next.intersectedTypes)
+            // TODO
+            //is ConeRefinementType -> stack.add(next.underlyingType)
             else -> next.typeArguments.forEach { if (it is ConeKotlinTypeProjection) stack.add(it.type) }
         }
     }

@@ -62,4 +62,6 @@ abstract class DeclarationStubGenerator(
     abstract fun generateOrGetScopedTypeParameterStub(descriptor: TypeParameterDescriptor): IrTypeParameter
 
     abstract fun generateTypeAliasStub(descriptor: TypeAliasDescriptor): IrTypeAlias
+
+    abstract fun generateRefinementStub(descriptor: RefinementDescriptor): IrRefinement
 }

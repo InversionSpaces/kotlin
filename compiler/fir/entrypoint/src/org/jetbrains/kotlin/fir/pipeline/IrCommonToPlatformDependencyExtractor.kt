@@ -167,6 +167,7 @@ class IrCommonToPlatformDependencyActualizerMapContributor(
         return when (this) {
             is FirClassSymbol -> c.classifierStorage.getIrClassSymbol(this)
             is FirTypeAliasSymbol -> c.classifierStorage.getIrTypeAliasSymbol(this)
+            is FirRefinementSymbol -> TODO()
         }
     }
 

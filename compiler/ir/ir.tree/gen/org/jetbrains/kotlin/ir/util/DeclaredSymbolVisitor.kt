@@ -42,6 +42,8 @@ interface DeclaredSymbolVisitor {
 
     fun visitDeclaredTypeAlias(container: IrElement, symbol: IrTypeAliasSymbol) { visitDeclaredSymbol(container, symbol) }
 
+    fun visitDeclaredRefinement(container: IrElement, symbol: IrRefinementSymbol) { visitDeclaredSymbol(container, symbol) }
+
     fun visitDeclaredVariable(container: IrElement, symbol: IrVariableSymbol) { visitDeclaredSymbol(container, symbol) }
 
     fun visitDeclaredExternalPackageFragment(container: IrElement, symbol: IrExternalPackageFragmentSymbol) { visitDeclaredSymbol(container, symbol) }

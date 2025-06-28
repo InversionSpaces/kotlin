@@ -14,6 +14,7 @@ public interface KtStubElementTypes {
     KtPropertyAccessorElementType PROPERTY_ACCESSOR = new KtPropertyAccessorElementType("PROPERTY_ACCESSOR");
     KtBackingFieldElementType BACKING_FIELD = new KtBackingFieldElementType("BACKING_FIELD");
     KtTypeAliasElementType TYPEALIAS = new KtTypeAliasElementType("TYPEALIAS");
+    KtRefinementElementType REFINEMENT = new KtRefinementElementType("REFINEMENT");
 
     KtClassElementType ENUM_ENTRY = new KtClassElementType("ENUM_ENTRY");
     KtObjectElementType OBJECT_DECLARATION = new KtObjectElementType("OBJECT_DECLARATION");

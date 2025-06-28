@@ -139,6 +139,11 @@ abstract class IrTreeSymbolsVisitor : IrTypeVisitorVoid(), SymbolVisitor {
         visitDeclaration(declaration)
     }
 
+    override fun visitRefinement(declaration: IrRefinement) {
+        visitDeclaredRefinement(declaration, declaration.symbol)
+        visitDeclaration(declaration)
+    }
+
     override fun visitVariable(declaration: IrVariable) {
         visitDeclaredVariable(declaration, declaration.symbol)
         visitTypeRecursively(declaration, declaration.type)

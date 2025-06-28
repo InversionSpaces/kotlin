@@ -16,6 +16,7 @@ object FirMemberDeclarationComparator : Comparator<FirMemberDeclaration> {
     object TypeAndNameComparator : Comparator<FirMemberDeclaration> {
         private val FirMemberDeclaration.priority: Int
             get() = when (this) {
+                is FirRefinement -> 8
                 is FirEnumEntry -> 7
                 is FirConstructor -> 6
                 is FirProperty -> 5

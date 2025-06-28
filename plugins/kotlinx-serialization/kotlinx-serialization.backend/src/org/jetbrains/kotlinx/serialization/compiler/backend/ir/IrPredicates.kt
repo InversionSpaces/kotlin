@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.ir.expressions.IrStatementOrigin
 import org.jetbrains.kotlin.ir.expressions.impl.IrGetValueImpl
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrConstructorSymbol
+import org.jetbrains.kotlin.ir.symbols.IrRefinementSymbol
 import org.jetbrains.kotlin.ir.symbols.IrScriptSymbol
 import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
 import org.jetbrains.kotlin.ir.types.*
@@ -294,6 +295,7 @@ fun findSerializerConstructorForTypeArgumentsSerializers(serializer: IrClass): I
 
 fun IrType.classOrUpperBound(): IrClassSymbol? = when (val cls = classifierOrNull) {
     is IrClassSymbol -> cls
+    is IrRefinementSymbol -> TODO()
     is IrScriptSymbol -> cls.owner.targetClass
     is IrTypeParameterSymbol -> cls.owner.representativeUpperBound.classOrUpperBound()
     null -> null

@@ -183,6 +183,7 @@ open class StatusComputationSession(
                     forceResolveStatusOfCorrespondingClass(classifierSymbol)
                 }
             }
+            is FirRefinementSymbol -> TODO()
             is FirTypeParameterSymbol, is FirAnonymousObjectSymbol -> {}
         }
     }
@@ -294,6 +295,14 @@ abstract class AbstractFirStatusResolveTransformer(
         typeAlias.typeParameters.forEach { it.transformSingle(this, data) }
         typeAlias.transformStatus(this, statusResolver.resolveStatus(typeAlias, containingClass, isLocal = false))
         return transformDeclaration(typeAlias, data) as FirTypeAlias
+    }
+
+    override fun transformRefinement(
+        refinement: FirRefinement,
+        data: FirResolvedDeclarationStatus?
+    ): FirStatement = whileAnalysing(session, refinement) {
+        refinement.transformStatus(this, statusResolver.resolveStatus(refinement, containingClass, isLocal = false))
+        return transformDeclaration(refinement, data) as FirStatement
     }
 
     override fun transformRegularClass(

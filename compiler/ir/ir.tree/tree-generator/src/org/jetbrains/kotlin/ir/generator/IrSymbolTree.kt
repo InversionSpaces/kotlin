@@ -29,6 +29,7 @@ import org.jetbrains.kotlin.ir.generator.IrTree.getField
 import org.jetbrains.kotlin.ir.generator.IrTree.getValue
 import org.jetbrains.kotlin.ir.generator.IrTree.localDelegatedProperty
 import org.jetbrains.kotlin.ir.generator.IrTree.property
+import org.jetbrains.kotlin.ir.generator.IrTree.refinement
 import org.jetbrains.kotlin.ir.generator.IrTree.replSnippet
 import org.jetbrains.kotlin.ir.generator.IrTree.`return`
 import org.jetbrains.kotlin.ir.generator.IrTree.returnTarget
@@ -207,5 +208,10 @@ object IrSymbolTree : AbstractIrSymbolTreeBuilder() {
     val typeAliasSymbol by element {
         bindableSymbolParent("TypeAliasDescriptor", typeAlias)
         parent(type<TypeAliasSymbolMarker>())
+    }
+
+    val refinementSymbol by element {
+        parent(classifierSymbol)
+        bindableSymbolParent("RefinementDescriptor", refinement)
     }
 }

@@ -459,7 +459,7 @@ class Fir2IrDelegatedMembersGenerationStrategy(
 
     private fun IrType.unwrapTypeParameterType(): IrType {
         return when (val classifier = this.classifierOrFail) {
-            is IrClassSymbol -> this
+            is IrClassSymbol, is IrRefinementSymbol -> this
             // It's impossible to write `by` and `where` clauses at the same time, so there can't be multiple bounds
             is IrTypeParameterSymbol -> classifier.owner.superTypes.first().unwrapTypeParameterType()
             is IrScriptSymbol -> shouldNotBeCalled()

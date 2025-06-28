@@ -210,6 +210,14 @@ abstract class IrTypeVisitorVoid : IrTypeVisitor<Unit, Nothing?>() {
         visitDeclaration(declaration)
     }
 
+    final override fun visitRefinement(declaration: IrRefinement, data: Nothing?) {
+        visitRefinement(declaration)
+    }
+
+    open fun visitRefinement(declaration: IrRefinement) {
+        visitDeclaration(declaration)
+    }
+
     final override fun visitVariable(declaration: IrVariable, data: Nothing?) {
         visitVariable(declaration)
     }

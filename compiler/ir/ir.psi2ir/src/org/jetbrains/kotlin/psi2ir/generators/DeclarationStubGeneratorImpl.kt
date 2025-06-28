@@ -109,6 +109,8 @@ class DeclarationStubGeneratorImpl(
                 generatePropertyStub(descriptor)
             is TypeAliasDescriptor ->
                 generateTypeAliasStub(descriptor)
+            is RefinementDescriptor ->
+                generateRefinementStub(descriptor)
             is TypeParameterDescriptor ->
                 generateOrGetTypeParameterStub(descriptor)
             else ->
@@ -387,6 +389,14 @@ class DeclarationStubGeneratorImpl(
                 this, typeTranslator
             ).generateParentDeclaration()
         }
+    }
+
+    override fun generateRefinementStub(descriptor: RefinementDescriptor): IrRefinement {
+        val referenced = symbolTable.descriptorExtension.referenceRefinement(descriptor)
+        if (referenced.isBound) {
+            return referenced.owner
+        }
+        throw UnsupportedOperationException("Refinements are unsupported in lazy IR")
     }
 
     private fun <E : IrLazyDeclarationBase> E.generateParentDeclaration(): E {

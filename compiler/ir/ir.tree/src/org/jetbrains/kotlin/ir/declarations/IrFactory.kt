@@ -355,6 +355,24 @@ open class IrFactory(
             factory = this
         ).declarationCreated()
 
+    fun createRefinement(
+        startOffset: Int,
+        endOffset: Int,
+        origin: IrDeclarationOrigin,
+        name: Name,
+        visibility: DescriptorVisibility,
+        symbol: IrRefinementSymbol,
+    ): IrRefinement =
+        IrRefinementImpl(
+            startOffset = startOffset,
+            endOffset = endOffset,
+            symbol = symbol,
+            name = name,
+            visibility = visibility,
+            origin = origin,
+            factory = this
+        ).declarationCreated()
+
     fun createTypeParameter(
         startOffset: Int,
         endOffset: Int,

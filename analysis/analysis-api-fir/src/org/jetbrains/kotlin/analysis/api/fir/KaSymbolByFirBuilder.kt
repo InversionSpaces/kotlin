@@ -133,6 +133,7 @@ internal class KaSymbolByFirBuilder(
             is FirAnonymousObjectSymbol -> buildAnonymousObjectSymbol(firSymbol)
             is FirRegularClassSymbol -> buildNamedClassSymbol(firSymbol)
             is FirTypeAliasSymbol -> buildTypeAliasSymbol(firSymbol)
+            is FirRefinementSymbol -> TODO()
         }
 
         fun buildNamedClassSymbol(symbol: FirRegularClassSymbol): KaNamedClassSymbol {
