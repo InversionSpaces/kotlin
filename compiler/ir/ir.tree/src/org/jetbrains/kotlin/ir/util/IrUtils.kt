@@ -175,6 +175,17 @@ val IrClass.invokeFun: IrSimpleFunction?
 val IrDeclarationContainer.properties: Sequence<IrProperty>
     get() = declarations.asSequence().filterIsInstance<IrProperty>()
 
+val IrRefinementSymbol.predicateSymbol: IrSimpleFunctionSymbol
+    get() = owner.predicate.function.symbol
+
+val IrRefinementSymbol.underlyingType: IrType
+    get() = owner.underlyingType
+
+val IrRefinementSymbol.representationType: IrType
+    get() = generateSequence(this) {
+        it.underlyingType.classifierOrFail as? IrRefinementSymbol
+    }.last().underlyingType
+
 private fun Boolean.toInt(): Int = if (this) 1 else 0
 
 data class FunctionParameterShape(
