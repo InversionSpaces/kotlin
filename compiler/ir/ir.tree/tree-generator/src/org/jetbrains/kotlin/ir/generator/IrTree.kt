@@ -606,6 +606,8 @@ object IrTree : AbstractTreeBuilder() {
 
         +descriptor("RefinementDescriptor")
         +declaredSymbol(refinementSymbol)
+        +field("underlyingType", irTypeType)
+        +field("predicate", functionExpression)
     }
     val variable: Element by element(Declaration) {
         parent(declarationBase)

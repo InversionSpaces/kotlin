@@ -102,6 +102,11 @@ abstract class IrTypeVisitor<out R, in D> : IrVisitor<R, D>() {
         return super.visitTypeAlias(declaration, data)
     }
 
+    override fun visitRefinement(declaration: IrRefinement, data: D): R {
+        visitTypeRecursively(declaration, declaration.underlyingType, data)
+        return super.visitRefinement(declaration, data)
+    }
+
     override fun visitVariable(declaration: IrVariable, data: D): R {
         visitTypeRecursively(declaration, declaration.type, data)
         return super.visitVariable(declaration, data)

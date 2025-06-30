@@ -353,10 +353,12 @@ open class DeepCopyIrTreeWithSymbols(
             name = declaration.name,
             visibility = declaration.visibility,
             symbol = symbolRemapper.getDeclaredRefinement(declaration.symbol),
+            underlyingType = declaration.underlyingType.remapType(),
         ).apply {
             with(factory) { declarationCreated() }
             annotations = declaration.annotations.memoryOptimizedMap { it.transform() }
             typeParameters = declaration.typeParameters.memoryOptimizedMap { it.transform() }
+            predicate = declaration.predicate.transform()
             processAttributes(declaration)
         }
 

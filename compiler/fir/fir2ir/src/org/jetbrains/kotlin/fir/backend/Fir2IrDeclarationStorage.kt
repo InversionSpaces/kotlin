@@ -309,12 +309,6 @@ class Fir2IrDeclarationStorage(
         function: FirFunction,
         fakeOverrideOwnerLookupTag: ConeClassLikeLookupTag? = null,
     ): IrSimpleFunctionSymbol? = when {
-        // TODO
-//        function.isRefinementPredicate -> getCachedIrCallableSymbol(
-//            function,
-//            fakeOverrideOwnerLookupTag,
-//            functionCache::get
-//        )
         function is FirSimpleFunction -> getCachedIrFunctionSymbol(function, fakeOverrideOwnerLookupTag)
         else -> localStorage.getLocalFunctionSymbol(function)
     }
@@ -412,9 +406,7 @@ class Fir2IrDeclarationStorage(
         fakeOverrideOwnerLookupTag: ConeClassLikeLookupTag?,
     ) {
         when {
-            function.visibility == Visibilities.Local ||
-                    // TODO
-                    (function is FirAnonymousFunction /*&& !function.isRefinementPredicate*/) -> {
+            function.visibility == Visibilities.Local || function is FirAnonymousFunction -> {
                 localStorage.putLocalFunction(function, irFunctionSymbol)
             }
 
@@ -1318,7 +1310,10 @@ class Fir2IrDeclarationStorage(
             symbol is IrPropertySymbol ||
             symbol is IrEnumEntrySymbol ||
             symbol is IrScriptSymbol ||
-            symbol is IrReplSnippetSymbol
+            symbol is IrReplSnippetSymbol ||
+            // TODO: Refinement is not a callable, but its predicate is an anonymous function,
+            //       so it will be put in the local storage
+            symbol is IrRefinementSymbol
         ) {
             localStorage.enterCallable()
         }
@@ -1331,7 +1326,8 @@ class Fir2IrDeclarationStorage(
             symbol is IrPropertySymbol ||
             symbol is IrEnumEntrySymbol ||
             symbol is IrScriptSymbol ||
-            symbol is IrReplSnippetSymbol
+            symbol is IrReplSnippetSymbol ||
+            symbol is IrRefinementSymbol
         ) {
             @OptIn(LeakedDeclarationCaches::class)
             if (configuration.allowNonCachedDeclarations) {

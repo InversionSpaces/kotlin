@@ -449,7 +449,7 @@ class Fir2IrClassifierStorage(
         val firRefinement = firRefinementSymbol.fir
         getCachedRefinement(firRefinement)?.let { return it.symbol }
 
-        TODO()
+        TODO("Access to not yet created refinement")
     }
 
     // ------------------------------------ code fragments ------------------------------------

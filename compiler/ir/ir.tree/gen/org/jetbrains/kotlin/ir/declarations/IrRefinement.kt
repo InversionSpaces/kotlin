@@ -10,7 +10,9 @@ package org.jetbrains.kotlin.ir.declarations
 
 import org.jetbrains.kotlin.descriptors.RefinementDescriptor
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
+import org.jetbrains.kotlin.ir.expressions.IrFunctionExpression
 import org.jetbrains.kotlin.ir.symbols.IrRefinementSymbol
+import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.util.transformIfNeeded
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
 import org.jetbrains.kotlin.ir.visitors.IrVisitor
@@ -24,14 +26,20 @@ abstract class IrRefinement : IrDeclarationBase(), IrDeclarationWithName, IrDecl
 
     abstract override val symbol: IrRefinementSymbol
 
+    abstract var underlyingType: IrType
+
+    abstract var predicate: IrFunctionExpression
+
     override fun <R, D> accept(visitor: IrVisitor<R, D>, data: D): R =
         visitor.visitRefinement(this, data)
 
     override fun <D> acceptChildren(visitor: IrVisitor<Unit, D>, data: D) {
         typeParameters.forEach { it.accept(visitor, data) }
+        predicate.accept(visitor, data)
     }
 
     override fun <D> transformChildren(transformer: IrTransformer<D>, data: D) {
         typeParameters = typeParameters.transformIfNeeded(transformer, data)
+        predicate = predicate.transform(transformer, data) as IrFunctionExpression
     }
 }

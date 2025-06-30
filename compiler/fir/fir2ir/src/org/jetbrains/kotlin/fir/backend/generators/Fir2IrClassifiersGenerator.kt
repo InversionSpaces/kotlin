@@ -310,6 +310,7 @@ class Fir2IrClassifiersGenerator(private val c: Fir2IrComponents) : Fir2IrCompon
             name = refinement.name,
             visibility = c.visibilityConverter.convertToDescriptorVisibility(refinement.visibility),
             symbol = symbol,
+            underlyingType = refinement.underlyingTypeRef.toIrType(),
         ).apply {
             setTypeParameters(this, refinement)
             setParent(parent)

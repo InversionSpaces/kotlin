@@ -215,6 +215,7 @@ abstract class IrTypeVisitorVoid : IrTypeVisitor<Unit, Nothing?>() {
     }
 
     open fun visitRefinement(declaration: IrRefinement) {
+        visitTypeRecursively(declaration, declaration.underlyingType)
         visitDeclaration(declaration)
     }
 

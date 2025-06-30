@@ -17,7 +17,9 @@ import org.jetbrains.kotlin.ir.IrImplementationDetail
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
+import org.jetbrains.kotlin.ir.expressions.IrFunctionExpression
 import org.jetbrains.kotlin.ir.symbols.IrRefinementSymbol
+import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.name.Name
 
 class IrRefinementImpl @IrImplementationDetail constructor(
@@ -28,6 +30,7 @@ class IrRefinementImpl @IrImplementationDetail constructor(
     override var name: Name,
     override var visibility: DescriptorVisibility,
     override val symbol: IrRefinementSymbol,
+    override var underlyingType: IrType,
 ) : IrRefinement() {
     override var attributeOwnerId: IrElement = this
 
@@ -40,6 +43,8 @@ class IrRefinementImpl @IrImplementationDetail constructor(
     @ObsoleteDescriptorBasedAPI
     override val descriptor: RefinementDescriptor
         get() = symbol.descriptor
+
+    override lateinit var predicate: IrFunctionExpression
 
     init {
         symbol.bind(this)

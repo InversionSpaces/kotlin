@@ -181,6 +181,7 @@ abstract class IrTypeTransformerVoid : IrTypeTransformer<Unit, Nothing?>() {
     }
 
     open fun visitRefinement(declaration: IrRefinement) {
+        declaration.underlyingType = transformTypeRecursively(declaration, declaration.underlyingType)
         visitDeclaration(declaration)
     }
 

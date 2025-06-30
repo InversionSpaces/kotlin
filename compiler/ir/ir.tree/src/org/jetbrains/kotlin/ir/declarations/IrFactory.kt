@@ -362,6 +362,7 @@ open class IrFactory(
         name: Name,
         visibility: DescriptorVisibility,
         symbol: IrRefinementSymbol,
+        underlyingType: IrType,
     ): IrRefinement =
         IrRefinementImpl(
             startOffset = startOffset,
@@ -370,6 +371,7 @@ open class IrFactory(
             name = name,
             visibility = visibility,
             origin = origin,
+            underlyingType = underlyingType,
             factory = this
         ).declarationCreated()
 
