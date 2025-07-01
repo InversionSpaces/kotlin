@@ -53,10 +53,8 @@ private class RefinementTypeOperationTransformer(
 
     override fun visitTypeOperator(expression: IrTypeOperatorCall): IrExpression {
         val transformed = super.visitTypeOperator(expression) as IrTypeOperatorCall
-        val isRefinement = expression.typeOperand.classifierOrNull?.let { it is IrRefinementSymbol } == true
-        if (!isRefinement) return transformed
 
-        val result = context.createIrBuilder(
+        return context.createIrBuilder(
             container.symbol,
             expression.startOffset,
             expression.endOffset
@@ -64,10 +62,9 @@ private class RefinementTypeOperationTransformer(
             expression.operator,
             expression.type,
             expression.argument,
-            expression.typeOperand
+            expression.typeOperand,
+            transformed
         )
-
-        return result
     }
 
     private fun IrBuilderWithScope.buildTypeOperator(
@@ -75,16 +72,21 @@ private class RefinementTypeOperationTransformer(
         type: IrType,
         argument: IrExpression,
         typeOperand: IrType,
+        original: IrTypeOperatorCall? = null,
     ): IrExpression {
+        val default: IrTypeOperatorCall by lazy {
+            original ?: IrTypeOperatorCallImpl(
+                startOffset,
+                endOffset,
+                type,
+                operator,
+                typeOperand,
+                argument
+            )
+        }
+
         val refinementSymbol = typeOperand.classifierOrNull as? IrRefinementSymbol
-        if (refinementSymbol == null) return IrTypeOperatorCallImpl(
-            startOffset,
-            endOffset,
-            type,
-            operator,
-            typeOperand,
-            argument
-        )
+        if (refinementSymbol == null) return default
 
         return when (operator) {
             IrTypeOperator.CAST -> {
@@ -144,7 +146,8 @@ private class RefinementTypeOperationTransformer(
                     elseBranch,
                 )
             }
-            else -> TODO()
+            // TODO: Is it okay to not touch other operators?
+            else -> default
         }
     }
 
