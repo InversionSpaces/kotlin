@@ -7832,6 +7832,12 @@ public class FirNativeCodegenBoxTestGenerated extends AbstractNativeCodegenBoxTe
       }
 
       @Test
+      @TestMetadata("inlineAnonymousParameter.kt")
+      public void testInlineAnonymousParameter() {
+        runTest("compiler/testData/codegen/box/contextParameters/inlineAnonymousParameter.kt");
+      }
+
+      @Test
       @TestMetadata("inlineContextualReceiverLambda.kt")
       public void testInlineContextualReceiverLambda() {
         runTest("compiler/testData/codegen/box/contextParameters/inlineContextualReceiverLambda.kt");
@@ -30447,6 +30453,12 @@ public class FirNativeCodegenBoxTestGenerated extends AbstractNativeCodegenBoxTe
       public void testLambda_kt49360_wrapBlock() {
         runTest("compiler/testData/codegen/box/lambda/lambda_kt49360_wrapBlock.kt");
       }
+
+      @Test
+      @TestMetadata("lambda_kt78666.kt")
+      public void testLambda_kt78666() {
+        runTest("compiler/testData/codegen/box/lambda/lambda_kt78666.kt");
+      }
     }
 
     @Nested
@@ -31951,12 +31963,6 @@ public class FirNativeCodegenBoxTestGenerated extends AbstractNativeCodegenBoxTe
         @TestMetadata("starImportOfExpectEnumWithActualTypeAlias.kt")
         public void testStarImportOfExpectEnumWithActualTypeAlias() {
           runTest("compiler/testData/codegen/box/multiplatform/k2/starImportOfExpectEnumWithActualTypeAlias.kt");
-        }
-
-        @Test
-        @TestMetadata("unsignedArrayForLoop.kt")
-        public void testUnsignedArrayForLoop() {
-          runTest("compiler/testData/codegen/box/multiplatform/k2/unsignedArrayForLoop.kt");
         }
 
         @Nested
@@ -43839,12 +43845,6 @@ public class FirNativeCodegenBoxTestGenerated extends AbstractNativeCodegenBoxTe
       public void testDifferingNumberOfGenericTypeParameters() {
         runTest("compiler/testData/codegen/box/sameFileInSourceAndDependencies/differingNumberOfGenericTypeParameters.kt");
       }
-
-      @Test
-      @TestMetadata("propertyDeclaration.kt")
-      public void testPropertyDeclaration() {
-        runTest("compiler/testData/codegen/box/sameFileInSourceAndDependencies/propertyDeclaration.kt");
-      }
     }
 
     @Nested
@@ -47557,6 +47557,36 @@ public class FirNativeCodegenBoxTestGenerated extends AbstractNativeCodegenBoxTe
         @TestMetadata("withoutElse.kt")
         public void testWithoutElse() {
           runTest("compiler/testData/codegen/box/when/enumOptimization/withoutElse.kt");
+        }
+      }
+
+      @Nested
+      @TestMetadata("compiler/testData/codegen/box/when/exhaustiveness")
+      @TestDataPath("$PROJECT_ROOT")
+      @UseExtTestCaseGroupProvider()
+      @Tag("codegen-box")
+      public class Exhaustiveness {
+        @Test
+        public void testAllFilesPresentInExhaustiveness() {
+          KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/box/when/exhaustiveness"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.NATIVE, true);
+        }
+
+        @Test
+        @TestMetadata("exhaustiveWithNegativeBoolean.kt")
+        public void testExhaustiveWithNegativeBoolean() {
+          runTest("compiler/testData/codegen/box/when/exhaustiveness/exhaustiveWithNegativeBoolean.kt");
+        }
+
+        @Test
+        @TestMetadata("exhaustiveWithNegativeEnum.kt")
+        public void testExhaustiveWithNegativeEnum() {
+          runTest("compiler/testData/codegen/box/when/exhaustiveness/exhaustiveWithNegativeEnum.kt");
+        }
+
+        @Test
+        @TestMetadata("exhaustiveWithNegativeSealed.kt")
+        public void testExhaustiveWithNegativeSealed() {
+          runTest("compiler/testData/codegen/box/when/exhaustiveness/exhaustiveWithNegativeSealed.kt");
         }
       }
 

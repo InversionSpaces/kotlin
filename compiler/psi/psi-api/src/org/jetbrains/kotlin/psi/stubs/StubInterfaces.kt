@@ -5,7 +5,6 @@
 
 package org.jetbrains.kotlin.psi.stubs
 
-import com.intellij.openapi.util.IntellijInternalApi
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.NamedStub
 import com.intellij.psi.stubs.PsiFileStub
@@ -78,16 +77,34 @@ interface KotlinAnnotationUseSiteTargetStub : StubElement<KtAnnotationUseSiteTar
     fun getUseSiteTarget(): String
 }
 
-interface KotlinFunctionStub : KotlinCallableStubBase<KtNamedFunction> {
-    fun hasBlockBody(): Boolean
-    fun hasBody(): Boolean
-    fun hasTypeParameterListBeforeFunctionName(): Boolean
+/**
+ * A marker interface for declarations with bodies.
+ */
+interface KotlinDeclarationWithBodyStub<T : KtDeclarationWithBody> : StubElement<T> {
+    /**
+     * Whether the declaration may have a contract.
+     * **false** means that the declaration is definitely having no contract,
+     * but **true** doesn't guarantee that the declaration has a contract.
+     */
     fun mayHaveContract(): Boolean
+
+    /**
+     * Whether the declaration has a block body or no bodies at all.
+     */
+    fun hasNoExpressionBody(): Boolean
+
+    /**
+     * Whether the declaration has a body (expression or block).
+     */
+    fun hasBody(): Boolean
+}
+
+interface KotlinFunctionStub : KotlinCallableStubBase<KtNamedFunction>, KotlinDeclarationWithBodyStub<KtNamedFunction> {
+    fun hasTypeParameterListBeforeFunctionName(): Boolean
 }
 
 interface KotlinConstructorStub<T : KtConstructor<T>> :
-    KotlinCallableStubBase<T> {
-    fun hasBody(): Boolean
+    KotlinCallableStubBase<T>, KotlinDeclarationWithBodyStub<T> {
     fun isDelegatedCallToThis(): Boolean
     fun isExplicitDelegationCall(): Boolean
 }
@@ -108,11 +125,11 @@ interface KotlinModifierListStub : StubElement<KtDeclarationModifierList> {
     /**
      * Whether the modifier list has a [SpecialFlag].
      */
-    @IntellijInternalApi
+    @KtImplementationDetail
     fun hasSpecialFlag(flag: SpecialFlag): Boolean
 
     /** Represents special flags that are common for many declarations */
-    @IntellijInternalApi
+    @KtImplementationDetail
     enum class SpecialFlag {
         /**
          * Whether the return type of the modifier list owner must be checked.
@@ -138,10 +155,8 @@ interface KotlinParameterStub : KotlinStubWithFqName<KtParameter> {
     fun hasDefaultValue(): Boolean
 }
 
-interface KotlinPropertyAccessorStub : StubElement<KtPropertyAccessor> {
+interface KotlinPropertyAccessorStub : KotlinDeclarationWithBodyStub<KtPropertyAccessor> {
     fun isGetter(): Boolean
-    fun hasBody(): Boolean
-    fun hasBlockBody(): Boolean
 }
 
 interface KotlinBackingFieldStub : StubElement<KtBackingField> {

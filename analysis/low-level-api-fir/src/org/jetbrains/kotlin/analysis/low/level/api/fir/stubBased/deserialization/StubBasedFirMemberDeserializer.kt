@@ -5,7 +5,6 @@
 
 package org.jetbrains.kotlin.analysis.low.level.api.fir.stubBased.deserialization
 
-import com.intellij.openapi.util.IntellijInternalApi
 import org.jetbrains.kotlin.*
 import org.jetbrains.kotlin.descriptors.EffectiveVisibility
 import org.jetbrains.kotlin.descriptors.Modality
@@ -590,12 +589,12 @@ internal class StubBasedFirMemberDeserializer(
         }.apply {
             setLazyPublishedVisibility(c.session)
         }
-        if (function.mayHaveContract()) {
-            val resolvedDescription = StubBasedFirContractDeserializer(simpleFunction, local.typeDeserializer).loadContract(function)
-            if (resolvedDescription != null) {
-                simpleFunction.replaceContractDescription(resolvedDescription)
-            }
+
+        val resolvedDescription = StubBasedFirContractDeserializer(simpleFunction, local.typeDeserializer).loadContract(function)
+        if (resolvedDescription != null) {
+            simpleFunction.replaceContractDescription(resolvedDescription)
         }
+
         return simpleFunction
     }
 
@@ -671,7 +670,7 @@ internal class StubBasedFirMemberDeserializer(
         }
     }
 
-    @OptIn(IntellijInternalApi::class)
+    @OptIn(KtImplementationDetail::class)
     private fun FirDeclarationStatusImpl.setSpecialFlags(modifierList: KtModifierList?) {
         if (modifierList == null) return
         val modifierListStub = modifierList.greenStub ?: loadStubByElement(modifierList) ?: return

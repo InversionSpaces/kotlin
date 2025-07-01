@@ -596,6 +596,9 @@ object DIAGNOSTICS_LIST : DiagnosticList("FirErrors") {
         val INAPPLICABLE_OPERATOR_MODIFIER by error<PsiElement>(PositioningStrategy.OPERATOR_MODIFIER) {
             parameter<String>("message")
         }
+        val INAPPLICABLE_OPERATOR_MODIFIER_WARNING by warning<PsiElement>(PositioningStrategy.OPERATOR_MODIFIER) {
+            parameter<String>("message")
+        }
 
         val NO_EXPLICIT_VISIBILITY_IN_API_MODE by error<KtDeclaration>(PositioningStrategy.DECLARATION_START_TO_NAME)
         val NO_EXPLICIT_VISIBILITY_IN_API_MODE_WARNING by warning<KtDeclaration>(PositioningStrategy.DECLARATION_START_TO_NAME)
@@ -743,6 +746,10 @@ object DIAGNOSTICS_LIST : DiagnosticList("FirErrors") {
 
         val HAS_NEXT_FUNCTION_TYPE_MISMATCH by error<KtExpression> {
             parameter<ConeKotlinType>("actualType")
+        }
+
+        val ILLEGAL_TYPE_ARGUMENT_FOR_VARARG_PARAMETER_WARNING by warning<KtElement>(PositioningStrategy.REFERENCE_BY_QUALIFIED) {
+            parameter<ConeKotlinType>("type")
         }
     }
 
