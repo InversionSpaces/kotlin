@@ -881,7 +881,7 @@ open class FirDeclarationsResolveTransformer(
             context.forRefinement(refinement) {
                 refinement.transformUnderlyingTypeRef(transformer, data)
                 val underlyingType = refinement.underlyingTypeRef.coneType
-                val expectedType = underlyingType.createPredicate()
+                val expectedType = underlyingType.createPredicate(session)
                 val resolutionMode = withExpectedType(expectedType)
                 dataFlowAnalyzer.enterRefinementPredicate()
                 refinement.transformPredicate(transformer, resolutionMode).also {
@@ -889,12 +889,6 @@ open class FirDeclarationsResolveTransformer(
                 }
             }
         }
-
-    private fun ConeKotlinType.createPredicate(): ConeKotlinType {
-        val classId = FunctionTypeKind.Function.numberedClassId(1)
-        val parameters = listOf(this, session.builtinTypes.booleanType.coneType)
-        return classId.toLookupTag().constructClassType(parameters.toTypedArray())
-    }
 
     private fun doTransformFile(
         file: FirFile,

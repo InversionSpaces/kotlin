@@ -669,6 +669,9 @@ object FirErrors : KtDiagnosticsContainer() {
     val TAIL_RECURSION_IN_TRY_IS_NOT_SUPPORTED: KtDiagnosticFactory0 = KtDiagnosticFactory0("TAIL_RECURSION_IN_TRY_IS_NOT_SUPPORTED", WARNING, SourceElementPositioningStrategies.REFERENCED_NAME_BY_QUALIFIED, PsiElement::class, getRendererFactory())
     val DATA_OBJECT_CUSTOM_EQUALS_OR_HASH_CODE: KtDiagnosticFactory0 = KtDiagnosticFactory0("DATA_OBJECT_CUSTOM_EQUALS_OR_HASH_CODE", ERROR, SourceElementPositioningStrategies.OVERRIDE_MODIFIER, KtNamedFunction::class, getRendererFactory())
 
+    // Refinements
+    val REFINEMENT_PREDICATE_TYPE_MISMATCH: KtDiagnosticFactory3<ConeKotlinType, ConeKotlinType, Boolean> = KtDiagnosticFactory3("REFINEMENT_PREDICATE_TYPE_MISMATCH", ERROR, SourceElementPositioningStrategies.DEFAULT, KtExpression::class, getRendererFactory())
+
     // Parameter default values
     val DEFAULT_VALUE_NOT_ALLOWED_IN_OVERRIDE: KtDiagnosticFactory0 = KtDiagnosticFactory0("DEFAULT_VALUE_NOT_ALLOWED_IN_OVERRIDE", ERROR, SourceElementPositioningStrategies.DEFAULT, KtElement::class, getRendererFactory())
 

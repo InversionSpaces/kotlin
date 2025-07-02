@@ -6294,6 +6294,12 @@ public class LLDiagnosticsFirTestGenerated extends AbstractLLDiagnosticsTest {
       }
 
       @Test
+      @TestMetadata("predicateType.kt")
+      public void testPredicateType() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/predicateType.kt");
+      }
+
+      @Test
       @TestMetadata("smartcast.kt")
       public void testSmartcast() {
         runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/smartcast.kt");

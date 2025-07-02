@@ -189,6 +189,10 @@ object CommonDeclarationCheckers : DeclarationCheckers() {
         FirActualTypeAliasChecker,
     )
 
+    override val refinementCheckers: Set<FirRefinementChecker> = setOf(
+        FirRefinementPredicateTypeChecker
+    )
+
     override val anonymousFunctionCheckers: Set<FirAnonymousFunctionChecker> = setOf(
         FirAnonymousFunctionParametersChecker,
         FirAnonymousFunctionTypeParametersChecker,
