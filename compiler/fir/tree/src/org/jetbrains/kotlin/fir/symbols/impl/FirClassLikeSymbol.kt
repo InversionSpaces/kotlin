@@ -172,4 +172,7 @@ class FirRefinementSymbol(classId: ClassId) : FirClassLikeSymbol<FirRefinement>(
 
     val resolvedUnderlyingType: ConeKotlinType
         get() = resolvedUnderlyingTypeRef.coneType
+
+    val predicateSymbol: FirAnonymousFunctionSymbol
+        get() = fir.predicate.anonymousFunction.symbol
 }

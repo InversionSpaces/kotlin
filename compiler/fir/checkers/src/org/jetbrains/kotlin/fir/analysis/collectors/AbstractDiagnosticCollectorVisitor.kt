@@ -150,6 +150,12 @@ abstract class AbstractDiagnosticCollectorVisitor(
         }
     }
 
+    override fun visitRefinement(refinement: FirRefinement, data: Nothing?) {
+        withAnnotationContainer(refinement) {
+            visitWithDeclaration(refinement)
+        }
+    }
+
     override fun visitPropertyAccessor(propertyAccessor: FirPropertyAccessor, data: Nothing?) {
         val property = context.containingDeclarations.last() as FirPropertySymbol
         withAnnotationContainer(propertyAccessor) {

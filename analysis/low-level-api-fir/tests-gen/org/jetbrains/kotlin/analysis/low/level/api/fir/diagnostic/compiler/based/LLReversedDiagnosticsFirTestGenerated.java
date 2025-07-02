@@ -6294,6 +6294,12 @@ public class LLReversedDiagnosticsFirTestGenerated extends AbstractLLReversedDia
       }
 
       @Test
+      @TestMetadata("declarationLoop.kt")
+      public void testDeclarationLoop() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/declarationLoop.kt");
+      }
+
+      @Test
       @TestMetadata("predicateType.kt")
       public void testPredicateType() {
         runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/predicateType.kt");
