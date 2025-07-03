@@ -101,7 +101,9 @@ private class RefinementTypeOperationTransformer(
                 ) { op ->
                     irIfThenElse(
                         type,
-                        irCall(refinementSymbol.predicateSymbol).apply { arguments[0] = irGet(op.owner) },
+                        irCall(refinementSymbol.predicateSymbol).apply {
+                            arguments[0] = irGet(op.owner)
+                        },
                         irGet(op.owner),
                         irCall(throwTypeCastException).apply {
                             arguments[0] = irString("Refinement check for ${typeOperand.render()} failed")
@@ -123,7 +125,9 @@ private class RefinementTypeOperationTransformer(
                         type, listOf(
                             irBranch(irEqualsNull(irGet(op.owner)), irNull()),
                             irBranch(
-                                irCall(refinementSymbol.predicateSymbol).apply { arguments[0] = irGet(op.owner) },
+                                irCall(refinementSymbol.predicateSymbol).apply {
+                                    arguments[0] = irGet(op.owner)
+                                },
                                 irGet(op.owner)
                             ),
                             irElseBranch(irNull())
@@ -135,16 +139,17 @@ private class RefinementTypeOperationTransformer(
                 val predicateCall = irCall(refinementSymbol.predicateSymbol).apply { arguments[0] = irGet(arg.owner) }
                 val (thenBranch, elseBranch) = when (operator) {
                     IrTypeOperator.INSTANCEOF -> predicateCall to irFalse()
-                    IrTypeOperator.NOT_INSTANCEOF -> irFalse() to irNot(predicateCall)
+                    IrTypeOperator.NOT_INSTANCEOF -> irTrue() to irNot(predicateCall)
                     else -> error("Unreachable")
                 }
-
-                irIfThenElse(
+                val condition = buildTypeOperator(
+                    operator,
                     type,
-                    buildTypeOperator(operator, type, irGet(arg.owner), refinementSymbol.underlyingType),
-                    thenBranch,
-                    elseBranch,
+                    irGet(arg.owner),
+                    refinementSymbol.underlyingType
                 )
+
+                irIfThenElse(type, condition, thenBranch, elseBranch)
             }
             // TODO: Is it okay to not touch other operators?
             else -> default
