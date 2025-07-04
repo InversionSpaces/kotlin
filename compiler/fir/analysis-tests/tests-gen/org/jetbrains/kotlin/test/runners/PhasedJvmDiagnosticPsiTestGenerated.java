@@ -57004,6 +57004,12 @@ public class PhasedJvmDiagnosticPsiTestGenerated extends AbstractPhasedJvmDiagno
       }
 
       @Test
+      @TestMetadata("extensions.kt")
+      public void testExtensions() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/extensions.kt");
+      }
+
+      @Test
       @TestMetadata("nested.kt")
       public void testNested() {
         runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/nested.kt");
