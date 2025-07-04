@@ -18,6 +18,8 @@ import org.jetbrains.kotlin.fir.scopes.impl.FirTypeIntersectionScope
 import org.jetbrains.kotlin.fir.scopes.impl.dynamicMembersStorage
 import org.jetbrains.kotlin.fir.scopes.impl.getOrBuildScopeForIntegerConstantOperatorType
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassLikeSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirRefinementSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirTypeParameterSymbol
 import org.jetbrains.kotlin.fir.types.*
 import org.jetbrains.kotlin.fir.types.impl.ConeClassLikeTypeImpl
@@ -93,7 +95,7 @@ private fun ConeKotlinType.scope(
     requiredMembersPhase: FirResolvePhase?,
 ): FirTypeScope? = when (this) {
     is ConeErrorType -> null
-    is ConeClassLikeType -> classScope(useSiteSession, scopeSession, requiredMembersPhase, lookupTag)
+    is ConeClassLikeType -> classLikeScope(useSiteSession, scopeSession, requiredMembersPhase, lookupTag)
     is ConeTypeParameterType -> {
         val symbol = lookupTag.symbol
         scopeSession.getOrBuild(symbol, TYPE_PARAMETER_SCOPE_KEY) {
@@ -130,14 +132,19 @@ private fun ConeKotlinType.scope(
     else -> null
 }
 
-private fun ConeClassLikeType.classScope(
+private fun ConeClassLikeType.classLikeScope(
     useSiteSession: FirSession,
     scopeSession: ScopeSession,
     requiredMembersPhase: FirResolvePhase?,
     memberOwnerLookupTag: ConeClassLikeLookupTag
 ): FirTypeScope? {
     val fullyExpandedType = fullyExpandedType(useSiteSession)
-    val fir = fullyExpandedType.lookupTag.toClassSymbol(useSiteSession)?.fir ?: return null
+    val symbol = fullyExpandedType.lookupTag.toSymbol(useSiteSession)
+    val fir = when (symbol) {
+        is FirClassSymbol<*> -> symbol.fir
+        is FirRefinementSymbol -> return symbol.resolvedUnderlyingType.scope(useSiteSession, scopeSession, requiredMembersPhase)
+        else -> return null
+    }
     val substitutor = when {
         attributes.contains(CompilerConeAttributes.RawType) -> ConeRawScopeSubstitutor(useSiteSession)
         else -> substitutorByMap(

@@ -21,6 +21,7 @@ import org.jetbrains.kotlin.fir.getContainingClassLookupTag
 import org.jetbrains.kotlin.fir.symbols.ConeTypeParameterLookupTag
 import org.jetbrains.kotlin.fir.symbols.impl.ConeClassLikeLookupTagImpl
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassLikeSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirRefinementSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.LookupTagInternals
 import org.jetbrains.kotlin.fir.types.*
 import org.jetbrains.kotlin.fir.types.builder.buildResolvedTypeRef
@@ -90,7 +91,13 @@ fun ConeKotlinType.findClassRepresentation(
     session: FirSession
 ): ConeClassLikeLookupTag? =
     when (this) {
-        is ConeClassLikeType -> this.fullyExpandedType(session).lookupTag
+        is ConeClassLikeType -> {
+            val lookupTag = fullyExpandedType(session).lookupTag
+            when (val symbol = lookupTag.toSymbol(session)) {
+                is FirRefinementSymbol -> symbol.resolvedUnderlyingType.findClassRepresentation(dispatchReceiverParameterType, session)
+                else -> lookupTag
+            }
+        }
         is ConeDynamicType -> upperBound.findClassRepresentation(dispatchReceiverParameterType, session)
         is ConeFlexibleType -> lowerBound.findClassRepresentation(dispatchReceiverParameterType, session)
         is ConeCapturedType -> constructor.supertypes.orEmpty()
