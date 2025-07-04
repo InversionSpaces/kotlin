@@ -6300,6 +6300,12 @@ public class LLReversedDiagnosticsFirTestGenerated extends AbstractLLReversedDia
       }
 
       @Test
+      @TestMetadata("nested.kt")
+      public void testNested() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/nested.kt");
+      }
+
+      @Test
       @TestMetadata("predicateType.kt")
       public void testPredicateType() {
         runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/predicateType.kt");
