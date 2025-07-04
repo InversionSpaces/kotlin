@@ -42402,6 +42402,21 @@ public class NativeCodegenBoxTestNoPLGenerated extends AbstractNativeCodegenBoxT
     }
 
     @Nested
+    @TestMetadata("compiler/testData/codegen/box/refinements")
+    @TestDataPath("$PROJECT_ROOT")
+    @ClassicPipeline()
+    @UseExtTestCaseGroupProvider()
+    @UsePartialLinkage(mode = Mode.DISABLED)
+    @Tag("no-partial-linkage-may-be-skipped")
+    @Tag("codegen-box")
+    public class Refinements {
+      @Test
+      public void testAllFilesPresentInRefinements() {
+        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/box/refinements"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.NATIVE, true);
+      }
+    }
+
+    @Nested
     @TestMetadata("compiler/testData/codegen/box/reflection")
     @TestDataPath("$PROJECT_ROOT")
     @ClassicPipeline()
