@@ -191,6 +191,9 @@ abstract class FirVisitor<out R, in D> {
     open fun visitTypeAlias(typeAlias: FirTypeAlias, data: D): R =
         visitElement(typeAlias, data)
 
+    open fun visitRefinement(refinement: FirRefinement, data: D): R =
+        visitElement(refinement, data)
+
     open fun visitAnonymousFunction(anonymousFunction: FirAnonymousFunction, data: D): R =
         visitElement(anonymousFunction, data)
 

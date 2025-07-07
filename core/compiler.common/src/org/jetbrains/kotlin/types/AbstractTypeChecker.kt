@@ -795,9 +795,7 @@ object AbstractNullabilityChecker {
             if (AbstractTypeChecker.RUN_SLOW_ASSERTIONS) {
                 // it makes for case String? & Any <: String
                 assert(
-                    subType.isSingleClassifierType() || subType.typeConstructor().isIntersection() || state.isAllowedTypeVariable(
-                        subType
-                    )
+                    subType.isSingleClassifierType() || subType.typeConstructor().isIntersection() || state.isAllowedTypeVariable(subType)
                 ) {
                     "Not singleClassifierType and not intersection subType: $subType"
                 }

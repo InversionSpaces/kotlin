@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.ir.expressions.impl.IrConstImpl
 import org.jetbrains.kotlin.ir.expressions.impl.fromSymbolOwner
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrClassifierSymbol
+import org.jetbrains.kotlin.ir.symbols.IrRefinementSymbol
 import org.jetbrains.kotlin.ir.symbols.IrScriptSymbol
 import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
 import org.jetbrains.kotlin.ir.types.*
@@ -76,7 +77,7 @@ fun IrType.eraseToScope(scopeOwner: IrTypeParametersContainer): IrType =
 fun IrType.eraseToScope(visibleTypeParameters: Set<IrTypeParameter>): IrType {
     require(this is IrSimpleType) { error("Unexpected IrType kind: ${render()}") }
     return when (classifier) {
-        is IrClassSymbol ->
+        is IrClassSymbol, is IrRefinementSymbol ->
             IrSimpleTypeImpl(
                 classifier, nullability, arguments.map { it.eraseToScope(visibleTypeParameters) }, annotations
             )

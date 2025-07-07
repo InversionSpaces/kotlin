@@ -365,6 +365,27 @@ abstract class AbstractTypeApproximator(
         return createTypeWithUpperBoundForIntersectionResult(intersectionType, alternativeTypeApproximated)
     }
 
+    private fun approximateRefinementType(
+        type: RigidTypeMarker,
+        conf: TypeApproximatorConfiguration,
+        toSuper: Boolean,
+        depth: Int
+    ): KotlinTypeMarker? {
+        val typeConstructor = type.typeConstructor()
+        assert(typeConstructor.isRefinement()) {
+            "Should be refinement type: $type, typeConstructor class: ${typeConstructor::class.java.canonicalName}"
+        }
+        assert(typeConstructor.supertypes().size == 1) {
+            "Supertypes for refinement type should be one: $type"
+        }
+
+        return if (toSuper && conf.approximateRefinementTypesToUnderlyingType) {
+            val underlyingType = typeConstructor.supertypes().single()
+            // TODO: Should I approximate here recursively?
+            return approximateToSuperType(underlyingType, conf, depth) ?: underlyingType
+        } else null
+    }
+
     private fun approximateCapturedType(
         capturedType: CapturedTypeMarker,
         conf: TypeApproximatorConfiguration,
@@ -517,6 +538,10 @@ abstract class AbstractTypeApproximator(
 
         if (typeConstructor.isIntersection()) {
             return approximateIntersectionType(type, conf, toSuper, depth)
+        }
+
+        if (typeConstructor.isRefinement()) {
+            return approximateRefinementType(type, conf, toSuper, depth)
         }
 
         if (typeConstructor is TypeVariableTypeConstructorMarker) {

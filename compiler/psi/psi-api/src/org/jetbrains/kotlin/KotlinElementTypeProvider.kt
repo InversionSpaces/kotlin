@@ -39,6 +39,7 @@ interface KotlinElementTypeProvider {
     val classType: KtStubElementType<KotlinClassStub, KtClass>
     val objectType: KtStubElementType<KotlinObjectStub, KtObjectDeclaration>
     val typeAliasType: KtStubElementType<KotlinTypeAliasStub, KtTypeAlias>
+    val refinementType: KtStubElementType<KotlinRefinementStub, KtRefinement>
     val classBodyType: KtStubElementType<KotlinPlaceHolderStub<KtClassBody>, KtClassBody>
 
     // Initializers

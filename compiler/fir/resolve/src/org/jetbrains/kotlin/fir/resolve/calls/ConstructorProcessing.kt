@@ -132,6 +132,7 @@ private fun processConstructors(
             is FirTypeAliasSymbol -> {
                 matchedSymbol.fir.scopeForTypeAlias(session, bodyResolveComponents.scopeSession)
             }
+            is FirRefinementSymbol -> TODO()
             is FirClassSymbol -> {
                 val firClass = matchedSymbol.fir
                 when (firClass.classKind) {

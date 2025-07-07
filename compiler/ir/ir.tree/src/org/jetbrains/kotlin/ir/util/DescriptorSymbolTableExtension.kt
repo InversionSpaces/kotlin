@@ -23,13 +23,13 @@ import org.jetbrains.kotlin.utils.threadLocal
 
 @ObsoleteDescriptorBasedAPI
 typealias DescriptorBasedReferenceSymbolTableExtension = ReferenceSymbolTableExtension<
-        ClassDescriptor, TypeAliasDescriptor, ScriptDescriptor, FunctionDescriptor, ClassConstructorDescriptor,
+        ClassDescriptor, TypeAliasDescriptor, RefinementDescriptor, ScriptDescriptor, FunctionDescriptor, ClassConstructorDescriptor,
         PropertyDescriptor, ParameterDescriptor, TypeParameterDescriptor
         >
 
 @ObsoleteDescriptorBasedAPI
 open class DescriptorSymbolTableExtension(table: SymbolTable) : SymbolTableExtension<
-        DeclarationDescriptor, ClassDescriptor, TypeAliasDescriptor, ScriptDescriptor, FunctionDescriptor,
+        DeclarationDescriptor, ClassDescriptor, TypeAliasDescriptor, RefinementDescriptor, ScriptDescriptor, FunctionDescriptor,
         ClassConstructorDescriptor, PropertyDescriptor, ParameterDescriptor, TypeParameterDescriptor>(table)
 {
     private val irFactory: IrFactory

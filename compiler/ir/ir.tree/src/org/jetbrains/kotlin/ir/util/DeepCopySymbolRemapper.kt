@@ -36,6 +36,7 @@ open class DeepCopySymbolRemapper(
     protected val variables = hashMapOf<IrVariableSymbol, IrVariableSymbol>()
     protected val localDelegatedProperties = hashMapOf<IrLocalDelegatedPropertySymbol, IrLocalDelegatedPropertySymbol>()
     protected val typeAliases = hashMapOf<IrTypeAliasSymbol, IrTypeAliasSymbol>()
+    protected val refinements = hashMapOf<IrRefinementSymbol, IrRefinementSymbol>()
 
     override fun visitElement(element: IrElement) {
         element.acceptChildrenVoid(this)
@@ -152,6 +153,13 @@ open class DeepCopySymbolRemapper(
         super.visitTypeAlias(declaration)
     }
 
+    override fun visitRefinement(declaration: IrRefinement) {
+        remapSymbol(refinements, declaration) {
+            IrRefinementSymbolImpl(descriptorsRemapper.remapDeclaredRefinement(it.descriptor))
+        }
+        super.visitRefinement(declaration)
+    }
+
     override fun visitReturnableBlock(expression: IrReturnableBlock) {
         remapSymbol(returnableBlocks, expression) {
             IrReturnableBlockSymbolImpl()
@@ -191,6 +199,7 @@ open class DeepCopySymbolRemapper(
         localDelegatedProperties.getDeclared(symbol)
 
     override fun getDeclaredTypeAlias(symbol: IrTypeAliasSymbol): IrTypeAliasSymbol = typeAliases.getDeclared(symbol)
+    override fun getDeclaredRefinement(symbol: IrRefinementSymbol): IrRefinementSymbol = refinements.getDeclared(symbol)
 
     override fun getDeclaredReturnableBlock(symbol: IrReturnableBlockSymbol) = returnableBlocks.getDeclared(symbol)
 
@@ -213,4 +222,6 @@ open class DeepCopySymbolRemapper(
     override fun getReferencedTypeParameter(symbol: IrTypeParameterSymbol): IrClassifierSymbol = typeParameters.getReferenced(symbol)
 
     override fun getReferencedTypeAlias(symbol: IrTypeAliasSymbol): IrTypeAliasSymbol = typeAliases.getReferenced(symbol)
+
+    override fun getReferencedRefinement(symbol: IrRefinementSymbol): IrClassifierSymbol = refinements.getReferenced(symbol)
 }

@@ -543,6 +543,7 @@ object CheckDslScopeViolation : ResolutionStage() {
                             collectDslMarkerAnnotations(it)
                         }
                     }
+                    is FirRefinementSymbol -> TODO()
                 }
             }
             else -> return

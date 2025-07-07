@@ -3216,6 +3216,14 @@ internal class DataObjectCustomEqualsOrHashCodeImpl(
     token: KaLifetimeToken,
 ) : KaAbstractFirDiagnostic<KtNamedFunction>(firDiagnostic, token), KaFirDiagnostic.DataObjectCustomEqualsOrHashCode
 
+internal class RefinementPredicateTypeMismatchImpl(
+    override val expectedType: KaType,
+    override val actualType: KaType,
+    override val isMismatchDueToNullability: Boolean,
+    firDiagnostic: KtPsiDiagnostic,
+    token: KaLifetimeToken,
+) : KaAbstractFirDiagnostic<KtExpression>(firDiagnostic, token), KaFirDiagnostic.RefinementPredicateTypeMismatch
+
 internal class DefaultValueNotAllowedInOverrideImpl(
     firDiagnostic: KtPsiDiagnostic,
     token: KaLifetimeToken,

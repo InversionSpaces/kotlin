@@ -289,6 +289,7 @@ private fun FirClassLikeSymbol<*>.collectSuperTypes(
             expansion.lookupTag.toSymbol(useSiteSession)
                 ?.collectSuperTypes(list, visitedSymbols, deep, lookupInterfaces, substituteSuperTypes, useSiteSession, supertypeSupplier)
         }
+        is FirRefinementSymbol -> TODO()
     }
 }
 

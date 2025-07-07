@@ -95,6 +95,9 @@ abstract class FirDefaultVisitor<out R, in D> : FirVisitor<R, D>() {
     override fun visitTypeAlias(typeAlias: FirTypeAlias, data: D): R =
         visitClassLikeDeclaration(typeAlias, data)
 
+    override fun visitRefinement(refinement: FirRefinement, data: D): R =
+        visitClassLikeDeclaration(refinement, data)
+
     override fun visitAnonymousFunctionExpression(anonymousFunctionExpression: FirAnonymousFunctionExpression, data: D): R =
         visitExpression(anonymousFunctionExpression, data)
 

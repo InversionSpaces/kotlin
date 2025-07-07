@@ -1091,7 +1091,7 @@ internal class KaFirResolver(
                         ?: return null
 
                     is FirValueParameterSymbol -> firSymbolBuilder.variableBuilder.buildParameterSymbol(firSymbol)
-                    is FirTypeAliasSymbol, is FirTypeParameterSymbol -> errorWithFirSpecificEntries(
+                    is FirTypeAliasSymbol, is FirRefinementSymbol, is FirTypeParameterSymbol -> errorWithFirSpecificEntries(
                         message = "Unexpected ${FirThisOwnerSymbol::class.simpleName}: ${firSymbol::class.simpleName}",
                         fir = firSymbol.fir
                     )

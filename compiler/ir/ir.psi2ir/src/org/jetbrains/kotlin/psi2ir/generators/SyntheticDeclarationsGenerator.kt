@@ -106,6 +106,12 @@ internal class SyntheticDeclarationsGenerator(context: GeneratorContext) : Decla
         }
     }
 
+    override fun visitRefinementDescriptor(descriptor: RefinementDescriptor, data: IrDeclarationContainer?) {
+        require(data != null)
+
+        symbolTable.descriptorExtension
+    }
+
     override fun visitModuleDeclaration(descriptor: ModuleDescriptor, data: IrDeclarationContainer?) {
         error("Unreachable execution $descriptor")
     }

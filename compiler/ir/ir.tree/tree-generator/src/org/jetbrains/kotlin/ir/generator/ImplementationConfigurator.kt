@@ -120,6 +120,10 @@ object ImplementationConfigurator : AbstractIrTreeImplementationConfigurator() {
             }
         }
 
+        impl(refinement) {
+            isLateinit("predicate")
+        }
+
         impl(enumEntry) {
             defaultNull("correspondingClass", "initializerExpression")
         }

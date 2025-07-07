@@ -8,6 +8,7 @@ package org.jetbrains.kotlin.fir.resolve.transformers.body.resolve
 import org.jetbrains.kotlin.KtFakeSourceElementKind
 import org.jetbrains.kotlin.KtSourceElement
 import org.jetbrains.kotlin.builtins.StandardNames
+import org.jetbrains.kotlin.builtins.functions.FunctionTypeKind
 import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.descriptors.Visibility
@@ -874,6 +875,20 @@ open class FirDeclarationsResolveTransformer(
 
         return typeAlias
     }
+
+    override fun transformRefinement(refinement: FirRefinement, data: ResolutionMode): FirRefinement =
+        whileAnalysing(session, refinement) {
+            context.forRefinement(refinement) {
+                refinement.transformUnderlyingTypeRef(transformer, data)
+                val underlyingType = refinement.underlyingTypeRef.coneType
+                val expectedType = underlyingType.createPredicate(session)
+                val resolutionMode = withExpectedType(expectedType)
+                dataFlowAnalyzer.enterRefinementPredicate()
+                refinement.transformPredicate(transformer, resolutionMode).also {
+                    dataFlowAnalyzer.exitRefinementPredicate()
+                }
+            }
+        }
 
     private fun doTransformFile(
         file: FirFile,

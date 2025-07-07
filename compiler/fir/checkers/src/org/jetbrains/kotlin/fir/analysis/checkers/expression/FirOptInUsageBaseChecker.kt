@@ -40,6 +40,7 @@ import org.jetbrains.kotlin.fir.symbols.impl.FirFileSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirPropertySymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirReceiverParameterSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirRefinementSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirRegularClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirReplSnippetSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirScriptSymbol
@@ -272,8 +273,7 @@ object FirOptInUsageBaseChecker {
                     result, visited, fromSetter = false, dispatchReceiverType = null, fromSupertype = false
                 )
             }
-
-            is FirAnonymousObjectSymbol, is FirTypeAliasSymbol -> {
+            is FirAnonymousObjectSymbol, is FirTypeAliasSymbol, is FirRefinementSymbol -> {
             }
         }
     }

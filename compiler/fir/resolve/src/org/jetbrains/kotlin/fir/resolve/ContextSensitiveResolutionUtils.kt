@@ -53,7 +53,6 @@ fun ConeKotlinType.getClassRepresentativeForContextSensitiveResolution(session: 
                 }
             }
         }
-
         is ConeLookupTagBasedType ->
             when (val symbol = lookupTag.toSymbol(session)) {
                 is FirRegularClassSymbol -> symbol
@@ -66,6 +65,7 @@ fun ConeKotlinType.getClassRepresentativeForContextSensitiveResolution(session: 
                     fullyExpandedType(session)
                         .takeIf { it !== this }
                         ?.getClassRepresentativeForContextSensitiveResolution(session)
+                is FirRefinementSymbol -> TODO()
                 null -> null
             }
 

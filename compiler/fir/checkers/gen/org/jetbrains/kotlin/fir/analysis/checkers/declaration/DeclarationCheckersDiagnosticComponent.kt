@@ -87,6 +87,10 @@ class DeclarationCheckersDiagnosticComponent(
         checkers.allTypeAliasCheckers.check(typeAlias, data)
     }
 
+    override fun visitRefinement(refinement: FirRefinement, data: CheckerContext) {
+        checkers.allRefinementCheckers.check(refinement, data)
+    }
+
     override fun visitAnonymousFunction(anonymousFunction: FirAnonymousFunction, data: CheckerContext) {
         checkers.allAnonymousFunctionCheckers.check(anonymousFunction, data)
     }

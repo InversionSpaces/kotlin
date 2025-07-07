@@ -308,3 +308,12 @@ class ConeIntersectionType(
         return intersectedTypes.hashCode().also { hashCode = it }
     }
 }
+
+//class ConeRefinementType(
+//    override val lookupTag: ConeClassLikeLookupTag,
+//    override val isMarkedNullable: Boolean,
+//    override val attributes: ConeAttributes = ConeAttributes.Empty
+//) : ConeClassLikeType(), ConeTypeConstructorMarker {
+//    override val typeArguments: Array<out ConeTypeProjection>
+//        get() = EMPTY_ARRAY
+//}

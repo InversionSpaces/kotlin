@@ -59,6 +59,10 @@ fun FirClassifierSymbol<*>.toIrSymbol(
                 ?: classifierStorage.getIrClassForNotFoundClass(coneClassLikeType.lookupTag).symbol
         }
 
+        is FirRefinementSymbol -> {
+            classifierStorage.getIrRefinementSymbol(symbol)
+        }
+
         is FirClassSymbol -> {
             classifierStorage.getIrClassSymbol(symbol)
         }

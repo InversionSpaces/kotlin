@@ -132,6 +132,10 @@ interface ClassicTypeSystemContext : TypeSystemInferenceExtensionContext, TypeSy
         return this is IntersectionTypeConstructor
     }
 
+    override fun TypeConstructorMarker.isRefinement(): Boolean {
+        TODO("Not yet implemented")
+    }
+
     override fun identicalArguments(a: RigidTypeMarker, b: RigidTypeMarker): Boolean {
         require(a is SimpleType, a::errorMessage)
         require(b is SimpleType, b::errorMessage)

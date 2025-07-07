@@ -713,6 +713,7 @@ internal fun IrClassifierSymbol.renderClassifierFqn(options: DumpIrTreeOptions):
     return when (this) {
         is IrClassSymbol if isBound -> owner.renderClassFqn(options)
         is IrClassSymbol -> (signature as? CommonSignature)?.guessClassFqnBySignature()
+        is IrRefinementSymbol if isBound -> owner.renderRefinementFqn(options)
         is IrTypeParameterSymbol if isBound -> owner.renderTypeParameterFqn(options)
         is IrScriptSymbol if isBound -> owner.renderScriptFqn(options)
         else -> null
@@ -726,6 +727,9 @@ internal fun IrTypeAliasSymbol.renderTypeAliasFqn(options: DumpIrTreeOptions): S
         "<unbound $this>"
 
 internal fun IrClass.renderClassFqn(options: DumpIrTreeOptions): String =
+    StringBuilder().also { renderDeclarationFqn(it, options) }.toString()
+
+internal fun IrRefinement.renderRefinementFqn(options: DumpIrTreeOptions): String =
     StringBuilder().also { renderDeclarationFqn(it, options) }.toString()
 
 internal fun IrScript.renderScriptFqn(options: DumpIrTreeOptions): String =

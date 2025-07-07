@@ -820,6 +820,7 @@ val FirThisReference.referencedMemberSymbol: FirBasedSymbol<*>?
         is FirValueParameterSymbol -> boundSymbol.containingDeclarationSymbol
         is FirClassSymbol -> boundSymbol
         null -> null
+        is FirRefinementSymbol -> TODO()
         is FirTypeParameterSymbol, is FirTypeAliasSymbol -> errorWithAttachment(
             message = "Unexpected FirThisOwnerSymbol ${boundSymbol::class.simpleName}"
         ) {

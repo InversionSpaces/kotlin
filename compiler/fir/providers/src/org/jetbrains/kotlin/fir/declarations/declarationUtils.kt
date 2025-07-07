@@ -211,6 +211,8 @@ tailrec fun FirClassLikeSymbol<*>.fullyExpandedClass(useSiteSession: FirSession)
         is FirAnonymousObjectSymbol -> null
         is FirTypeAliasSymbol -> resolvedExpandedTypeRef.coneTypeSafe<ConeClassLikeType>()
             ?.toSymbol(useSiteSession)?.fullyExpandedClass(useSiteSession)
+        is FirRefinementSymbol -> resolvedUnderlyingType.toClassLikeSymbol(useSiteSession)
+            ?.fullyExpandedClass(useSiteSession)
     }
 }
 

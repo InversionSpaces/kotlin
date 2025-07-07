@@ -30,6 +30,7 @@ import org.jetbrains.kotlin.ir.generator.IrSymbolTree.functionSymbol
 import org.jetbrains.kotlin.ir.generator.IrSymbolTree.localDelegatedPropertySymbol
 import org.jetbrains.kotlin.ir.generator.IrSymbolTree.packageFragmentSymbol
 import org.jetbrains.kotlin.ir.generator.IrSymbolTree.propertySymbol
+import org.jetbrains.kotlin.ir.generator.IrSymbolTree.refinementSymbol
 import org.jetbrains.kotlin.ir.generator.IrSymbolTree.replSnippetSymbol
 import org.jetbrains.kotlin.ir.generator.IrSymbolTree.returnTargetSymbol
 import org.jetbrains.kotlin.ir.generator.IrSymbolTree.returnableBlockSymbol
@@ -595,6 +596,18 @@ object IrTree : AbstractTreeBuilder() {
         +declaredSymbol(typeAliasSymbol)
         +field("isActual", boolean)
         +field("expandedType", irTypeType)
+    }
+    val refinement: Element by element(Declaration) {
+        parent(declarationBase)
+        parent(declarationWithName)
+        parent(declarationWithVisibility)
+        parent(typeParametersContainer)
+        parent(metadataSourceOwner)
+
+        +descriptor("RefinementDescriptor")
+        +declaredSymbol(refinementSymbol)
+        +field("underlyingType", irTypeType)
+        +field("predicate", functionExpression)
     }
     val variable: Element by element(Declaration) {
         parent(declarationBase)

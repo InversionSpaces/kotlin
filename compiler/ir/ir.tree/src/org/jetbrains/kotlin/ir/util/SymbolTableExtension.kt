@@ -14,7 +14,7 @@ import org.jetbrains.kotlin.ir.symbols.impl.*
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.utils.threadLocal
 
-abstract class ReferenceSymbolTableExtension<Class, TypeAlias, Script, Function, Constructor, Property, ValueParameter, TypeParameter> {
+abstract class ReferenceSymbolTableExtension<Class, TypeAlias, Refinement, Script, Function, Constructor, Property, ValueParameter, TypeParameter> {
     abstract fun referenceScript(declaration: Script): IrScriptSymbol
     abstract fun referenceClass(declaration: Class): IrClassSymbol
     abstract fun referenceConstructor(declaration: Constructor): IrConstructorSymbol
@@ -27,6 +27,7 @@ abstract class ReferenceSymbolTableExtension<Class, TypeAlias, Script, Function,
     abstract fun referenceTypeParameter(declaration: TypeParameter): IrTypeParameterSymbol
     abstract fun referenceScopedTypeParameter(declaration: TypeParameter): IrTypeParameterSymbol
     abstract fun referenceTypeAlias(declaration: TypeAlias): IrTypeAliasSymbol
+    abstract fun referenceRefinement(declaration: Refinement): IrRefinementSymbol
 }
 
 typealias SymbolFactory<Declaration, Symbol> = (Declaration, IdSignature?) -> Symbol
@@ -34,13 +35,14 @@ typealias OwnerFactory<Symbol, SymbolOwner> = (Symbol) -> SymbolOwner
 
 @OptIn(SymbolTableInternals::class)
 abstract class SymbolTableExtension<
-        Declaration, Class, TypeAlias, Script, Function, Constructor,
+        Declaration, Class, TypeAlias, Refinement, Script, Function, Constructor,
         Property, ValueParameter, TypeParameter,
         >(
     val table: SymbolTable,
-) : ReferenceSymbolTableExtension<Class, TypeAlias, Script, Function, Constructor, Property, ValueParameter, TypeParameter>()
+) : ReferenceSymbolTableExtension<Class, TypeAlias, Refinement, Script, Function, Constructor, Property, ValueParameter, TypeParameter>()
         where Class : Declaration,
               TypeAlias : Declaration,
+              Refinement : Declaration,
               Script : Declaration,
               Function : Declaration,
               Constructor : Declaration,
@@ -65,6 +67,8 @@ abstract class SymbolTableExtension<
     private val propertySlice: SymbolTableSlice.Flat<Property, IrProperty, IrPropertySymbol> =
         SymbolTableSlice.Flat(lock)
     private val typeAliasSlice: SymbolTableSlice.Flat<TypeAlias, IrTypeAlias, IrTypeAliasSymbol> =
+        SymbolTableSlice.Flat(lock)
+    private val refinementSlice: SymbolTableSlice.Flat<Refinement, IrRefinement, IrRefinementSymbol> =
         SymbolTableSlice.Flat(lock)
     private val globalTypeParameterSlice: SymbolTableSlice.Flat<TypeParameter, IrTypeParameter, IrTypeParameterSymbol> =
         SymbolTableSlice.Flat(lock)
@@ -457,6 +461,49 @@ abstract class SymbolTableExtension<
 
     protected open fun createPrivateTypeAliasSymbol(declaration: TypeAlias): IrTypeAliasSymbol {
         return IrTypeAliasSymbolImpl()
+    }
+
+    fun declareRefinement(declaration: Refinement, refinementFactory: (IrRefinementSymbol) -> IrRefinement): IrRefinement {
+        return declare(
+            declaration,
+            refinementSlice,
+            SymbolTable::declareRefinement,
+            { createRefinementSymbol(declaration, it) },
+            refinementFactory
+        )
+    }
+
+    fun declareRefinementIfNotExists(declaration: Refinement, refinementFactory: (IrRefinementSymbol) -> IrRefinement): IrRefinement {
+        return declareIfNotExist(
+            declaration,
+            refinementSlice,
+            SymbolTable::declareRefinementIfNotExists,
+            { createRefinementSymbol(declaration, it) },
+            refinementFactory
+        )
+    }
+
+    override fun referenceRefinement(declaration: Refinement): IrRefinementSymbol {
+        return reference(
+            declaration,
+            refinementSlice,
+            SymbolTable::referenceRefinementImpl,
+            ::createRefinementSymbol,
+            ::createPublicRefinementSymbol,
+            ::createPrivateRefinementSymbol,
+        )
+    }
+
+    protected fun createRefinementSymbol(declaration: Refinement, signature: IdSignature?): IrRefinementSymbol {
+        return signature?.let { createPublicRefinementSymbol(declaration, signature) } ?: createPrivateRefinementSymbol(declaration)
+    }
+
+    protected open fun createPublicRefinementSymbol(declaration: Refinement, signature: IdSignature): IrRefinementSymbol {
+        return IrRefinementSymbolImpl(signature = signature)
+    }
+
+    protected open fun createPrivateRefinementSymbol(declaration: Refinement): IrRefinementSymbol {
+        return IrRefinementSymbolImpl()
     }
 
     // ------------------------------------ function ------------------------------------

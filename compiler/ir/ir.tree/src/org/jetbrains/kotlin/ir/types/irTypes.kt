@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.ir.declarations.IrTypeParametersContainer
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrClassifierSymbol
+import org.jetbrains.kotlin.ir.symbols.IrRefinementSymbol
 import org.jetbrains.kotlin.ir.symbols.IrScriptSymbol
 import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
 import org.jetbrains.kotlin.ir.types.impl.*
@@ -171,11 +172,19 @@ private fun makeKotlinType(
 val IrClassifierSymbol.defaultType: IrSimpleType
     get() = when (this) {
         is IrClassSymbol -> owner.defaultType
-        is IrTypeParameterSymbol -> defaultType
+        is IrTypeParameterSymbol, is IrRefinementSymbol -> defaultType
         is IrScriptSymbol -> unexpectedSymbolKind<IrClassifierSymbol>()
     }
 
 val IrTypeParameterSymbol.defaultType: IrSimpleType
+    get() = IrSimpleTypeImpl(
+        classifier = this,
+        nullability = SimpleTypeNullability.NOT_SPECIFIED,
+        arguments = emptyList(),
+        annotations = emptyList()
+    )
+
+val IrRefinementSymbol.defaultType: IrSimpleType
     get() = IrSimpleTypeImpl(
         classifier = this,
         nullability = SimpleTypeNullability.NOT_SPECIFIED,

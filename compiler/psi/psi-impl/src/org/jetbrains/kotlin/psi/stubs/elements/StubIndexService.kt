@@ -27,6 +27,9 @@ open class StubIndexService protected constructor() {
     open fun indexTypeAlias(stub: KotlinTypeAliasStub, sink: IndexSink) {
     }
 
+    open fun indexRefinement(stub: KotlinRefinementStub, sink: IndexSink) {
+    }
+
     open fun indexObject(stub: KotlinObjectStub, sink: IndexSink) {
     }
 

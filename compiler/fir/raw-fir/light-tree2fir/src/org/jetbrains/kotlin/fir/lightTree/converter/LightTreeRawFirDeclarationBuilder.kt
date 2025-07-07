@@ -102,6 +102,7 @@ class LightTreeRawFirDeclarationBuilder(
                 FUN -> firDeclarationList += convertFunctionDeclaration(child) as FirDeclaration
                 KtNodeTypes.PROPERTY -> firDeclarationList += convertPropertyDeclaration(child)
                 TYPEALIAS -> firDeclarationList += convertTypeAlias(child)
+                REFINEMENT -> firDeclarationList += convertRefinement(child)
                 OBJECT_DECLARATION -> firDeclarationList += convertClass(child)
                 DESTRUCTURING_DECLARATION -> {
                     val initializer = buildFirDestructuringDeclarationInitializer(child)
@@ -1368,6 +1369,47 @@ class LightTreeRawFirDeclarationBuilder(
         }
     }
 
+    private fun convertRefinement(refinement: LighterASTNode): FirDeclaration {
+        var modifiers: ModifierList? = null
+        var identifier: String? = null
+        lateinit var underlyingTypeNode: LighterASTNode
+        lateinit var predicateNode: LighterASTNode
+
+        refinement.forEachChildren {
+            when (it.tokenType) {
+                MODIFIER_LIST -> modifiers = convertModifierList(it)
+                IDENTIFIER -> identifier = it.asText
+                TYPE_REFERENCE -> underlyingTypeNode = it
+                LAMBDA_EXPRESSION -> predicateNode = it
+            }
+        }
+
+        val calculatedModifiers = modifiers ?: ModifierList()
+        val refinementName = identifier.nameAsSafeName()
+        return withChildClassName(refinementName, isExpect = false) {
+            val refinementSymbol = FirRefinementSymbol(context.currentClassId)
+            withContainerSymbol(refinementSymbol) {
+                buildRefinement {
+                    source = refinement.toFirSourceElement()
+                    moduleData = baseModuleData
+                    origin = FirDeclarationOrigin.Source
+                    scopeProvider = baseScopeProvider
+                    name = refinementName
+                    val isLocal = context.inLocalContext
+                    status = FirDeclarationStatusImpl(
+                        if (isLocal) Visibilities.Local else calculatedModifiers.getVisibility(publicByDefault = true),
+                        modality = null,
+                    )
+
+                    symbol = refinementSymbol
+                    underlyingTypeRef = convertType(underlyingTypeNode)
+                    predicate = expressionConverter.getAsFirExpression(predicateNode, "Lambda expected")
+                    modifiers?.convertAnnotationsTo(annotations)
+                }
+            }
+        }
+    }
+
     /**
      * @see org.jetbrains.kotlin.parsing.KotlinParsing.parseProperty
      */
@@ -2415,6 +2457,32 @@ class LightTreeRawFirDeclarationBuilder(
             rightType = children[1]
         }
     }
+
+//    private fun convertRefinementType(typeRefSource: KtSourceElement, refinementType: LighterASTNode): FirTypeRef {
+//        lateinit var underlyingTypeRef: FirTypeRef
+//        lateinit var predicateExpr: FirAnonymousFunctionExpression
+//        refinementType.forEachChildren {
+//            when (it.tokenType) {
+//                TYPE_REFERENCE -> underlyingTypeRef = convertType(it)
+//                LAMBDA_EXPRESSION -> predicateExpr = expressionConverter.getAsFirExpression(it, "Lambda expected")
+//            }
+//        }
+//
+//        val symbol = context.containerSymbol as? FirTypeAliasSymbol ?: return buildErrorTypeRef {
+//            source = typeRefSource
+//            diagnostic = ConeSyntaxDiagnostic("Refinement type is allowed only in typealias")
+//        }
+//
+//        return buildRefinementTypeRef {
+//            source = typeRefSource
+//            isMarkedNullable = false
+//            underlyingType = underlyingTypeRef
+//            predicate = predicateExpr
+//            definingSymbol = symbol
+//        }.also {
+//            it.predicate.anonymousFunction.refinementPredicateForAttr = it
+//        }
+//    }
 
     /**
      * @see org.jetbrains.kotlin.parsing.KotlinParsing.parseTypeRefContents

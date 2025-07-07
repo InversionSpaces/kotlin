@@ -150,6 +150,7 @@ private fun FirClassifierSymbol<*>.getUnsubstitutedSupertypes(session: FirSessio
         is FirAnonymousObjectSymbol -> resolvedSuperTypes
         is FirRegularClassSymbol -> resolvedSuperTypes
         is FirTypeAliasSymbol -> fullyExpandedClass(session)?.resolvedSuperTypes ?: emptyList()
+        is FirRefinementSymbol -> listOf(resolvedUnderlyingType)
         is FirTypeParameterSymbol -> resolvedBounds.map { it.coneType }
     }
 }

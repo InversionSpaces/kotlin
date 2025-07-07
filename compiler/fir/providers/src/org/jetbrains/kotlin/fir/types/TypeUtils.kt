@@ -176,10 +176,11 @@ fun <T : ConeKotlinType> T.withArguments(arguments: Array<out ConeTypeProjection
     } as T
 }
 
-inline fun <T : ConeKotlinType> T.withArguments(replacement: (ConeTypeProjection) -> ConeTypeProjection): T {
-    val typeArguments = typeArguments
-    return withArguments(Array(typeArguments.size) { replacement(typeArguments[it]) })
-}
+inline fun <T : ConeKotlinType> T.withArguments(replacement: (ConeTypeProjection) -> ConeTypeProjection): T =
+    if (typeArguments.isEmpty()) this else {
+        val typeArguments = typeArguments
+        withArguments(Array(typeArguments.size) { replacement(typeArguments[it]) })
+    }
 
 @OptIn(DynamicTypeConstructor::class)
 fun <T : ConeKotlinType> T.withAttributes(attributes: ConeAttributes): T {

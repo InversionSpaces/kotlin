@@ -308,9 +308,9 @@ class Fir2IrDeclarationStorage(
     fun getCachedIrFunctionSymbol(
         function: FirFunction,
         fakeOverrideOwnerLookupTag: ConeClassLikeLookupTag? = null,
-    ): IrSimpleFunctionSymbol? {
-        return if (function is FirSimpleFunction) getCachedIrFunctionSymbol(function, fakeOverrideOwnerLookupTag)
-        else localStorage.getLocalFunctionSymbol(function)
+    ): IrSimpleFunctionSymbol? = when {
+        function is FirSimpleFunction -> getCachedIrFunctionSymbol(function, fakeOverrideOwnerLookupTag)
+        else -> localStorage.getLocalFunctionSymbol(function)
     }
 
     fun getCachedIrFunctionSymbol(
@@ -1310,7 +1310,10 @@ class Fir2IrDeclarationStorage(
             symbol is IrPropertySymbol ||
             symbol is IrEnumEntrySymbol ||
             symbol is IrScriptSymbol ||
-            symbol is IrReplSnippetSymbol
+            symbol is IrReplSnippetSymbol ||
+            // TODO: Refinement is not a callable, but its predicate is an anonymous function,
+            //       so it will be put in the local storage
+            symbol is IrRefinementSymbol
         ) {
             localStorage.enterCallable()
         }
@@ -1323,7 +1326,8 @@ class Fir2IrDeclarationStorage(
             symbol is IrPropertySymbol ||
             symbol is IrEnumEntrySymbol ||
             symbol is IrScriptSymbol ||
-            symbol is IrReplSnippetSymbol
+            symbol is IrReplSnippetSymbol ||
+            symbol is IrRefinementSymbol
         ) {
             @OptIn(LeakedDeclarationCaches::class)
             if (configuration.allowNonCachedDeclarations) {
