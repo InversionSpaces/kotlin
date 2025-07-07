@@ -52239,6 +52239,18 @@ public class LLBlackBoxTestGenerated extends AbstractLLBlackBoxTest {
     public void testExtensions() {
       runTest("compiler/testData/codegen/box/refinements/extensions.kt");
     }
+
+    @Test
+    @TestMetadata("mutableType.kt")
+    public void testMutableType() {
+      runTest("compiler/testData/codegen/box/refinements/mutableType.kt");
+    }
+
+    @Test
+    @TestMetadata("reifiedParameter.kt")
+    public void testReifiedParameter() {
+      runTest("compiler/testData/codegen/box/refinements/reifiedParameter.kt");
+    }
   }
 
   @Nested
