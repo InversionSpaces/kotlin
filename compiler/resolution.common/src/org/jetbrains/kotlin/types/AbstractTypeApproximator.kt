@@ -379,11 +379,8 @@ abstract class AbstractTypeApproximator(
             "Supertypes for refinement type should be one: $type"
         }
 
-        return if (toSuper && conf.approximateRefinementTypesToUnderlyingType) {
-            val underlyingType = typeConstructor.supertypes().single()
-            // TODO: Should I approximate here recursively?
-            return approximateToSuperType(underlyingType, conf, depth) ?: underlyingType
-        } else null
+        // Do not approximate refinement types
+        return null
     }
 
     private fun approximateCapturedType(

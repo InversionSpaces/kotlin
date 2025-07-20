@@ -57056,6 +57056,18 @@ public class PhasedJvmDiagnosticPsiTestGenerated extends AbstractPhasedJvmDiagno
       public void testSubtypingNegative() {
         runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/subtypingNegative.kt");
       }
+
+      @Test
+      @TestMetadata("varargs.kt")
+      public void testVarargs() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/varargs.kt");
+      }
+
+      @Test
+      @TestMetadata("variance.kt")
+      public void testVariance() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/variance.kt");
+      }
     }
 
     @Nested

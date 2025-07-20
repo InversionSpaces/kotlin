@@ -51898,6 +51898,12 @@ public class FirBlackBoxCodegenTestWithInlineScopesGenerated extends AbstractFir
     public void testReifiedParameter() {
       runTest("compiler/testData/codegen/box/refinements/reifiedParameter.kt");
     }
+
+    @Test
+    @TestMetadata("varargs.kt")
+    public void testVarargs() {
+      runTest("compiler/testData/codegen/box/refinements/varargs.kt");
+    }
   }
 
   @Nested

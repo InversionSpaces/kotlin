@@ -32,7 +32,6 @@ open class TypeApproximatorConfiguration {
     open val intersectionStrategy: IntersectionStrategy get() = IntersectionStrategy.TO_COMMON_SUPERTYPE
     open val approximateIntersectionTypesInContravariantPositions get() = false
     open val approximateLocalTypes get() = false
-    open val approximateRefinementTypesToUnderlyingType: Boolean get() = false
 
     /**
      * Is only expected to be true for FinalApproximationAfterResolutionAndInference
@@ -180,6 +179,5 @@ open class TypeApproximatorConfiguration {
         override val approximateIntegerLiteralConstantTypes: Boolean get() = true
         override val approximateIntegerConstantOperatorTypes: Boolean get() = true
         override val approximateIntersectionTypesInContravariantPositions: Boolean get() = true
-        override val approximateRefinementTypesToUnderlyingType: Boolean get() = true
     }
 }
