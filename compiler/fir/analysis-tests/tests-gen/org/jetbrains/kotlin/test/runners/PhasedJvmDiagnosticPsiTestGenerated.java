@@ -56998,6 +56998,12 @@ public class PhasedJvmDiagnosticPsiTestGenerated extends AbstractPhasedJvmDiagno
       }
 
       @Test
+      @TestMetadata("contravariance.kt")
+      public void testContravariance() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/contravariance.kt");
+      }
+
+      @Test
       @TestMetadata("covariance.kt")
       public void testCovariance() {
         runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/covariance.kt");
