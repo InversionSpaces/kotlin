@@ -6294,6 +6294,12 @@ public class LLPartialDiagnosticsFirTestGenerated extends AbstractLLPartialDiagn
       }
 
       @Test
+      @TestMetadata("covariance.kt")
+      public void testCovariance() {
+        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/covariance.kt");
+      }
+
+      @Test
       @TestMetadata("declarationLoop.kt")
       public void testDeclarationLoop() {
         runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/declarationLoop.kt");
@@ -6357,12 +6363,6 @@ public class LLPartialDiagnosticsFirTestGenerated extends AbstractLLPartialDiagn
       @TestMetadata("varargs.kt")
       public void testVarargs() {
         runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/varargs.kt");
-      }
-
-      @Test
-      @TestMetadata("variance.kt")
-      public void testVariance() {
-        runTest("compiler/fir/analysis-tests/testData/resolve/refinementTypes/variance.kt");
       }
     }
 

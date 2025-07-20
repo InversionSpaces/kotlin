@@ -41,21 +41,27 @@ class RefinementTypesLowering(private val context: LoweringContext) : ModuleLowe
 
 private class RefinementTypeOperationLowering(private val context: LoweringContext) : BodyLoweringPass {
     override fun lower(irBody: IrBody, container: IrDeclaration) {
-        irBody.transformChildrenVoid(RefinementTypeOperationTransformer(context, container))
+        val transformer = RefinementTypeOperationTransformer(context)
+        transformer.doTransform(irBody, container)
     }
 }
 
 private class RefinementTypeOperationTransformer(
-    val context: LoweringContext,
-    val container: IrSymbolOwner
+    val context: LoweringContext
 ) : IrElementTransformerVoidWithContext() {
     private val throwTypeCastException = context.symbols.throwTypeCastException
+
+    fun doTransform(irBody: IrBody, container: IrDeclaration) {
+        withinScope(container) {
+            irBody.transformChildrenVoid()
+        }
+    }
 
     override fun visitTypeOperator(expression: IrTypeOperatorCall): IrExpression {
         val transformed = super.visitTypeOperator(expression) as IrTypeOperatorCall
 
         return context.createIrBuilder(
-            container.symbol,
+            currentScope!!.scope.scopeOwnerSymbol,
             expression.startOffset,
             expression.endOffset
         ).buildTypeOperator(
