@@ -475,6 +475,14 @@ abstract class FirTransformer<in D> : FirVisitor<FirElement, D>() {
         return transformTypeAlias(typeAlias, data)
     }
 
+    open fun transformRefinement(refinement: FirRefinement, data: D): FirStatement {
+        return transformElement(refinement, data)
+    }
+
+    final override fun visitRefinement(refinement: FirRefinement, data: D): FirStatement {
+        return transformRefinement(refinement, data)
+    }
+
     open fun transformAnonymousFunction(anonymousFunction: FirAnonymousFunction, data: D): FirStatement {
         return transformElement(anonymousFunction, data)
     }

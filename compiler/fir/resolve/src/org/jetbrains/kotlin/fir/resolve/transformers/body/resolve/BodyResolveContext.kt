@@ -509,6 +509,13 @@ class BodyResolveContext(
     }
 
     @OptIn(PrivateForInline::class)
+    inline fun <T> forRefinement(refinement: FirRefinement, f: () -> T): T {
+        return withContainer(refinement) {
+            withTowerDataModeCleanup { f() }
+        }
+    }
+
+    @OptIn(PrivateForInline::class)
     inline fun <T> withAnonymousObject(
         anonymousObject: FirAnonymousObject,
         holder: SessionAndScopeSessionHolder,

@@ -82,7 +82,7 @@ interface IrEnumEntrySymbol : IrBindableSymbol<ClassDescriptor, IrEnumEntry>, En
 interface IrFieldSymbol : IrBindableSymbol<PropertyDescriptor, IrField>, FieldSymbolMarker
 
 /**
- * A symbol whose [owner] is [IrClass], [IrScript] or [IrTypeParameter].
+ * A symbol whose [owner] is [IrClass], [IrScript], [IrTypeParameter] or [IrRefinement].
  *
  * Generated from: [org.jetbrains.kotlin.ir.generator.IrSymbolTree.classifierSymbol]
  *
@@ -267,3 +267,10 @@ interface IrLocalDelegatedPropertySymbol : IrDeclarationWithAccessorsSymbol, IrB
  * @see IrTypeAbbreviation.typeAlias
  */
 interface IrTypeAliasSymbol : IrBindableSymbol<TypeAliasDescriptor, IrTypeAlias>, TypeAliasSymbolMarker
+
+/**
+ * A symbol whose [owner] is [IrRefinement].
+ *
+ * Generated from: [org.jetbrains.kotlin.ir.generator.IrSymbolTree.refinementSymbol]
+ */
+interface IrRefinementSymbol : IrClassifierSymbol, IrBindableSymbol<RefinementDescriptor, IrRefinement>

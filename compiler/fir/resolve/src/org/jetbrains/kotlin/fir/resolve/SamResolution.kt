@@ -113,7 +113,7 @@ class FirSamResolver(
             }
 
             is ConeStubType, is ConeTypeParameterType, is ConeTypeVariableType,
-            is ConeDefinitelyNotNullType, is ConeIntersectionType, is ConeIntegerLiteralType,
+            is ConeDefinitelyNotNullType, is ConeIntersectionType, is ConeIntegerLiteralType
                 -> null
 
             is ConeCapturedType -> type.constructor.lowerType?.let { getSamInfoForPossibleSamType(it) }
@@ -553,6 +553,7 @@ class FirSamConstructorStorage(session: FirSession) : FirSessionComponent {
             when (classSymbol) {
                 is FirRegularClassSymbol -> samResolver.buildSamConstructorForRegularClass(classSymbol)
                 is FirTypeAliasSymbol -> samResolver.buildSamConstructorForTypeAlias(classSymbol)
+                is FirRefinementSymbol -> TODO()
                 is FirAnonymousObjectSymbol -> null
             }
         }

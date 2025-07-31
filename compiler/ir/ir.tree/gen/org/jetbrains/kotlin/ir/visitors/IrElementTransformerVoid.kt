@@ -136,6 +136,12 @@ abstract class IrElementTransformerVoid : IrTransformer<Nothing?>() {
     final override fun visitTypeAlias(declaration: IrTypeAlias, data: Nothing?): IrStatement =
         visitTypeAlias(declaration)
 
+    open fun visitRefinement(declaration: IrRefinement): IrStatement =
+        visitDeclaration(declaration)
+
+    final override fun visitRefinement(declaration: IrRefinement, data: Nothing?): IrStatement =
+        visitRefinement(declaration)
+
     open fun visitVariable(declaration: IrVariable): IrStatement =
         visitDeclaration(declaration)
 

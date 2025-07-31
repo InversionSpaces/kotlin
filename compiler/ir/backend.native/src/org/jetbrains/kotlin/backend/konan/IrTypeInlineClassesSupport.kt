@@ -12,6 +12,7 @@ import org.jetbrains.kotlin.ir.declarations.inlineClassRepresentation
 import org.jetbrains.kotlin.ir.declarations.isSingleFieldValueClass
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrClassifierSymbol
+import org.jetbrains.kotlin.ir.symbols.IrRefinementSymbol
 import org.jetbrains.kotlin.ir.symbols.IrScriptSymbol
 import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
 import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
@@ -67,6 +68,7 @@ internal object IrTypeInlineClassesSupport : InlineClassesSupport<IrClass, IrTyp
 
     override fun computeFullErasure(type: IrType): Sequence<IrClass> = when (val classifier = type.classifierOrFail) {
         is IrClassSymbol -> sequenceOf(classifier.owner)
+        is IrRefinementSymbol -> TODO()
         is IrTypeParameterSymbol -> classifier.owner.superTypes.asSequence().flatMap { computeFullErasure(it) }
         is IrScriptSymbol -> classifier.unexpectedSymbolKind<IrClassifierSymbol>()
     }

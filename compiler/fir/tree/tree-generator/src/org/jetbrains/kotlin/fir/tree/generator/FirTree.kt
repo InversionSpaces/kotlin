@@ -449,6 +449,16 @@ object FirTree : AbstractFirTreeBuilder() {
         +annotations
     }
 
+    val refinement: Element by element(Declaration) {
+        parent(classLikeDeclaration)
+
+        +FieldSets.name
+        //+declaredSymbol(...)
+
+        +field("underlyingTypeRef", typeRef, withTransform = true, withReplace = true)
+        +field("predicate", anonymousFunctionExpression, withTransform = true)
+    }
+
     val anonymousFunction: Element by element(Declaration) {
         parent(function)
         parent(typeParametersOwner)

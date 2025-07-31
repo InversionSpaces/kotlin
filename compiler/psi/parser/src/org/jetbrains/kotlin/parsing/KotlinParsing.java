@@ -541,6 +541,9 @@ public class KotlinParsing extends AbstractKotlinParsing {
                 if (detector.isEnumDetected() && declarationParsingMode.canBeEnumUsedAsSoftKeyword) {
                     return parseClass(true, false);
                 }
+                if (at(REFINEMENT_KEYWORD)) {
+                    return parseRefinement();
+                }
         }
 
         return null;
@@ -1422,6 +1425,31 @@ public class KotlinParsing extends AbstractKotlinParsing {
         consumeIf(SEMICOLON);
 
         return TYPEALIAS;
+    }
+
+    /*
+     * refinement
+     *   : modifiers "refinement" SimpleName "=" type "satisfies" lambdaExpression
+     *   ;
+     */
+    private IElementType parseRefinement() {
+        assert _at(REFINEMENT_KEYWORD);
+
+        advance(); // REFINEMENT_KEYWORD
+
+        expect(IDENTIFIER, "Type name expected", LT_EQ_SEMICOLON_TOP_LEVEL_DECLARATION_FIRST_SET);
+
+        expect(EQ, "Expecting '='", TOP_LEVEL_DECLARATION_FIRST_SEMICOLON_SET);
+
+        parseTypeRef();
+
+        expect(SATISFIES_KEYWORD, "Expecting 'satisfies'");
+
+        parseLambdaExpression();
+
+        consumeIf(SEMICOLON);
+
+        return REFINEMENT;
     }
 
     enum DeclarationParsingMode {

@@ -1370,6 +1370,14 @@ object DIAGNOSTICS_LIST : DiagnosticList("FirErrors") {
         val DATA_OBJECT_CUSTOM_EQUALS_OR_HASH_CODE by error<KtNamedFunction>(PositioningStrategy.OVERRIDE_MODIFIER)
     }
 
+    val REFINEMENTS by object : DiagnosticGroup("Refinements") {
+        val REFINEMENT_PREDICATE_TYPE_MISMATCH by error<KtExpression> {
+            parameter<ConeKotlinType>("expectedType")
+            parameter<ConeKotlinType>("actualType")
+            parameter<Boolean>("isMismatchDueToNullability")
+        }
+    }
+
     val PARAMETER_DEFAULT_VALUES by object : DiagnosticGroup("Parameter default values") {
         val DEFAULT_VALUE_NOT_ALLOWED_IN_OVERRIDE by error<KtElement>()
     }

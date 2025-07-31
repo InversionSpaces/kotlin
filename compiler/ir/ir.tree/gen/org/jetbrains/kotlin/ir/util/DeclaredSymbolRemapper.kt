@@ -101,6 +101,12 @@ interface DeclaredSymbolRemapper {
 
     /**
      * Remaps symbols stored, e.g., in the following properties (not necessarily limited to those properties):
+     * - [IrRefinement.symbol]
+     */
+    fun getDeclaredRefinement(symbol: IrRefinementSymbol): IrRefinementSymbol
+
+    /**
+     * Remaps symbols stored, e.g., in the following properties (not necessarily limited to those properties):
      * - [IrVariable.symbol]
      */
     fun getDeclaredVariable(symbol: IrVariableSymbol): IrVariableSymbol

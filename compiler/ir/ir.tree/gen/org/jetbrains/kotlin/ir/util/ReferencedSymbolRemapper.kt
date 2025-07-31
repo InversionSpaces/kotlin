@@ -143,6 +143,7 @@ interface ReferencedSymbolRemapper {
         is IrClassSymbol -> getReferencedClass(symbol)
         is IrScriptSymbol -> getReferencedScript(symbol)
         is IrTypeParameterSymbol -> getReferencedTypeParameter(symbol)
+        is IrRefinementSymbol -> getReferencedRefinement(symbol)
     }
 
     /**
@@ -151,6 +152,13 @@ interface ReferencedSymbolRemapper {
      * - [IrSimpleType.classifier]
      */
     fun getReferencedTypeParameter(symbol: IrTypeParameterSymbol): IrClassifierSymbol
+
+    /**
+     * Remaps symbols stored, e.g., in the following properties (not necessarily limited to those properties):
+     * - [IrClassReference.symbol]
+     * - [IrSimpleType.classifier]
+     */
+    fun getReferencedRefinement(symbol: IrRefinementSymbol): IrClassifierSymbol
 
     /**
      * Remaps symbols stored, e.g., in the following properties (not necessarily limited to those properties):

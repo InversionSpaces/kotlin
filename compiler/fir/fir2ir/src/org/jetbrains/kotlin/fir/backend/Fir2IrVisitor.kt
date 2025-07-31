@@ -48,6 +48,7 @@ import org.jetbrains.kotlin.ir.expressions.IrStatementOrigin
 import org.jetbrains.kotlin.ir.expressions.impl.*
 import org.jetbrains.kotlin.ir.expressions.impl.IrBlockImpl
 import org.jetbrains.kotlin.ir.expressions.impl.IrCompositeImpl
+import org.jetbrains.kotlin.ir.expressions.impl.IrConstImpl.Companion.constNull
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrLocalDelegatedPropertySymbol
 import org.jetbrains.kotlin.ir.symbols.IrPropertySymbol
@@ -60,6 +61,7 @@ import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.defaultConstructor
 import org.jetbrains.kotlin.ir.util.defaultValueForType
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.SpecialNames
 import org.jetbrains.kotlin.psi.KtBinaryExpression
@@ -136,7 +138,19 @@ class Fir2IrVisitor(
     override fun visitTypeAlias(typeAlias: FirTypeAlias, data: Any?): IrElement = whileAnalysing(session, typeAlias) {
         val irTypeAlias = classifierStorage.getCachedTypeAlias(typeAlias)!!
         annotationGenerator.generate(irTypeAlias, typeAlias)
+
         return irTypeAlias
+    }
+
+    override fun visitRefinement(refinement: FirRefinement, data: Any?): IrElement = whileAnalysing(session, refinement) {
+        val irRefinement = classifierStorage.getCachedRefinement(refinement)!!
+        annotationGenerator.generate(irRefinement, refinement)
+
+        declarationStorage.withScope(irRefinement.symbol) {
+            irRefinement.predicate = convertToIrExpression(refinement.predicate) as IrFunctionExpression
+        }
+
+        return irRefinement
     }
 
     override fun visitEnumEntry(enumEntry: FirEnumEntry, data: Any?): IrElement = whileAnalysing(session, enumEntry) {

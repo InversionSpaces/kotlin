@@ -1255,7 +1255,7 @@ internal class KaFirCompilerFacility(
                             else -> CodeFragmentCapturedId(boundSymbol)
                         }
                     }
-                    is FirTypeParameterSymbol, is FirTypeAliasSymbol -> errorWithFirSpecificEntries(
+                    is FirTypeParameterSymbol, is FirRefinementSymbol, is FirTypeAliasSymbol -> errorWithFirSpecificEntries(
                         message = "Unexpected FirThisOwnerSymbol ${calleeReference::class.simpleName}", fir = boundSymbol.fir
                     )
                     null -> null

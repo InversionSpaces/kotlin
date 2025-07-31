@@ -70,6 +70,15 @@ abstract class FirStatusTransformerExtension(session: FirSession) : FirExtension
 
     open fun transformStatus(
         status: FirDeclarationStatus,
+        refinement: FirRefinement,
+        containingClass: FirClassLikeSymbol<*>?,
+        isLocal: Boolean
+    ): FirDeclarationStatus {
+        return transformStatus(status, refinement)
+    }
+
+    open fun transformStatus(
+        status: FirDeclarationStatus,
         propertyAccessor: FirPropertyAccessor,
         containingClass: FirClassLikeSymbol<*>?,
         containingProperty: FirProperty?,

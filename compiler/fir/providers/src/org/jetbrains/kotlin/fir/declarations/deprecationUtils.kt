@@ -218,7 +218,9 @@ fun FirBasedSymbol<*>.getDeprecationForCallSite(
 
             resolvedExpandedTypeRef.coneType.forEachType {
                 val deprecationInfo = visited.getOrPut(it) {
-                    val symbol = it.toSymbol(session) ?: return@forEachType
+                    val symbol = it.toSymbol(session).takeIf { symbol ->
+                        symbol != this // Skip self for refinement type
+                    } ?: return@forEachType
                     symbol.getDeprecationForCallSite(session, *sites)
                 } ?: return@forEachType
 

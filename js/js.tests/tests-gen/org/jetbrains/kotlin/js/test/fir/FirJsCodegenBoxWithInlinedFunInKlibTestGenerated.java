@@ -38993,6 +38993,16 @@ public class FirJsCodegenBoxWithInlinedFunInKlibTestGenerated extends AbstractFi
     }
 
     @Nested
+    @TestMetadata("compiler/testData/codegen/box/refinements")
+    @TestDataPath("$PROJECT_ROOT")
+    public class Refinements {
+      @Test
+      public void testAllFilesPresentInRefinements() {
+        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/box/refinements"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JS_IR, true);
+      }
+    }
+
+    @Nested
     @TestMetadata("compiler/testData/codegen/box/reflection")
     @TestDataPath("$PROJECT_ROOT")
     public class Reflection {

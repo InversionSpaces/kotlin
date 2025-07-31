@@ -31,6 +31,8 @@ public interface DeclarationDescriptorVisitor<R, D> {
 
     R visitTypeAliasDescriptor(TypeAliasDescriptor descriptor, D data);
 
+    R visitRefinementDescriptor(RefinementDescriptor descriptor, D data);
+
     R visitModuleDeclaration(ModuleDescriptor descriptor, D data);
 
     R visitConstructorDescriptor(ConstructorDescriptor constructorDescriptor, D data);

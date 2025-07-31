@@ -123,6 +123,7 @@ private val jvmFilePhases = createFilePhases<JvmBackendContext>(
 )
 
 val jvmLoweringPhases = createModulePhases(
+    ::RefinementTypesLowering,
     ::ExternalPackageParentPatcherLowering,
     ::FragmentSharedVariablesLowering,
     ::JvmIrValidationBeforeLoweringPhase,

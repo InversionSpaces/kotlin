@@ -39329,6 +39329,16 @@ public class NativeIrDeserializationTestGenerated extends AbstractNativeIrDeseri
     }
 
     @Nested
+    @TestMetadata("compiler/testData/codegen/box/refinements")
+    @TestDataPath("$PROJECT_ROOT")
+    public class Refinements {
+      @Test
+      public void testAllFilesPresentInRefinements() {
+        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/box/refinements"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.NATIVE, true);
+      }
+    }
+
+    @Nested
     @TestMetadata("compiler/testData/codegen/box/reflection")
     @TestDataPath("$PROJECT_ROOT")
     public class Reflection {

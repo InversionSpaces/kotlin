@@ -67,6 +67,9 @@ abstract class IrVisitor<out R, in D> {
     open fun visitTypeAlias(declaration: IrTypeAlias, data: D): R =
         visitDeclaration(declaration, data)
 
+    open fun visitRefinement(declaration: IrRefinement, data: D): R =
+        visitDeclaration(declaration, data)
+
     open fun visitVariable(declaration: IrVariable, data: D): R =
         visitDeclaration(declaration, data)
 

@@ -38,6 +38,8 @@ interface KotlinTypeAliasStub : KotlinClassifierStub, KotlinStubWithFqName<KtTyp
     fun isTopLevel(): Boolean
 }
 
+interface KotlinRefinementStub : KotlinClassifierStub, KotlinStubWithFqName<KtRefinement> {}
+
 interface KotlinClassOrObjectStub<T : KtClassOrObject> : KotlinClassifierStub, KotlinStubWithFqName<T> {
     fun isLocal(): Boolean
     fun getSuperNames(): List<String>

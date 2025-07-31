@@ -39,6 +39,8 @@ import org.jetbrains.kotlin.fir.java.javaElementFinder
 import org.jetbrains.kotlin.fir.references.toResolvedValueParameterSymbol
 import org.jetbrains.kotlin.fir.scopes.processAllFunctions
 import org.jetbrains.kotlin.fir.symbols.lazyDeclarationResolver
+import org.jetbrains.kotlin.fir.types.FirResolvedTypeRef
+import org.jetbrains.kotlin.fir.types.isUnit
 import org.jetbrains.kotlin.fir.types.resolvedType
 import org.jetbrains.kotlin.ir.IrBuiltIns
 import org.jetbrains.kotlin.ir.KtDiagnosticReporterWithImplicitIrBasedContext
@@ -172,6 +174,9 @@ class Fir2IrConverter(
                 is FirRegularClass -> processClassAndNestedClassHeaders(it)
                 is FirTypeAlias -> {
                     classifierStorage.createAndCacheIrTypeAlias(it, irFile)
+                }
+                is FirRefinement -> {
+                    classifierStorage.createAndCacheIrRefinement(it, irFile)
                 }
                 else -> {}
             }
@@ -540,6 +545,11 @@ class Fir2IrConverter(
                 classifierStorage.getCachedTypeAlias(declaration)?.let { irTypeAlias ->
                     // type alias may be local with error suppression, so it might be missing from classifier storage
                     addDeclarationToParentIfNeeded(irTypeAlias)
+                }
+            }
+            is FirRefinement -> {
+                classifierStorage.getCachedRefinement(declaration)?.let { irRefinement ->
+                    addDeclarationToParentIfNeeded(irRefinement)
                 }
             }
             is FirCodeFragment -> {

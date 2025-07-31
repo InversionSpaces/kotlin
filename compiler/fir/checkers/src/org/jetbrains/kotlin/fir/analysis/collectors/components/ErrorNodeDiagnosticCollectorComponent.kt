@@ -18,13 +18,16 @@ import org.jetbrains.kotlin.fir.analysis.diagnostics.toFirDiagnostics
 import org.jetbrains.kotlin.fir.declarations.FirErrorFunction
 import org.jetbrains.kotlin.fir.declarations.FirErrorPrimaryConstructor
 import org.jetbrains.kotlin.fir.declarations.FirErrorProperty
+import org.jetbrains.kotlin.fir.declarations.FirRefinement
 import org.jetbrains.kotlin.fir.declarations.FirValueParameter
 import org.jetbrains.kotlin.fir.diagnostics.*
 import org.jetbrains.kotlin.fir.expressions.*
 import org.jetbrains.kotlin.fir.references.*
 import org.jetbrains.kotlin.fir.resolve.diagnostics.*
 import org.jetbrains.kotlin.fir.symbols.impl.FirAnonymousFunctionSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirRefinementSymbol
 import org.jetbrains.kotlin.fir.types.*
+import org.jetbrains.kotlin.utils.addToStdlib.lastIsInstanceOrNull
 
 class ErrorNodeDiagnosticCollectorComponent(
     session: FirSession,
@@ -38,6 +41,7 @@ class ErrorNodeDiagnosticCollectorComponent(
     override fun visitErrorTypeRef(errorTypeRef: FirErrorTypeRef, data: CheckerContext) {
         if (errorTypeRef.isLambdaReturnTypeRefThatDoesntNeedReporting(data)) return
         if (errorTypeRef.hasExpandedTypeAliasDeclarationSiteError()) return
+        if (errorTypeRef.hasRefinementDeclarationSiteError(data)) return
 
         reportFirDiagnostic(
             errorTypeRef.diagnostic, errorTypeRef.source, data,
@@ -69,6 +73,14 @@ class ErrorNodeDiagnosticCollectorComponent(
         val lowerBound = coneType.lowerBoundIfFlexible() as? ConeErrorType ?: return false
         if (lowerBound.diagnostic != this.diagnostic) return false
         return lowerBound.abbreviatedType != null
+    }
+
+    private fun FirErrorTypeRef.hasRefinementDeclarationSiteError(data: CheckerContext): Boolean {
+        val refinementSymbol = data.containingDeclarations.lastIsInstanceOrNull<FirRefinementSymbol>() ?: return false
+        // Check that we are in the predicate
+        if (!data.containingDeclarations.contains(refinementSymbol.predicateSymbol)) return false
+        val underlyingType = refinementSymbol.resolvedUnderlyingType.lowerBoundIfFlexible() as? ConeErrorType ?: return false
+        return underlyingType.diagnostic == diagnostic
     }
 
     private fun FirExpression.hasDiagnostic(diagnostic: ConeDiagnostic): Boolean {

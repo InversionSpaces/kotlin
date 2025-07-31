@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.ir.declarations.IrConstructor
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationWithName
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrClassifierSymbol
+import org.jetbrains.kotlin.ir.symbols.IrRefinementSymbol
 import org.jetbrains.kotlin.ir.symbols.IrScriptSymbol
 import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
 import org.jetbrains.kotlin.ir.types.*
@@ -50,6 +51,7 @@ private fun IrClassifierSymbol.asString(context: JsIrBackendContext): String {
     return when (this) {
         is IrTypeParameterSymbol -> this.owner.name.asString()
         is IrScriptSymbol -> unexpectedSymbolKind<IrClassifierSymbol>()
+        is IrRefinementSymbol -> TODO()
         is IrClassSymbol ->
             context.classToItsId[owner]
                 ?: context.localClassNames[owner]
@@ -59,6 +61,7 @@ private fun IrClassifierSymbol.asString(context: JsIrBackendContext): String {
 
 tailrec fun erase(type: IrType): IrClass? = when (val classifier = type.classifierOrFail) {
     is IrClassSymbol -> classifier.owner
+    is IrRefinementSymbol -> TODO()
     is IrTypeParameterSymbol -> erase(classifier.owner.superTypes.first())
     is IrScriptSymbol -> null
 }

@@ -116,6 +116,12 @@ public class RecursiveDescriptorProcessor {
         }
 
         @Override
+        public Boolean visitRefinementDescriptor(RefinementDescriptor descriptor, D data) {
+            return applyWorker(descriptor, data)
+                   && visitChildren(descriptor.getDeclaredTypeParameters(), data);
+        }
+
+        @Override
         public Boolean visitModuleDeclaration(ModuleDescriptor descriptor, D data) {
             return applyWorker(descriptor, data)
                    && visitChildren(descriptor.getPackage(FqName.ROOT), data);

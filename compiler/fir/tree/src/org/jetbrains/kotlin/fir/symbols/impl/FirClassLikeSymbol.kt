@@ -151,3 +151,28 @@ class FirTypeAliasSymbol(classId: ClassId) : FirClassLikeSymbol<FirTypeAlias>(cl
             return fir.expandedTypeRef as FirResolvedTypeRef
         }
 }
+
+// TODO: Add marker?
+class FirRefinementSymbol(classId: ClassId) : FirClassLikeSymbol<FirRefinement>(classId) {
+    private val lookupTag: ConeClassLikeLookupTag =
+        if (classId.isLocal) ConeClassLikeLookupTagWithFixedSymbol(classId, this)
+        else classId.toLookupTag()
+
+    override fun toLookupTag(): ConeClassLikeLookupTag = lookupTag
+
+    val resolvedUnderlyingTypeRef: FirResolvedTypeRef
+        get() {
+            lazyResolveToPhase(FirResolvePhase.SUPER_TYPES)
+            val resolvedTypeRef = fir.underlyingTypeRef
+            if (resolvedTypeRef !is FirResolvedTypeRef) {
+                errorInLazyResolve("underlyingTypeRef", resolvedTypeRef::class, FirResolvedTypeRef::class)
+            }
+            return resolvedTypeRef
+        }
+
+    val resolvedUnderlyingType: ConeKotlinType
+        get() = resolvedUnderlyingTypeRef.coneType
+
+    val predicateSymbol: FirAnonymousFunctionSymbol
+        get() = fir.predicate.anonymousFunction.symbol
+}

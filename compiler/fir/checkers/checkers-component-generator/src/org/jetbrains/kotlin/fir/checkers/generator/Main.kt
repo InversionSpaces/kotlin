@@ -207,6 +207,7 @@ fun main(args: Array<String>) {
             alias<FirReplSnippet>("ReplSnippetChecker")
             alias<FirTypeParameter>("FirTypeParameterChecker")
             alias<FirTypeAlias>("TypeAliasChecker")
+            alias<FirRefinement>("RefinementChecker")
             alias<FirAnonymousFunction>("AnonymousFunctionChecker")
             alias<FirPropertyAccessor>("PropertyAccessorChecker")
             alias<FirBackingField>("BackingFieldChecker")

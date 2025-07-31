@@ -1470,6 +1470,17 @@ abstract class FirDataFlowAnalyzer(
         resetSmartCastPosition() // rollback to position before annotation
     }
 
+    // --------------------------- Refinement Type Predicates ---------------------------
+
+    fun enterRefinementPredicate() {
+        graphBuilder.enterFakeExpression().mergeIncomingFlow()
+    }
+
+    fun exitRefinementPredicate() {
+        graphBuilder.exitFakeExpression()
+        resetSmartCastPosition()
+    }
+
     // ----------------------------------- Init block -----------------------------------
 
     fun enterInitBlock(initBlock: FirAnonymousInitializer) {

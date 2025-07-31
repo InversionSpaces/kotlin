@@ -270,6 +270,14 @@ public class DescriptorValidator {
         }
 
         @Override
+        public Boolean visitRefinementDescriptor(
+                RefinementDescriptor descriptor, DiagnosticCollector collector
+        ) {
+            // TODO refinement
+            return true;
+        }
+
+        @Override
         public Boolean visitModuleDeclaration(
                 ModuleDescriptor descriptor, DiagnosticCollector collector
         ) {
@@ -435,6 +443,12 @@ public class DescriptorValidator {
         @Override
         public Void visitTypeAliasDescriptor(TypeAliasDescriptor descriptor, MemberScope data) {
             // TODO typealias
+            return null;
+        }
+
+        @Override
+        public Void visitRefinementDescriptor(RefinementDescriptor descriptor, MemberScope scope) {
+            // TODO refinement
             return null;
         }
 

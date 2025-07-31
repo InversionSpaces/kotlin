@@ -6,6 +6,7 @@
 package org.jetbrains.kotlin.ir.util
 
 import org.jetbrains.kotlin.ir.declarations.IrClass
+import org.jetbrains.kotlin.ir.declarations.IrRefinement
 import org.jetbrains.kotlin.ir.declarations.IrScript
 import org.jetbrains.kotlin.ir.declarations.IrTypeParameter
 import org.jetbrains.kotlin.ir.types.IrErrorType
@@ -89,6 +90,7 @@ val IrType.erasedUpperBound: IrClass
     get() = when (this) {
         is IrSimpleType -> when (val classifier = classifier.owner) {
             is IrClass -> classifier
+            is IrRefinement -> classifier.underlyingType.erasedUpperBound
             is IrTypeParameter -> classifier.erasedUpperBound
             is IrScript -> classifier.targetClass?.owner ?: error(render())
             else -> error(render())

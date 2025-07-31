@@ -42,6 +42,16 @@ class IrLazySymbolTable(private val originalTable: SymbolTable) : ReferenceSymbo
             }
         }
 
+        override fun referenceRefinement(declaration: RefinementDescriptor): IrRefinementSymbol {
+            synchronized(lock) {
+                return delegate.referenceRefinement(declaration).also {
+                    if (!it.isBound) {
+                        stubGenerator?.generateRefinementStub(declaration)
+                    }
+                }
+            }
+        }
+
         override fun referenceConstructor(declaration: ClassConstructorDescriptor): IrConstructorSymbol {
             synchronized(lock) {
                 return delegate.referenceConstructor(declaration).also {

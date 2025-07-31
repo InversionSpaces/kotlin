@@ -328,3 +328,12 @@ fun FirFunction.specialFunctionTypeKind(session: FirSession): FunctionTypeKind? 
         session.functionTypeService.extractSingleSpecialKindForFunction(it)
     }
 }
+
+fun ConeKotlinType.createPredicate(
+    session: FirSession,
+): ConeLookupTagBasedType = FunctionTypeKind.Function
+    .numberedClassId(1)
+    .toLookupTag()
+    .constructClassType(
+        typeArguments = arrayOf(this, session.builtinTypes.booleanType.coneType),
+    )

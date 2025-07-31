@@ -2685,6 +2685,13 @@ sealed interface KaFirDiagnostic<PSI : PsiElement> : KaDiagnosticWithPsi<PSI> {
         override val diagnosticClass get() = DataObjectCustomEqualsOrHashCode::class
     }
 
+    interface RefinementPredicateTypeMismatch : KaFirDiagnostic<KtExpression> {
+        override val diagnosticClass get() = RefinementPredicateTypeMismatch::class
+        val expectedType: KaType
+        val actualType: KaType
+        val isMismatchDueToNullability: Boolean
+    }
+
     interface DefaultValueNotAllowedInOverride : KaFirDiagnostic<KtElement> {
         override val diagnosticClass get() = DefaultValueNotAllowedInOverride::class
     }

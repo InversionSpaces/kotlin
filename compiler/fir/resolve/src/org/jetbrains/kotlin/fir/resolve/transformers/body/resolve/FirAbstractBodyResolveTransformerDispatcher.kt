@@ -651,6 +651,16 @@ abstract class FirAbstractBodyResolveTransformerDispatcher(
         FirDeclarationsResolveTransformer::transformTypeAlias,
     )
 
+    override fun transformRefinement(
+        refinement: FirRefinement,
+        data: ResolutionMode
+    ): FirRefinement = declarationTransformation(
+        refinement,
+        data,
+        FirDeclarationsResolveTransformer::transformRefinement,
+    )
+
+
     // ------------------------------------- Control flow statements -------------------------------------
 
     private inline fun <T, R> controlFlowStatementsTransformation(

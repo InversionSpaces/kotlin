@@ -1186,6 +1186,10 @@ internal class DescriptorRendererImpl(
         override fun visitTypeAliasDescriptor(descriptor: TypeAliasDescriptor, builder: StringBuilder) {
             renderTypeAlias(descriptor, builder)
         }
+
+        override fun visitRefinementDescriptor(descriptor: RefinementDescriptor?, data: StringBuilder?) {
+            TODO()
+        }
     }
 
     private fun renderSpaceIfNeeded(builder: StringBuilder) {

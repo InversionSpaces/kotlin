@@ -516,7 +516,8 @@ fun checkTypeMismatch(
     assignment: FirVariableAssignment?,
     rValue: FirExpression,
     source: KtSourceElement,
-    isInitializer: Boolean
+    isInitializer: Boolean,
+    isRefinementPredicate: Boolean = false,
 ) {
     var lValueType = lValueOriginalType
     var rValueType = rValue.resolvedType
@@ -552,7 +553,7 @@ fun checkTypeMismatch(
         rValue.isNullLiteral && !lValueType.isMarkedOrFlexiblyNullable -> {
             reporter.reportOn(rValue.source, FirErrors.NULL_FOR_NONNULL_TYPE, lValueType)
         }
-        isInitializer -> {
+        isInitializer || isRefinementPredicate -> {
             if (reportReturnTypeMismatchInLambda(
                     lValueType = lValueType.fullyExpandedType(),
                     rValue = rValue,
@@ -562,7 +563,8 @@ fun checkTypeMismatch(
 
             reporter.reportOn(
                 source,
-                FirErrors.INITIALIZER_TYPE_MISMATCH,
+                if (isInitializer) FirErrors.INITIALIZER_TYPE_MISMATCH
+                else FirErrors.REFINEMENT_PREDICATE_TYPE_MISMATCH,
                 lValueType,
                 rValueType,
                 context.session.typeContext.isTypeMismatchDueToNullability(rValueType, lValueType)

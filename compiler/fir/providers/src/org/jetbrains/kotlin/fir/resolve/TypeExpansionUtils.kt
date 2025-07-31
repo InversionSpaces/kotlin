@@ -170,6 +170,7 @@ fun ConeClassLikeType.directExpansionType(
     },
 ): ConeClassLikeType? {
     if (this is ConeErrorType) return null
+
     val typeAliasSymbol = lookupTag.toTypeAliasSymbol(useSiteSession) ?: return null
     val typeAlias = typeAliasSymbol.fir
 

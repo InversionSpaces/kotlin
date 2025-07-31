@@ -49,6 +49,8 @@ interface SymbolRemapper : DeclaredSymbolRemapper, ReferencedSymbolRemapper {
 
         override fun getDeclaredTypeAlias(symbol: IrTypeAliasSymbol): IrTypeAliasSymbol = symbol
 
+        override fun getDeclaredRefinement(symbol: IrRefinementSymbol): IrRefinementSymbol = symbol
+
         override fun getDeclaredVariable(symbol: IrVariableSymbol): IrVariableSymbol = symbol
 
         override fun getDeclaredExternalPackageFragment(symbol: IrExternalPackageFragmentSymbol): IrExternalPackageFragmentSymbol = symbol
@@ -76,6 +78,8 @@ interface SymbolRemapper : DeclaredSymbolRemapper, ReferencedSymbolRemapper {
         override fun getReferencedVariable(symbol: IrVariableSymbol): IrVariableSymbol = symbol
 
         override fun getReferencedTypeParameter(symbol: IrTypeParameterSymbol): IrClassifierSymbol = symbol
+
+        override fun getReferencedRefinement(symbol: IrRefinementSymbol): IrClassifierSymbol = symbol
 
         override fun getReferencedReturnableBlock(symbol: IrReturnableBlockSymbol): IrReturnTargetSymbol = symbol
 

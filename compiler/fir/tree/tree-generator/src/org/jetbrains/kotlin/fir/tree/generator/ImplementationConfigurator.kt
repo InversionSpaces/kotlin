@@ -53,6 +53,7 @@ object ImplementationConfigurator : AbstractFirTreeImplementationConfigurator() 
         noImpl(anonymousObjectExpression)
 
         impl(typeAlias)
+        impl(refinement)
 
         impl(import)
 

@@ -569,6 +569,7 @@ private fun FirClassLikeDeclaration.containingNonLocalClass(session: FirSession)
         }
         // Currently, type aliases are only top-level
         is FirTypeAlias -> null
+        is FirRefinement -> null
     }
 }
 
