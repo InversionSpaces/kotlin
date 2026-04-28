@@ -194,9 +194,14 @@ Design `@NoInfer` for public use [issue](https://youtrack.jetbrains.com/issue/KT
 
 ### What It Does
 
-Not sure. Contraints originated from positions with `@NoInfer` are
-recorded in the constraint system, but they are not considered "proper",
-so they do not participate in the readiness check and the fixation process.
+Contraints originated from positions with `@NoInfer` in the constraint system:
+- are not considered proper
+  - they do not participate in the readiness check for a TV
+  - they do not participate in result type resolution for a TV during fixation
+- participate normally in incorporation
+  - they can generate type inconsistency/mismatch errors
+  - new constraints are generated from them
+    - `isNoInfer` is propagated to the new constraints
 
 ### What It Solves
 
